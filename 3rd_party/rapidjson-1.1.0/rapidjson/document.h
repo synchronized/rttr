@@ -98,9 +98,16 @@ struct GenericMember {
     \see GenericMember, GenericValue::MemberIterator, GenericValue::ConstMemberIterator
  */
 template <bool Const, typename Encoding, typename Allocator>
-class GenericMemberIterator
-    : public std::iterator<std::random_access_iterator_tag
-        , typename internal::MaybeAddConst<Const,GenericMember<Encoding,Allocator> >::Type> {
+//class GenericMemberIterator
+//    : public std::iterator<std::random_access_iterator_tag
+//        , typename internal::MaybeAddConst<Const,GenericMember<Encoding,Allocator> >::Type> {
+class GenericMemberIterator {
+public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = GenericMember<Encoding, Allocator>;
+    using difference_type = ptrdiff_t;
+    using pointer = GenericMember<Encoding, Allocator>*;
+    using reference = GenericMember<Encoding, Allocator>&;
 
     friend class GenericValue<Encoding,Allocator>;
     template <bool, typename, typename> friend class GenericMemberIterator;
