@@ -159,6 +159,19 @@ variant::operator bool() const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+variant variant::operator *() {
+    auto var_type = get_type();
+    if (var_type.is_wrapper()) {
+        return extract_wrapped_value();
+    }
+    if (var_type.is_pointer()) {
+        return extract_pointer_value();
+    }
+    return variant();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 bool variant::is_associative_container() const
 {
     return m_policy(detail::variant_policy_operation::IS_ASSOCIATIVE_CONTAINER, m_data, detail::argument_wrapper());
@@ -178,6 +191,15 @@ type variant::get_type() const
     type src_type = detail::get_invalid_type();
     m_policy(detail::variant_policy_operation::GET_TYPE, m_data, src_type);
     return src_type;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+variant variant::extract_pointer_value() const
+{
+    variant var;
+    m_policy(detail::variant_policy_operation::EXTRACT_POINTER_VALUE, m_data, var);
+    return var;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

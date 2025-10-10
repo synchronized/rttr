@@ -249,7 +249,7 @@ public:
              * \return A \ref bind object, in order to chain more calls.
              */
             template<typename F, typename acc_level = detail::public_access>
-            bind<detail::meth, Class_Type, F, acc_level, Visitor_List> method(string_view name, F f, acc_level level = acc_level());
+            bind<detail::meth, Class_Type, F, acc_level, Visitor_List> method(string_view name, F function, acc_level level = acc_level());
 
 
             /*!
@@ -340,7 +340,7 @@ public:
      * \return A \ref bind object, in order to chain more calls.
      */
     template<typename F, typename Visitor_List = READ_TL(rttr_visitor_list)>
-    static bind<detail::meth, detail::invalid_type, F, detail::public_access, Visitor_List> method(string_view name, F f);
+    static bind<detail::meth, detail::invalid_type, F, detail::public_access, Visitor_List> method(string_view name, F function);
 
     /*!
      * \brief Register a global enumeration of type \p Enum_Type

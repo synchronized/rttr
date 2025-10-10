@@ -121,6 +121,7 @@ enum class variant_policy_operation : uint8_t
     DESTROY,
     CLONE,
     SWAP,
+    EXTRACT_POINTER_VALUE,
     EXTRACT_WRAPPED_VALUE,
     CREATE_WRAPPED_VALUE,
     GET_VALUE,
@@ -192,6 +193,37 @@ enable_if_t<!is_copyable<Tp>::value ||
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+enable_if_t<!std::is_pointer_v<T>, variant> remove_point_value(const T& value)
+{
+    return variant();
+}
+
+template<typename T>
+enable_if_t<std::is_pointer_v<T> && 
+            (std::is_void_v<detail::remove_cv_ref_t<T>> || 
+             std::is_void_v<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>> || 
+             !detail::is_copyable<detail::remove_cv_ref_t<T>>::value || 
+             !detail::is_copyable<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>>::value), variant> remove_point_value(const T& value)
+{
+    return variant();
+}
+
+template<typename T>
+enable_if_t<std::is_pointer_v<T> && 
+            (!std::is_void_v<detail::remove_cv_ref_t<T>> &&
+             !std::is_void_v<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>> &&
+             detail::is_copyable<detail::remove_cv_ref_t<T>>::value &&
+             detail::is_copyable<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>>::value), variant> remove_point_value(const T& value)
+{
+    using raw_type = detail::remove_pointer_t<T>;
+    T v = const_cast<T&>(value);
+    return variant(static_cast<raw_type&>(*reinterpret_cast<raw_type*>(v)));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
  * This class represents the base implementation for variant_data policy.
@@ -220,6 +252,15 @@ struct variant_data_base_policy
             case variant_policy_operation::SWAP:
             {
                 Tp::swap(const_cast<T&>(Tp::get_value(src_data)), arg.get_value<variant_data>());
+                break;
+            }
+            case variant_policy_operation::EXTRACT_POINTER_VALUE:
+            {
+                variant var = remove_point_value(Tp::get_value(src_data));
+                if (!var) {
+                    return false;
+                }
+                arg.get_value<variant>() = std::move(var);
                 break;
             }
             case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
@@ -615,6 +656,10 @@ struct RTTR_API variant_data_policy_empty
             {
                 break;
             }
+            case variant_policy_operation::EXTRACT_POINTER_VALUE:
+            {
+                return false;
+            }
             case variant_policy_operation::GET_VALUE:
             {
                 arg.get_value<const void*>() = nullptr;
@@ -721,6 +766,10 @@ struct RTTR_API variant_data_policy_void
             case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
             {
                 break;
+            }
+            case variant_policy_operation::EXTRACT_POINTER_VALUE:
+            {
+                return false;
             }
             case variant_policy_operation::GET_VALUE:
             {
@@ -871,6 +920,10 @@ struct RTTR_API variant_data_policy_nullptr_t
             case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
             {
                 break;
+            }
+            case variant_policy_operation::EXTRACT_POINTER_VALUE:
+            {
+                return false;
             }
             case variant_policy_operation::GET_VALUE:
             {

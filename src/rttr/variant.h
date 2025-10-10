@@ -396,6 +396,8 @@ class RTTR_API variant
          */
         explicit operator bool() const;
 
+        variant operator *();
+
         /*!
          * \brief Returns true, when for the underlying or the \ref type::get_wrapped_type() "wrapped type"
          *        an associative_mapper exists.
@@ -485,6 +487,31 @@ class RTTR_API variant
          */
         template<typename T>
         const T& get_wrapped_value() const;
+
+        /*!
+         * \brief Extracts the point raw value and copies its content into a new variant.
+         *
+         * \code{.cpp}
+         *  int value1 = 23;
+         *  variant var1 = &value1;
+         *
+         *  if (var1.get_type().get_raw_type() == type::get<int>())  // yields to true
+         *  {
+         *     variant var2 = var1.extract_point_value(); // value will be copied into "var2"
+         *     var2.get_type() == type::get<int>(); // yields to true
+         *     const int& value2 = var2.get_value<int>();
+         *     std::cout << value2 << std::endl;    // prints "23"
+         *  }
+         * \endcode
+         *
+         * \remark Calling this method works only for point raw types which are copiable.
+         *         When you work with custom types, which are not copyable, the variant will be \ref is_valid "invalid"
+         *
+         * \return A variant with the point raw value.
+         *
+         * \see type::is_pointer()
+         */
+        variant extract_pointer_value() const;
 
         /*!
          * \brief Extracts the wrapped value and copies its content into a new variant.
@@ -1007,7 +1034,7 @@ class RTTR_API variant
         try_pointer_conversion(T& to, const type& source_type, const type& target_type) const;
 
         /*!
-         * \brief A dummy method which does in fact always return `falsev.
+         * \brief A dummy method which does in fact always return `false`.
          *
          * \return `False`.
          */
