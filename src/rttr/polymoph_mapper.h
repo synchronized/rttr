@@ -25,8 +25,8 @@
 *                                                                                   *
 *************************************************************************************/
 
-#ifndef RTTR_SEQUENTIAL_MAPPER_H_
-#define RTTR_SEQUENTIAL_MAPPER_H_
+#ifndef RTTR_POLYMOPH_MAPPER_H_
+#define RTTR_POLYMOPH_MAPPER_H_
 
 #include "rttr/detail/base/core_prerequisites.h"
 
@@ -34,7 +34,7 @@ namespace rttr
 {
 
 /*!
- * The \ref sequential_container_mapper class is a class template to access an associative container via one common interface.
+ * The \ref polymoph_container_mapper class is a class template to access an associative container via one common interface.
  *
  * This class will be only used internally by RTTR via the variant_associative_view class to get access to elements of an associative container.
  * In order to use your own custom associative container type, you have to provide a specialization of this class.
@@ -51,7 +51,7 @@ namespace rttr
  *
  * Custom associative container
  * -----------------------------
- * For a specialization of the class \ref rttr::sequential_container_mapper<T> "sequential_container_mapper<T>"
+ * For a specialization of the class \ref rttr::polymoph_container_mapper<T> "polymoph_container_mapper<T>"
  * you have to provide some nested alias templates:
  * 1. `using container_t = T;`
  * 2. `using key_t       = typename T::key_type;`
@@ -86,48 +86,12 @@ namespace rttr
  * namespace rttr
  * {
  * template<typename K, typename T>
- * struct sequential_container_mapper<QHash<K, T>>
+ * struct polymoph_container_mapper<QHash<K, T>>
  * {
  *     using container_t   = QHash<K, T>;
+ *     using key_t         = typename QHash<K, T>::key_type;
  *     using value_t       = typename QHash<K, T>::value_type;
- *     using itr_t         = typename QHash<K, T>::iterator;
- *     using const_itr_t   = typename QHash<K, T>::const_iterator;
  *
- *     static bool is_dynamic()
- *     {
- *         return true;
- *     }
- *
- *     static value_t& get_data(const itr_t& itr)
- *     {
- *         return *itr;
- *     }
-
- *     static const value_t& get_data(const const_itr_t& itr)
- *     {
- *         return *itr;
- *     }
- * 
- *     static itr_t begin(container_t& container)
- *     {
- *         return container.begin();
- *     }
- * 
- *     static const_itr_t begin(const container_t& container)
- *     {
- *         return container.begin();
- *     }
- * 
- *     static itr_t end(container_t& container)
- *     {
- *         return container.end();
- *     }
- * 
- *     static const_itr_t end(const container_t& container)
- *     {
- *         return container.end();
- *     }
- * 
  *     static void clear(container_t& container)
  *     {
  *         container.clear();
@@ -138,47 +102,41 @@ namespace rttr
  *         return container.empty();
  *     }
  * 
- *     static std::size_t get_size(const container_t& container)
+ *     static void set(container_t& container, std::string type_name, value_t* val)
  *     {
- *         return container.size();
+ *         return container.set(type_name, val);
+ *     }
+ * 
+ *     static bool set(const container_t& container, std::string type_name, value_t* val)
+ *     {
+ *         return false;
+ *     }
+ * 
+ *     static void set(container_t& container, std::string type_name, value_t&& val)
+ *     {
+ *         return container.set(type_name, val);
+ *     }
+ * 
+ *     static bool set(const container_t& container, std::string type_name, value_t&& val)
+ *     {
+ *         return false;
+ *     }
+ * 
+ *     static wrapped_type get_value(container_t& container)
+ *     {
+ *         return container.get();
+ *     }
+ * 
+ *     static const wrapped_type get_value(const container_t& container)
+ *     {
+ *         return container.get();
+ *     }
+ * 
+ *     static std::string get_type_name(const container_t& container)
+ *     {
+ *         return container.get_type_name();
  *     }
  *
- *     static bool set_size(container_t& container, std::size_t size)
- *     {
- *         container.resize(size);
- *         return true;
- *     }
- * 
- *     static std::size_t erase(container_t& container, const key_t& key)
- *     {
- *         return container.erase(key);
- *     }
- * 
- *     static itr_t erase(container_t& container, const const_itr_t& itr)
- *     {
- *         return container.erase(itr);
- *     }
- * 
- *     static itr_t insert(container_t& container, const value_t& value, const itr_t& itr_pos)
- *     {
- *         return container.insert(itr_pos, value);
- *     }
- *  
- *     static itr_t insert(container_t& container, const value_t& value, const const_itr_t& itr_pos)
- *     {
- *         return container.insert(itr_pos, value);
- *     }
- * 
- *     static value_t& get_value(itr_t& itr)
- *     {
- *         return itr->second;
- *     }
- * 
- *     static const value_t& get_value(const const_itr_t& itr)
- *     {
- *         return itr->second;
- *     }
- * 
  * };
  * } // end namespace rttr
  * \endcode
@@ -189,71 +147,34 @@ namespace rttr
  * When this is not possible, include your specialization code before registering your types to RTTR.
  */
 template<typename T>
-struct sequential_container_mapper
+struct polymoph_container_mapper
 {
 #ifndef DOXYGEN
     using is_valid      = std::false_type;
     using container_t   = T;
+    using wrapped_type  = detail::invalid_type;
     using value_t       = detail::invalid_type;
 #else
     using container_t = T;                          //!< An alias declaration to the container type itself.
-    using value_t     = typename T::value_type;     //!< An alias to the value type.
-    using itr_t       = typename T::iterator;       //!< An alias delcaration to the iterator.
-    using const_itr_t = typename T::const_iterator; //!< An alias delcaration to the const iterator.
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    static bool is_dynamic()
-    {
-        return true;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    static value_t& get_data(const itr_t& itr)
-    {
-        return *itr;
-    }
-
-    static const value_t& get_data(const const_itr_t& itr)
-    {
-        return *itr;
-    }
+    using wrapped_type  = typename T::wrapped_type; //!< An alias to the value type.
+    using value_t     = typename T::value_type;    //!< An alias to the value type.
 
     /////////////////////////////////////////////////////////////////////////////////////
 
     /*!
-     * \brief Returns an iterator to the first element of the container.
+     * \brief Returns the current iterator's value as reference.
      */
-    static itr_t begin(container_t& container)
+    static value_t& get_value(itr_t& itr)
     {
-        return container.begin();
+        return itr->second;
     }
 
     /*!
-     * \brief Returns an iterator to the first element of the container.
+     * \brief Returns the current iterator's value as const reference.
      */
-    static const_itr_t begin(const container_t& container)
+    static const value_t& get_value(const const_itr_t& itr)
     {
-        return container.begin();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    /*!
-     * \brief Returns an iterator to the element following the last element of the container.
-     */
-    static itr_t end(container_t& container)
-    {
-        return container.end();
-    }
-
-    /*!
-     * \brief Returns an iterator to the element following the last element of the container.
-     */
-    static const_itr_t end(const container_t& container)
-    {
-        return container.end();
+        return itr->second;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -274,67 +195,35 @@ struct sequential_container_mapper
         return container.empty();
     }
 
-    /*!
-     * \brief Returns the number of elements in the container.
-     */
-    static std::size_t get_size(const container_t& container)
+    static void set(container_t& container, std::string type_name, value_t* val)
     {
-        return container.size();
+        return container.set(type_name, val);
     }
 
-    static bool set_size(container_t& container, std::size_t size)
+    static bool set(const container_t& container, std::string type_name, value_t* val)
     {
-        container.resize(size);
-        return true;
+        return false;
     }
 
-    /*!
-     * \brief Removes the element (if one exists) with the key equivalent to key.
-     */
-    static std::size_t erase(container_t& container, const key_t& key)
+    static void set(container_t& container, std::string type_name, value_t&& val)
     {
-        return container.erase(key);
+        return container.set(type_name, val);
     }
 
-    static itr_t erase(container_t& container, const const_itr_t& itr)
+    static bool set(const container_t& container, std::string type_name, value_t&& val)
     {
-        return container.erase(itr);
+        return false;
     }
 
-    static itr_t insert(container_t& container, const value_t& value, const itr_t& itr_pos)
+    static std::string get_type_name(const container_t& container)
     {
-        return container.insert(itr_pos, value);
+        return container.get_type_name();
     }
-
-    static itr_t insert(container_t& container, const value_t& value, const const_itr_t& itr_pos)
-    {
-        return container.insert(itr_pos, value);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    /*!
-     * \brief Returns the current iterator's value as reference.
-     */
-    static value_t& get_value(itr_t& itr)
-    {
-        return itr->second;
-    }
-
-    /*!
-     * \brief Returns the current iterator's value as const reference.
-     */
-    static const value_t& get_value(const const_itr_t& itr)
-    {
-        return itr->second;
-    }
-
-
 #endif
 };
 
 } // end namespace rttr
 
-#include "rttr/detail/impl/sequential_mapper_impl.h"
+#include "rttr/detail/impl/polymoph_mapper_impl.h"
 
-#endif // RTTR_SEQUENTIAL_MAPPER_H_
+#endif // RTTR_POLYMOPH_MAPPER_H_

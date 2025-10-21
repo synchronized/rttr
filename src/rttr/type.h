@@ -473,6 +473,8 @@ class RTTR_API type
          */
         RTTR_INLINE bool is_sequential_container() const RTTR_NOEXCEPT;
 
+        RTTR_INLINE bool is_polymoph_container() const RTTR_NOEXCEPT;
+
         /*!
          * \brief Returns true whether the given type represents a pointer.
          *        e.g. `int*`, or `bool*`

@@ -537,7 +537,7 @@ function(get_latest_supported_cxx CXX_STANDARD)
     
     # we need to set CMAKE_CXX_STANDARD in order to use the flags for 'check_cxx_source_compiles'
     if(${CMAKE_VERSION} VERSION_LESS "3.8.0") 
-        set(CMAKE_CXX_STANDARD 14)
+        set(CMAKE_CXX_STANDARD 17)
     else()
         set(CMAKE_CXX_STANDARD 17)
     endif()    

@@ -98,6 +98,7 @@ enum class type_trait_infos : std::size_t
     is_member_function_pointer,
     is_associative_container,
     is_sequential_container,
+    is_polymoph_container,
     is_template_instantiation,
 
     TYPE_TRAIT_COUNT
@@ -327,6 +328,7 @@ RTTR_LOCAL std::unique_ptr<type_data> make_type_data()
                                               TYPE_TRAIT_TO_BITSET_VALUE(is_member_function_pointer) |
                                               TYPE_TRAIT_TO_BITSET_VALUE_2(::rttr::detail::is_associative_container, is_associative_container) |
                                               TYPE_TRAIT_TO_BITSET_VALUE_2(::rttr::detail::is_sequential_container, is_sequential_container) |
+                                              TYPE_TRAIT_TO_BITSET_VALUE_2(::rttr::detail::is_polymoph_container, is_polymoph_container) |
                                               TYPE_TRAIT_TO_BITSET_VALUE_2(::rttr::detail::template_type_trait, is_template_instantiation)
                                             },
                             class_data(get_most_derived_info_func<T>(), template_type_trait<T>::get_template_arguments())

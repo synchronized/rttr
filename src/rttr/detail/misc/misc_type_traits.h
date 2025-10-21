@@ -46,6 +46,8 @@ template<typename T>
 struct associative_container_mapper;
 template<typename T>
 struct sequential_container_mapper;
+template<typename T>
+struct polymoph_container_mapper;
 
 namespace detail
 {
@@ -466,6 +468,9 @@ namespace detail
 
     template<typename T, typename Tp = remove_cv_t<remove_reference_t<T>>>
     using is_sequential_container = std::integral_constant<bool, !has_is_valid_alias<sequential_container_mapper<Tp>>::value>;
+
+    template<typename T, typename Tp = remove_cv_t<remove_reference_t<T>>>
+    using is_polymoph_container = std::integral_constant<bool, !has_is_valid_alias<polymoph_container_mapper<Tp>>::value>;
 
     /////////////////////////////////////////////////////////////////////////////////////
 

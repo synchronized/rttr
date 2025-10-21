@@ -54,8 +54,11 @@ set(HEADER_FILES access_levels.h
                  variant.h
                  variant_associative_view.h
                  variant_sequential_view.h
+                 variant_polymoph_view.h
                  visitor.h
                  wrapper_mapper.h
+                 polymoph_ptr.h
+                 polymoph_mapper.h
                  detail/base/core_prerequisites.h
                  detail/base/version.h.in
                  detail/base/version.rc.in
@@ -92,6 +95,8 @@ set(HEADER_FILES access_levels.h
                  detail/impl/sequential_mapper_impl.h
                  detail/impl/string_view_impl.h
                  detail/impl/wrapper_mapper_impl.h
+                 detail/impl/polymoph_mapper_impl.h
+                 detail/impl/polymoph_ptr_impl.h
                  detail/library/library_p.h
                  detail/metadata/metadata.h
                  detail/metadata/metadata_handler.h
@@ -159,6 +164,9 @@ set(HEADER_FILES access_levels.h
                  detail/variant_sequential_view/variant_sequential_view_private.h
                  detail/variant_sequential_view/variant_sequential_view_creator_impl.h
                  detail/variant_sequential_view/variant_sequential_view_creator.h
+                 detail/variant_polymoph_view/variant_polymoph_view_private.h
+                 detail/variant_polymoph_view/variant_polymoph_view_creator_impl.h
+                 detail/variant_polymoph_view/variant_polymoph_view_creator.h
                  detail/visitor/visitor_iterator.h
                  detail/visitor/create_type_visitor_func.h
                  detail/visitor/create_type_visitor_func_impl.h
@@ -183,6 +191,7 @@ set(SOURCE_FILES constructor.cpp
                  variant.cpp
                  variant_associative_view.cpp
                  variant_sequential_view.cpp
+                 variant_polymoph_view.cpp
                  visitor.cpp
                  detail/comparison/compare_equal.cpp
                  detail/comparison/compare_less.cpp

@@ -225,6 +225,13 @@ RTTR_INLINE bool type::is_sequential_container() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+RTTR_INLINE bool type::is_polymoph_container() const RTTR_NOEXCEPT
+{
+    return m_type_data->type_trait_value(detail::type_trait_infos::is_polymoph_container);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 RTTR_INLINE bool type::is_pointer() const RTTR_NOEXCEPT
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_pointer);

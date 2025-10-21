@@ -99,6 +99,7 @@ set(SOURCE_FILES main.cpp
                  variant/variant_conv_to_enum.cpp
                  variant_associative_view/variant_associative_view_test.cpp
                  variant_sequential_view/variant_sequential_view_test.cpp
+                 variant_polymoph_view/variant_polymoph_view_test.cpp
                  visitor/visitor_test.cpp
                  visitor/visitor_test_class.cpp
                  )
