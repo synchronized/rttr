@@ -35,6 +35,9 @@ cmake_minimum_required (VERSION 3.16)
 
 project ("rttr" LANGUAGES CXX)
 
+add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 
 if (CMAKE_BUILD_TYPE STREQUAL "")
