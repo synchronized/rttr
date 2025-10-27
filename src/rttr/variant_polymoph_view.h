@@ -179,13 +179,15 @@ class RTTR_API variant_polymoph_view
          */
         void clear();
 
+        bool create(std::string type_name, std::vector<argument> args = {});
+
         /*!
          * \brief Set the content of the the argument \p arg
          *        into the underlying polymoph container.
          *
          * \return `true` if the value could be set, otherwise `false`.
          */
-        bool set(std::string type_name, argument arg);
+        bool set_value(variant arg);
 
         /*!
          * \brief Returns the current value.
@@ -194,7 +196,9 @@ class RTTR_API variant_polymoph_view
          */
         variant get_value() const;
 
-        std::string get_type_name();
+        variant get() const;
+
+        std::string get_type_name() const;
 
     private:
         friend class variant;

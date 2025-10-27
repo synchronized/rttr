@@ -178,7 +178,7 @@ TEST_CASE("basic assign", "[polymoph]")
         CHECK(s4.get<poly_sub>() != nullptr);
         CHECK(s4.get<poly_sub>()->sub_val == 1008);
 
-        auto s10 = rttr::polymoph_ptr<poly_base>::create("poly_sub", {201, 202});
+        auto s10 = rttr::polymoph_ptr<poly_base>::make("poly_sub", {201, 202});
         CHECK(s10.is_valid());
         CHECK(s10.get_type_name() == "poly_sub");
         if (s10) {
@@ -240,7 +240,10 @@ TEST_CASE("basic assign", "[polymoph]")
             CHECK(s24.get<poly_sub>() != nullptr);
             CHECK(s24.get<poly_sub>()->sub_val == 1016);
         }
+    }
 
+    SECTION("polymoph_ptr set/get")
+    {
         //---------------------------------------------
 
         auto sub3 = poly_sub{3009, 3010};
@@ -287,38 +290,75 @@ TEST_CASE("basic assign", "[polymoph]")
             CHECK(s34.get<poly_sub>() != nullptr);
             CHECK(s34.get<poly_sub>()->sub_val == 3016);
         }
-    }
 
-    SECTION("polymoph_ptr check")
-    {
-        auto a = rttr::polymoph_ptr<poly_base>(poly_sub{11, 12});
 
-        CHECK(a.get_type_name() == "poly_sub");
+        //---------------------------------------------
 
-        auto rapped_val = a.get();
-        CHECK(rapped_val != nullptr);
-        CHECK(rapped_val->ctor_type == 103);
-        CHECK(rapped_val->val == 11);
+        auto sub4 = poly_sub{3009, 3010};
+        rttr::polymoph_ptr<poly_base> s41;
+        s41.set(sub4);
+        CHECK(s41.is_valid());
+        CHECK(s41.get_type_name() == "poly_sub");
+        if (s41) {
+            CHECK(s41.get()->ctor_type == 102);
+            CHECK(s41.get()->val == 3009);
+            CHECK(s41.get<poly_sub>() != nullptr);
+            CHECK(s41.get<poly_sub>()->sub_val == 3010);
+        }
 
-        auto sub_val = a.get<poly_sub>();
-        CHECK(sub_val != nullptr);
-        CHECK(sub_val->ctor_type == 103);
-        CHECK(sub_val->val == 11);
-        CHECK(sub_val->sub_val == 12);
+        rttr::polymoph_ptr<poly_base> s42;
+        s42.set(new poly_sub{3011, 3012});
+        CHECK(s42.is_valid());
+        CHECK(s42.get_type_name() == "poly_sub");
+        if (s42) {
+            CHECK(s42.get()->ctor_type == 105);
+            CHECK(s42.get()->val == 3011);
+            CHECK(s42.get<poly_sub>() != nullptr);
+            CHECK(s42.get<poly_sub>()->sub_val == 3012);
+        }
 
-        auto val = a.get_variant();
-        rttr::type val_type = val.get_type();
-        CHECK(val.is_valid());
-        CHECK(val_type.is_valid());
-        std::string val_type_name = val_type.get_name().to_string();
-        CHECK(val_type_name == "poly_sub*");
-        CHECK(val_type == rttr::type::get<poly_sub*>());
+        rttr::polymoph_ptr<poly_base> s43;
+        s43.set(poly_sub{3013, 3014});
+        CHECK(s43.is_valid());
+        CHECK(s43.get_type_name() == "poly_sub");
+        if (s43) {
+            CHECK(s43.get()->ctor_type == 103);
+            CHECK(s43.get()->val == 3013);
+            CHECK(s43.get<poly_sub>() != nullptr);
+            CHECK(s43.get<poly_sub>()->sub_val == 3014);
+        }
 
-        poly_sub* sub_val2 = val.get_value<poly_sub*>();
-        CHECK(sub_val2 != nullptr);
-        CHECK(sub_val2->ctor_type == 103);
-        CHECK(sub_val2->val == 11);
-        CHECK(sub_val2->sub_val == 12);
+        rttr::polymoph_ptr<poly_base> s44;
+        s44.set(std::make_shared<poly_sub>(3015, 3016));
+        CHECK(s44.is_valid());
+        CHECK(s44.get_type_name() == "poly_sub");
+        if (s44) {
+            CHECK(s44.get()->ctor_type == 105);
+            CHECK(s44.get()->val == 3015);
+            CHECK(s44.get<poly_sub>() != nullptr);
+            CHECK(s44.get<poly_sub>()->sub_val == 3016);
+        }
+
+        //---------------------------------------------
+        auto s51 = rttr::polymoph_ptr<poly_base>(poly_sub(3015, 3016));
+        variant v51 = s51.get_variant();
+        CHECK(s51.is_valid());
+        CHECK(s51.get_type_name() == "poly_sub");
+        type t51 = v51.get_type();
+        CHECK(t51 == rttr::type::get<poly_sub*>());
+
+        //---------------------------------------------
+        auto s52 = rttr::polymoph_ptr<poly_base>();
+        variant v52 = type::get<poly_sub>().create({3015, 3016});
+        s52.set_variant(v52);
+        CHECK(s52.is_valid());
+        CHECK(s52.get_type_name() == "poly_sub");
+        if (s52) {
+            CHECK(s52.get()->ctor_type == 105);
+            CHECK(s52.get()->val == 3015);
+            CHECK(s52.get<poly_sub>() != nullptr);
+            CHECK(s52.get<poly_sub>()->sub_val == 3016);
+        }
     }
 
     SECTION("variant_polymoph_view check")
@@ -346,8 +386,14 @@ TEST_CASE("basic assign", "[polymoph]")
         variant val = view.get_value();
         rttr::type val_type = val.get_type();
         std::string val_type_name = val_type.get_name().to_string();
-        CHECK(val.get_type() == type::get<poly_base*>());
-        CHECK(val_type_name == "poly_base*");
+        CHECK(val.get_type() == type::get<poly_sub*>());
+        CHECK(val_type_name == "poly_sub*");
+
+        variant val_get = view.get();
+        rttr::type val_get_type = val_get.get_type();
+        std::string val_get_type_name = val_get_type.get_name().to_string();
+        CHECK(val_get.get_type() == type::get<poly_base*>());
+        CHECK(val_get_type_name == "poly_base*");
 
         poly_sub* sub_val2 = val.get_value<poly_sub*>();
         CHECK(sub_val2 != nullptr);

@@ -122,9 +122,15 @@ void variant_polymoph_view::clear()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_polymoph_view::set(std::string type_name, argument arg)
+bool variant_polymoph_view::create(std::string type_name, std::vector<argument> args) {
+    return m_view.create(type_name, args);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+bool variant_polymoph_view::set_value(variant arg)
 {
-    return m_view.set(type_name, arg);
+    return m_view.set_value(arg);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -134,9 +140,14 @@ variant variant_polymoph_view::get_value() const
     return m_view.get_value();
 }
 
+variant variant_polymoph_view::get() const
+{
+    return m_view.get();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string variant_polymoph_view::get_type_name() {
+std::string variant_polymoph_view::get_type_name() const {
     return m_view.get_type_name();
 }
 

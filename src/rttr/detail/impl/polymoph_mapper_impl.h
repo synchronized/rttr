@@ -81,59 +81,77 @@ struct polymoph_container_mapper_wrapper
         // cannot clear a const container...
     }
 
+    static bool create(void* container, std::string type_name, std::vector<argument> args)
+    {
+        return base_class::create(get_container(container), type_name, args);
+    }
+
     /////////////////////////////////////////////////////////////////////////
     template<typename..., 
              typename C = ConstType, 
-             typename ReturnType = decltype(base_class::get_value(std::declval<C&>())),
-             enable_if_t<!std::is_const<C>::value &&
-                         !std::is_const<remove_reference_t<ReturnType>>::value, int> = 0>
-    static bool set(void* container, std::string type_name, argument& value)
+             enable_if_t<!std::is_const<C>::value, int> = 0>
+    static bool set_value(void* container, variant value)
     {
-        if (value.get_type() == ::rttr::type::get<value_t>())
-        {
-            value_t val = value.get_value<value_t>();
-            return base_class::set(get_container(container), type_name, std::move(val));
-        }
-        else if (value.get_type() == ::rttr::type::get<value_t*>()) 
-        {
-            return base_class::set(get_container(container), type_name, value.get_value<value_t*>());
-        }
-        else
-        {
-            return false;
-        }
+        return base_class::set_value(get_container(container), value);
     }
 
     template<typename..., 
              typename C = ConstType, 
-             typename ReturnType = decltype(base_class::get_value(std::declval<C&>())),
-             enable_if_t<std::is_const<C>::value ||
-                         std::is_const<remove_reference_t<ReturnType>>::value, int> = 0>
-    static bool set(void* container, std::string type_name, argument& value)
+             enable_if_t<std::is_const<C>::value, int> = 0>
+    static bool set_value(void* container, std::string type_name, argument& value)
     {
         return false;
     }
 
     /////////////////////////////////////////////////////////////////////////
 
-    template<typename..., 
-             typename C = ConstType, 
-             typename ReturnType = decltype(base_class::get_value(std::declval<C&>())),
-             enable_if_t<std::is_reference<ReturnType>::value, int> = 0,
-             enable_if_t<!std::is_pointer<ReturnType>::value, int> = 0>
     static variant get_value(void* container)
     {
-        return variant(std::ref(base_class::get_value(get_container(container))));
+        return base_class::get_value(get_container(container));
     }
 
     template<typename..., 
              typename C = ConstType, 
-             typename ReturnType = decltype(base_class::get_value(std::declval<C&>())),
+             typename ReturnType = decltype(base_class::get(std::declval<C&>())),
+             enable_if_t<!std::is_const<C>::value, int> = 0,
+             enable_if_t<std::is_reference<ReturnType>::value, int> = 0,
+             enable_if_t<!std::is_pointer<ReturnType>::value, int> = 0>
+    static variant get(void* container)
+    {
+        return variant(std::ref(base_class::get(get_container(container))));
+    }
+
+    template<typename..., 
+             typename C = ConstType, 
+             typename ReturnType = decltype(base_class::get(std::declval<C&>())),
+             enable_if_t<!std::is_const<C>::value, int> = 0,
              enable_if_t<!std::is_reference<ReturnType>::value, int> = 0,
              enable_if_t<std::is_pointer<ReturnType>::value, int> = 0>
-    static variant get_value(void* container)
+    static variant get(void* container)
     {
-        return variant(static_cast<value_t*>(base_class::get_value(get_container(container))));
+        return variant(base_class::get(get_container(container)));
+    }
+
+    template<typename..., 
+             typename C = ConstType, 
+             typename ReturnType = decltype(base_class::get(std::declval<C&>())),
+             enable_if_t<std::is_const<C>::value, int> = 0,
+             enable_if_t<std::is_reference<ReturnType>::value, int> = 0,
+             enable_if_t<!std::is_pointer<ReturnType>::value, int> = 0>
+    static variant get(void* container)
+    {
+        return variant(std::cref(base_class::get(get_container(container))));
+    }
+
+    template<typename..., 
+             typename C = ConstType, 
+             typename ReturnType = decltype(base_class::get(std::declval<C&>())),
+             enable_if_t<std::is_const<C>::value, int> = 0,
+             enable_if_t<!std::is_reference<ReturnType>::value, int> = 0,
+             enable_if_t<std::is_pointer<ReturnType>::value, int> = 0>
+    static variant get(void* container)
+    {
+        return variant(base_class::get(get_container(container)));
     }
 
     static std::string get_type_name(void* container)
@@ -164,34 +182,42 @@ struct polymoph_container_dynamic
         return container.empty();
     }
 
-    static bool set(container_t& container, std::string type_name, value_t* val)
+    static bool create(container_t& container, std::string type_name, std::vector<argument> args)
     {
-        container.set(type_name, val);
-        return true;
+        return container.create(type_name, args);
     }
 
-    static bool set(const container_t& container, std::string type_name, value_t* val)
-    {
-        return false;
-    }
-
-    static bool set(container_t& container, std::string type_name, value_t&& val)
-    {
-        container.set(type_name, std::forward<value_t>(val));
-        return true;
-    }
-
-    static bool set(const container_t& container, std::string type_name, value_t&& val)
+    static bool create(const container_t& container, std::string type_name, std::vector<argument> args)
     {
         return false;
     }
 
-    static wrapped_type get_value(container_t& container)
+    static bool set_value(container_t& container, variant val)
+    {
+        return container.set_variant(val);
+    }
+
+    static bool set_value(const container_t& container, variant val)
+    {
+        return false;
+    }
+
+    static variant get_value(container_t& container)
+    {
+        return container.get_variant();
+    }
+
+    static variant get_value(const container_t& container)
+    {
+        return container.get_variant();
+    }
+
+    static wrapped_type get(container_t& container)
     {
         return container.get();
     }
 
-    static const wrapped_type get_value(const container_t& container)
+    static const wrapped_type get(const container_t& container)
     {
         return container.get();
     }
@@ -227,12 +253,22 @@ struct polymoph_container_empty
     {
     }
 
-    static bool set(void* container, std::string type_name, argument& value)
+    static bool create(void* container, std::string type_name, std::vector<argument> value)
+    {
+        return false;
+    }
+
+    static bool set_value(void* container, variant value)
     {
         return false;
     }
 
     static variant get_value(void* container)
+    {
+        return variant();
+    }
+
+    static variant get(void* container)
     {
         return variant();
     }

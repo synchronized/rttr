@@ -102,32 +102,27 @@ namespace rttr
  *         return container.empty();
  *     }
  * 
- *     static void set(container_t& container, std::string type_name, value_t* val)
+ *     static bool create(container_t& container, std::string type_name, std::vector<argument> args)
  *     {
- *         return container.set(type_name, val);
+ *         return container.create(type_name, args);
  *     }
  * 
- *     static bool set(const container_t& container, std::string type_name, value_t* val)
+ *     static void set_value(container_t& container, variant val)
  *     {
- *         return false;
+ *         return container.set_variant(type_name, val);
  *     }
  * 
- *     static void set(container_t& container, std::string type_name, value_t&& val)
+ *     static variant get_value(container_t& container)
  *     {
- *         return container.set(type_name, val);
+ *         return container.get_variant();
  *     }
  * 
- *     static bool set(const container_t& container, std::string type_name, value_t&& val)
- *     {
- *         return false;
- *     }
- * 
- *     static wrapped_type get_value(container_t& container)
+ *     static wrapped_type get(container_t& container)
  *     {
  *         return container.get();
  *     }
  * 
- *     static const wrapped_type get_value(const container_t& container)
+ *     static const wrapped_type get(const container_t& container)
  *     {
  *         return container.get();
  *     }
@@ -162,24 +157,6 @@ struct polymoph_container_mapper
     /////////////////////////////////////////////////////////////////////////////////////
 
     /*!
-     * \brief Returns the current iterator's value as reference.
-     */
-    static value_t& get_value(itr_t& itr)
-    {
-        return itr->second;
-    }
-
-    /*!
-     * \brief Returns the current iterator's value as const reference.
-     */
-    static const value_t& get_value(const const_itr_t& itr)
-    {
-        return itr->second;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    /*!
      * \brief Removes all elements from the container.
      */
     static void clear(container_t& container)
@@ -195,24 +172,31 @@ struct polymoph_container_mapper
         return container.empty();
     }
 
-    static void set(container_t& container, std::string type_name, value_t* val)
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    static bool create(container_t& container, std::string type_name, std::vector<argument> args)
     {
-        return container.set(type_name, val);
+        return container.create(type_name, args);
     }
 
-    static bool set(const container_t& container, std::string type_name, value_t* val)
+    static void set_value(container_t& container, variant val)
     {
-        return false;
+        return container.set_variant(type_name, val);
     }
 
-    static void set(container_t& container, std::string type_name, value_t&& val)
+    static variant get_value(container_t& container)
     {
-        return container.set(type_name, val);
+        return container.get_variant();
     }
 
-    static bool set(const container_t& container, std::string type_name, value_t&& val)
+    static wrapped_type get(container_t& container)
     {
-        return false;
+        return container.get();
+    }
+
+    static const wrapped_type get(const container_t& container)
+    {
+        return container.get();
     }
 
     static std::string get_type_name(const container_t& container)

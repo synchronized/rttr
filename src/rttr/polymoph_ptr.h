@@ -115,44 +115,28 @@ public:
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
     polymoph_ptr<value_type>& operator=(U& value) {
-        clear();
-        m_type_name = type::get<U>().get_name().to_string(); 
-        if (m_type_name.size() > 0) {
-            m_value = std::reinterpret_pointer_cast<value_type>(std::make_shared<U>(value));
-        }
+        set<U>(value);
         return *this;
     }
 
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
     polymoph_ptr<value_type>& operator=(U* value) {
-        clear();
-        m_type_name = type::get<U>().get_name().to_string(); 
-        if (m_type_name.size() > 0) {
-            m_value.reset(reinterpret_cast<value_type*>(value)); 
-        }
+        set<U>(value);
         return *this;
     }
 
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
     polymoph_ptr<value_type>& operator=(U&& value) {
-        clear();
-        m_type_name = type::get<U>().get_name().to_string(); 
-        if (m_type_name.size() > 0) {
-            m_value = std::reinterpret_pointer_cast<value_type>(std::make_shared<U>(std::forward<U>(value)));
-        }
+        set<U>(std::forward<U>(value));
         return *this;
     }
 
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
     polymoph_ptr<value_type>& operator=(std::shared_ptr<U> value) {
-        clear();
-        m_type_name = type::get<U>().get_name().to_string(); 
-        if (m_type_name.size() > 0) {
-            m_value = std::reinterpret_pointer_cast<value_type>(value);
-        }
+        set<U>(value);
         return *this;
     }
 
@@ -186,8 +170,56 @@ public:
     template<typename T1>
     operator const polymoph_ptr<T1>() const { return polymoph_ptr<T1>(*this); }
 
-    bool is_valid() const { return m_value ? true : false ; }
+    bool is_valid() const { return m_type_name.size() > 0 && m_value ? true : false ; }
     operator bool() const { return is_valid(); }
+
+    template<typename U, 
+             detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
+    bool set(U& value) {
+        clear();
+        m_type_name = type::get<U>().get_name().to_string(); 
+        if (m_type_name.size() > 0) {
+            m_value = std::reinterpret_pointer_cast<value_type>(std::make_shared<U>(value));
+            return true;
+        }
+        return false;
+    }
+
+    template<typename U, 
+             detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
+    bool set(U* value) {
+        clear();
+        m_type_name = type::get<U>().get_name().to_string(); 
+        if (m_type_name.size() > 0) {
+            m_value.reset(reinterpret_cast<value_type*>(value)); 
+            return true;
+        }
+        return false;
+    }
+
+    template<typename U, 
+             detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
+    bool set(U&& value) {
+        clear();
+        m_type_name = type::get<U>().get_name().to_string(); 
+        if (m_type_name.size() > 0) {
+            m_value = std::reinterpret_pointer_cast<value_type>(std::make_shared<U>(std::forward<U>(value)));
+            return true;
+        }
+        return false;
+    }
+
+    template<typename U, 
+             detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
+    bool set(std::shared_ptr<U> value) {
+        clear();
+        m_type_name = type::get<U>().get_name().to_string(); 
+        if (m_type_name.size() > 0) {
+            m_value = std::reinterpret_pointer_cast<value_type>(value);
+            return true;
+        }
+        return false;
+    }
 
     value_type* get() { return m_value.get(); }
     const value_type* get() const { return m_value.get(); }
@@ -198,30 +230,10 @@ public:
     value_type& operator*() { return *get(); }
     const value_type& operator*() const { return *get(); }
 
-    std::shared_ptr<value_type> shared_ptr() { return m_value; }
-    const std::shared_ptr<value_type> shared_ptr() const { return m_value; }
+    std::shared_ptr<value_type> get_shared_ptr() { return m_value; }
+    const std::shared_ptr<value_type> get_shared_ptr() const { return m_value; }
 
-    void set(std::string type_name, value_type& val) { 
-        clear();
-
-        m_type_name = type_name;
-        m_value = std::make_shared<value_type>(val); 
-    }
-
-    void set(std::string type_name, value_type* val) { 
-        clear();
-
-        m_type_name = type_name;
-        m_value.reset(val); 
-    }
-
-    void set(std::string type_name, value_type&& val) { 
-        clear();
-
-        m_type_name = type_name;
-        m_value = std::make_shared<value_type>(std::forward<value_type>(val)); 
-    }
-
+    bool set_variant(variant var);
     variant get_variant() const;
 
     void clear() { 
@@ -230,7 +242,9 @@ public:
     }
     bool empty() const { return is_valid(); }
 
-    static polymoph_ptr<T> create(std::string type_name, std::vector<argument> args = std::vector<argument>());
+    bool create(std::string type_name, std::vector<argument> args = std::vector<argument>());
+
+    static polymoph_ptr<T> make(std::string type_name, std::vector<argument> args = std::vector<argument>());
 
 private:
     std::string                 m_type_name {""};

@@ -9,26 +9,19 @@ namespace rttr
 {
 
 template<typename T>
-polymoph_ptr<T> polymoph_ptr<T>::create(std::string type_name, std::vector<argument> args) {
+bool polymoph_ptr<T>::set_variant(variant var) { 
+    if (!var) return false;
 
-    auto real_type = rttr::type::get_by_name(type_name);
-    if (!real_type.is_valid() || !real_type.is_derived_from(rttr::type::get<T>())) {
-        return {};
-    }
+    type var_type = var.get_type();
+    if (!var_type) return false;
 
-    variant var = real_type.create(args);
-    if (!var) {
-        return {};
-    }
-    rttr::type val_type = var.get_type();
     if (var.convert(type::get<std::shared_ptr<value_type>>())) {
-        auto var_ptr = var.get_value<std::shared_ptr<value_type>>();
-        return polymoph_ptr<T>{type_name, var_ptr};
+        clear();
+        m_type_name = var_type.get_wrapped_type().get_raw_type().get_name().to_string();
+        m_value = var.get_value<std::shared_ptr<value_type>>();
+        return true;
     }
-    if (var.convert(type::get<value_type*>())) {
-        return polymoph_ptr<T>{type_name, var.get_value<value_type*>()};
-    }
-    return {};
+    return false;
 }
 
 template<typename T>
@@ -40,6 +33,31 @@ variant polymoph_ptr<T>::get_variant() const {
     variant var = m_value.get();
     if (var.convert(real_type)) {
         return var;
+    }
+    return {};
+}
+
+template<typename T>
+bool polymoph_ptr<T>::create(std::string type_name, std::vector<argument> args) {
+
+    auto real_type = rttr::type::get_by_name(type_name);
+    if (!real_type.is_valid() || !real_type.is_derived_from(rttr::type::get<T>())) {
+        return false;
+    }
+
+    variant var = real_type.create(args);
+    if (!var) {
+        return false;
+    }
+    return set_variant(var);
+}
+
+template<typename T>
+polymoph_ptr<T> polymoph_ptr<T>::make(std::string type_name, std::vector<argument> args) {
+
+    polymoph_ptr<T> result;
+    if (result.create(type_name, args)) {
+        return result;
     }
     return {};
 }

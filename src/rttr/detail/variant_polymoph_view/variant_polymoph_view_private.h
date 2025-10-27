@@ -51,8 +51,10 @@ class RTTR_LOCAL variant_polymoph_view_private
             m_container(nullptr),
             m_get_is_empty_func(polymoph_container_empty::is_empty),
             m_clear_func(polymoph_container_empty::clear),
-            m_set_func(polymoph_container_empty::set),
+            m_create_func(polymoph_container_empty::create),
+            m_set_value_func(polymoph_container_empty::set_value),
             m_get_value_func(polymoph_container_empty::get_value),
+            m_get_func(polymoph_container_empty::get),
             m_get_type_name_func(polymoph_container_empty::get_type_name)
         {
         }
@@ -65,8 +67,10 @@ class RTTR_LOCAL variant_polymoph_view_private
             m_container(as_void_ptr(container)),
             m_get_is_empty_func(polymoph_container_mapper_wrapper<RawType, ConstType>::is_empty),
             m_clear_func(polymoph_container_mapper_wrapper<RawType, ConstType>::clear),
-            m_set_func(polymoph_container_mapper_wrapper<RawType, ConstType>::set),
+            m_create_func(polymoph_container_mapper_wrapper<RawType, ConstType>::create),
+            m_set_value_func(polymoph_container_mapper_wrapper<RawType, ConstType>::set_value),
             m_get_value_func(polymoph_container_mapper_wrapper<RawType, ConstType>::get_value),
+            m_get_func(polymoph_container_mapper_wrapper<RawType, ConstType>::get),
             m_get_type_name_func(polymoph_container_mapper_wrapper<RawType, ConstType>::get_type_name)
         {
         }
@@ -103,14 +107,24 @@ class RTTR_LOCAL variant_polymoph_view_private
             m_clear_func(m_container);
         }
 
-        RTTR_INLINE bool set(std::string type_name, argument& arg)
+        RTTR_INLINE bool create(std::string type_name, std::vector<argument> args)
         {
-            return m_set_func(m_container, type_name, arg);
+            return m_create_func(m_container, type_name, args);
+        }
+
+        RTTR_INLINE bool set_value(variant arg)
+        {
+            return m_set_value_func(m_container, arg);
         }
 
         RTTR_INLINE variant get_value() const
         {
             return m_get_value_func(m_container);
+        }
+
+        RTTR_INLINE variant get() const
+        {
+            return m_get_func(m_container);
         }
 
         RTTR_INLINE std::string get_type_name() const
@@ -122,9 +136,11 @@ class RTTR_LOCAL variant_polymoph_view_private
 
         using get_is_empty_func = bool(*)(void* container);
         using clear_func        = void(*)(void* container);
-        using set_func    = bool(*)(void* container, std::string type_name, argument& arg);
+        using create_func       = bool(*)(void* container, std::string type_name, std::vector<argument> args);
+        using set_value_func    = bool(*)(void* container, variant arg);
         using get_value_func    = variant(*)(void* container);
-        using get_type_name_func    = std::string(*)(void* container);
+        using get_func          = variant(*)(void* container);
+        using get_type_name_func = std::string(*)(void* container);
 
         type                    m_type;
         type                    m_value_type;
@@ -132,8 +148,10 @@ class RTTR_LOCAL variant_polymoph_view_private
         void*                   m_container;
         get_is_empty_func       m_get_is_empty_func;
         clear_func              m_clear_func;
-        set_func                m_set_func;
+        create_func             m_create_func;
+        set_value_func          m_set_value_func;
         get_value_func          m_get_value_func;
+        get_func                m_get_func;
         get_type_name_func      m_get_type_name_func;
 };
 
