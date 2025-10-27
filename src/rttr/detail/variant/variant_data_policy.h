@@ -199,27 +199,48 @@ enable_if_t<!is_copyable<Tp>::value ||
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-enable_if_t<!std::is_pointer_v<T>, variant> remove_point_value(const T& value)
+using is_void_ptr = std::bool_constant<
+        std::is_pointer<T>::value &&
+        std::is_void<remove_pointer_t<remove_cv_ref_t<T>>>::value
+>;
+
+template<typename T>
+using is_copyable_ptr = std::bool_constant<
+        std::is_pointer<T>::value &&
+        !is_void_ptr<T>::value &&
+        is_copyable<remove_pointer_t<remove_cv_ref_t<T>>>::value
+>;
+
+template<typename T>
+using is_array_ptr = std::bool_constant<
+        std::is_pointer<T>::value &&
+        std::is_array<remove_pointer_t<remove_cv_ref_t<T>>>::value
+>;
+
+template<typename T>
+enable_if_t<
+        ( !std::is_pointer<T>::value || is_void_ptr<T>::value)
+    , variant> remove_point_value(const T& value)
 {
     return variant();
 }
 
 template<typename T>
-enable_if_t<std::is_pointer_v<T> && 
-            (std::is_void_v<detail::remove_cv_ref_t<T>> || 
-             std::is_void_v<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>> || 
-             !detail::is_copyable<detail::remove_cv_ref_t<T>>::value || 
-             !detail::is_copyable<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>>::value), variant> remove_point_value(const T& value)
+enable_if_t<
+        ( std::is_pointer<T>::value && !is_void_ptr<T>::value) && 
+        ( !is_copyable_ptr<T>::value && !is_array_ptr<T>::value)
+    , variant> remove_point_value(const T& value)
 {
+    [[maybe_unused]] bool v1 = is_copyable_ptr<T>::value;
+    [[maybe_unused]] bool v2 = is_array_ptr<T>::value;
     return variant();
 }
 
 template<typename T>
-enable_if_t<std::is_pointer_v<T> && 
-            (!std::is_void_v<detail::remove_cv_ref_t<T>> &&
-             !std::is_void_v<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>> &&
-             detail::is_copyable<detail::remove_cv_ref_t<T>>::value &&
-             detail::is_copyable<detail::remove_pointer_t<detail::remove_cv_ref_t<T>>>::value), variant> remove_point_value(const T& value)
+enable_if_t<
+        ( std::is_pointer<T>::value && !is_void_ptr<T>::value) && 
+        ( is_copyable_ptr<T>::value || is_array_ptr<T>::value)
+    , variant> remove_point_value(const T& value)
 {
     using raw_type = detail::remove_pointer_t<T>;
     T v = const_cast<T&>(value);

@@ -712,17 +712,25 @@ TEST_CASE("variant test - convert from wrapped value", "[variant]")
     {
         int obj = 42;
         int* obj_ptr = &obj;
-        variant var = std::ref(obj_ptr);
+        variant var1 = std::ref(obj_ptr);
+        variant var2 = std::ref(obj_ptr);
+        variant var3 = std::ref(obj_ptr);
 
-        // cannot convert from int* to int automatically
-        CHECK(var.can_convert(type::get<int>()) == false);
+        // cannot convert from int* to int automatically(现在允许自动转换了)
+        //CHECK(var1.can_convert(type::get<int>()) == false);
+        CHECK(var1.can_convert(type::get<int>()) == true);
 
         bool ok = false;
-        int val = var.convert<int>(&ok);
-        CHECK(ok == false);
-        CHECK(val == 0);
+        int val = var2.convert<int>(&ok);
+        //CHECK(ok == false);
+        //CHECK(val == 0);
 
-        CHECK(var.convert(type::get<int>()) == false);
+        //CHECK(var.convert(type::get<int>()) == false);
+
+        CHECK(ok == true);
+        CHECK(val == 42);
+
+        CHECK(var3.convert(type::get<int>()) == true);
     }
 }
 

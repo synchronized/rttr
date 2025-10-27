@@ -96,6 +96,14 @@ TEST_CASE("basic operator*()", "[variant]")
 
         simple_type2& d = c.get_value<simple_type2>();
         CHECK(d.val == 10);
+
+        variant e = new simple_type2(13);
+        auto e_type = e.get_type();
+        CHECK(e_type == type::get<simple_type2*>());
+        bool is_convert = e.convert(type::get<simple_type2>());
+        CHECK(is_convert);
+        auto e_type2 = e.get_type();
+        CHECK(e_type2 == type::get<simple_type2>());
     }
 
 

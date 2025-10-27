@@ -335,6 +335,13 @@ RTTR_INLINE bool variant::convert(T& value) const
         if (is_nullptr())
             ok = ptr_to_nullptr(value);
     }
+    else if (source_type.is_pointer() && !target_type.is_pointer() && 
+             source_type.get_pointer_dimension() == 1 &&
+             source_type.get_raw_type() == target_type) 
+    {
+        variant var = extract_pointer_value();
+        return var.convert<T>(value);
+    }
     else
     {
         ok = try_pointer_conversion(value, source_type, target_type);

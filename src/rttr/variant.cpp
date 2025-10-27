@@ -286,6 +286,11 @@ bool variant::can_convert(const type& target_type) const
     if (target_type == type::get<std::nullptr_t>() && is_nullptr())
         return true;
 
+    if (source_type.is_pointer() && !target_type.is_pointer() && 
+        source_type.get_pointer_dimension() == 1 &&
+        source_type.get_raw_type() == target_type) 
+        return true;
+
     const bool source_is_arithmetic = source_type.is_arithmetic();
     const bool target_is_arithmetic = target_type.is_arithmetic();
     const bool target_is_enumeration = target_type.is_enumeration();
@@ -445,6 +450,16 @@ bool variant::convert(const type& target_type, variant& target_var) const
                 target_var = target_type.create_variant(casted_ptr);
                 if (target_var.is_valid())
                     ok = true;
+            }
+        }
+        else if (source_type.is_pointer() && !target_type.is_pointer() && 
+                source_type.get_pointer_dimension() == 1 &&
+                source_type.get_raw_type() == target_type) 
+        {
+            variant var = extract_pointer_value();
+            if (var.get_type() == target_type) {
+                target_var = var;
+                ok = true;
             }
         }
     }
