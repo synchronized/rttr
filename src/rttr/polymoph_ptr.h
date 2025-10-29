@@ -44,10 +44,10 @@ public:
     polymoph_ptr<value_type>& operator=(const polymoph_ptr<value_type>&) = default;
     polymoph_ptr<value_type>& operator=(polymoph_ptr<value_type>&&) = default;
 
-    polymoph_ptr(value_type& value) {
+    polymoph_ptr(const value_type& value) {
         m_type_name = type::get<value_type>().get_name().to_string(); 
         if (m_type_name.size() > 0) {
-            m_value = std::make_shared<value_type>(value); 
+            m_value = std::make_shared<value_type>(value);
         }
     }
     polymoph_ptr(value_type* value) {
@@ -84,7 +84,7 @@ public:
 
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
-    polymoph_ptr(U& value) {
+    polymoph_ptr(const U& value) {
         m_type_name = type::get<U>().get_name().to_string(); 
         if (m_type_name.size() > 0) {
             m_value = std::reinterpret_pointer_cast<value_type>(std::make_shared<U>(value));
@@ -114,7 +114,7 @@ public:
 
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
-    polymoph_ptr<value_type>& operator=(U& value) {
+    polymoph_ptr<value_type>& operator=(const U& value) {
         set<U>(value);
         return *this;
     }
@@ -149,33 +149,22 @@ public:
     bool operator!=(const polymoph_ptr<value_type>& rhs_ptr) const { return !(*this == rhs_ptr); }
 
     template<typename T1, typename TP = detail::enable_if_t<std::is_base_of<value_type, T1>::value>>
-    T1* get() { 
+    T1* get() const {
         return reinterpret_cast<T1*>(get()); 
     }
 
     template<typename T1, typename TP = detail::enable_if_t<std::is_base_of<value_type, T1>::value>>
-    const T1* get() const { 
-        return reinterpret_cast<const T1*>(get()); 
-    }
-
-    template<typename T1, typename TP = detail::enable_if_t<std::is_base_of<value_type, T1>::value>>
-    explicit operator T1*() { return get<T1>(); }
-
-    template<typename T1, typename TP = detail::enable_if_t<std::is_base_of<value_type, T1>::value>>
-    explicit operator const T1*() const { return get<T1>(); }
+    explicit operator T1*() const { return get<T1>(); }
 
     template<typename T1>
-    explicit operator polymoph_ptr<T1>() { return polymoph_ptr<T1>(*this); }
-
-    template<typename T1>
-    explicit operator const polymoph_ptr<T1>() const { return polymoph_ptr<T1>(*this); }
+    explicit operator polymoph_ptr<T1>() const { return polymoph_ptr<T1>(*this); }
 
     bool is_valid() const { return m_type_name.size() > 0 && m_value ? true : false ; }
     operator bool() const { return is_valid(); }
 
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
-    bool set(U& value) {
+    bool set(const U& value) {
         clear();
         m_type_name = type::get<U>().get_name().to_string(); 
         if (m_type_name.size() > 0) {
@@ -189,7 +178,7 @@ public:
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
     bool set(U* value) {
         clear();
-        m_type_name = type::get<U>().get_name().to_string(); 
+        m_type_name = type::get<U>().get_name().to_string();
         if (m_type_name.size() > 0) {
             m_value.reset(reinterpret_cast<value_type*>(value)); 
             return true;
@@ -221,17 +210,13 @@ public:
         return false;
     }
 
-    value_type* get() { return m_value.get(); }
-    const value_type* get() const { return m_value.get(); }
+    value_type* get() const { return m_value.get(); }
 
-    value_type* operator->() { return get(); }
-    const value_type* operator->() const { return get(); }
+    value_type* operator->() const { return get(); }
 
-    value_type& operator*() { return *get(); }
-    const value_type& operator*() const { return *get(); }
+    value_type& operator*() const { return *get(); }
 
-    std::shared_ptr<value_type> get_shared_ptr() { return m_value; }
-    const std::shared_ptr<value_type> get_shared_ptr() const { return m_value; }
+    std::shared_ptr<value_type> get_shared_ptr() const { return m_value; }
 
     bool set_variant(variant var);
     variant get_variant() const;
