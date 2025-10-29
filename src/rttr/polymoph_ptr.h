@@ -165,10 +165,10 @@ public:
     explicit operator const T1*() const { return get<T1>(); }
 
     template<typename T1>
-    operator polymoph_ptr<T1>() { return polymoph_ptr<T1>(*this); }
+    explicit operator polymoph_ptr<T1>() { return polymoph_ptr<T1>(*this); }
 
     template<typename T1>
-    operator const polymoph_ptr<T1>() const { return polymoph_ptr<T1>(*this); }
+    explicit operator const polymoph_ptr<T1>() const { return polymoph_ptr<T1>(*this); }
 
     bool is_valid() const { return m_type_name.size() > 0 && m_value ? true : false ; }
     operator bool() const { return is_valid(); }
