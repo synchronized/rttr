@@ -103,13 +103,19 @@ TEST_CASE("property - global function", "[property]")
     CHECK(prop.is_static() == true);
     CHECK(prop.get_declaring_type().is_valid() == false);
     CHECK(prop.get_type() == type::get<std::string>());
+    CHECK(prop.get_policy_type() == type::get<const std::string*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
+    CHECK(prop.get_value(instance()).is_type<const std::string*>() == true);
     // valid invoke
-    CHECK(prop.set_value(instance(), std::string("New Text")) == true);
-    CHECK(prop.get_value(instance()).is_type<std::string>() == true);
-    CHECK(prop.get_value(instance()).get_value<std::string>() == "New Text");
+    std::string str_val = std::string("New Text");
+    CHECK(prop.set_value(instance(), &str_val) == true);
+    CHECK(*prop.get_value(instance()).get_value<const std::string*>() == "New Text");
+
+    // valid invoke
+    CHECK(prop.set_value(instance(), std::string("New Text1")) == true);
+    CHECK(*prop.get_value(instance()).get_value<const std::string*>() == "New Text1");
 
     // invalid invoke
     CHECK(prop.set_value(instance(), 42) == false);
@@ -147,7 +153,8 @@ TEST_CASE("property - global function - bind as ptr", "[property]")
     // metadata
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == true);
-    CHECK(prop.get_type() == type::get<const std::string*>());
+    CHECK(prop.get_type() == type::get<const std::string>());
+    CHECK(prop.get_policy_type() == type::get<const std::string*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -172,7 +179,8 @@ TEST_CASE("property - global function - read only - bind as ptr", "[property]")
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == true);
     CHECK(prop.get_declaring_type().is_valid() == false);
-    CHECK(prop.get_type() == type::get<const int*>());
+    CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get<const int*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -209,8 +217,9 @@ TEST_CASE("property - global function - read only - as_reference_wrapper", "[pro
     // metadata
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == true);
-    CHECK(prop.get_type() == type::get<std::reference_wrapper<const int>>());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get<std::reference_wrapper<const int>>());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -231,8 +240,9 @@ TEST_CASE("property - global function - as_reference_wrapper", "[property]")
     // metadata
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == true);
-    CHECK(prop.get_type() == type::get< std::reference_wrapper<const std::string> >());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.get_type() == type::get<const std::string>());
+    CHECK(prop.get_policy_type() == type::get< std::reference_wrapper<const std::string> >());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 

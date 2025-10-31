@@ -86,9 +86,9 @@ TEST_CASE("property - class - get/set - std::shared_ptr", "[property]")
     CHECK(ret == true);
 
     variant val = p1.get_value(obj);
-    REQUIRE(val.is_type<int>() == true);
+    REQUIRE(val.is_type<int*>() == true);
 
-    CHECK(val.get_value<int>() == 2);
+    CHECK(*val.get_value<int*>() == 2);
     CHECK(obj.get()->p1 == 2);
 }
 
@@ -109,8 +109,8 @@ TEST_CASE("property - class - get/set - std::shared_ptr in variant", "[property]
     CHECK(ret == true);
 
     variant val = p1.get_value(var);
-    REQUIRE(val.is_type<int>() == true);
-    CHECK(val.get_value<int>() == 2);
+    REQUIRE(val.is_type<int*>() == true);
+    CHECK(*val.get_value<int*>() == 2);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -134,8 +134,8 @@ TEST_CASE("property - class - get/set - reference_wrapper", "[property]")
     CHECK(ret == true);
 
     variant val = p1.get_value(obj);
-    REQUIRE(val.is_type<int>() == true);
-    CHECK(val.get_value<int>() == 2);
+    REQUIRE(val.is_type<int*>() == true);
+    CHECK(*val.get_value<int*>() == 2);
     CHECK(obj.get().p1 == 2);
     CHECK(instance.p1 == 2);
 }
@@ -154,9 +154,9 @@ TEST_CASE("property - class - get/set - shared_ptr with inheritance", "[property
         CHECK(ret == true);
 
         variant val = p1.get_value(obj);
-        REQUIRE(val.is_type<int>() == true);
+        REQUIRE(val.is_type<int*>() == true);
 
-        CHECK(val.get_value<int>() == 2);
+        CHECK(*val.get_value<int*>() == 2);
         CHECK(obj.get()->p1 == 2);
     }
 
@@ -171,8 +171,8 @@ TEST_CASE("property - class - get/set - shared_ptr with inheritance", "[property
         CHECK(ret == true);
 
         variant var = p2.get_value(obj);
-        REQUIRE(var.is_type<bool>() == true);
-        CHECK(var.get_value<bool>() == true);
+        REQUIRE(var.is_type<bool*>() == true);
+        CHECK(*var.get_value<bool*>() == true);
     }
 }
 

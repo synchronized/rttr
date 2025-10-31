@@ -209,8 +209,12 @@ TEST_CASE("library - using types", "[library]")
             point_x.set_value(point, 23);
             point_y.set_value(point, 42);
 
-            CHECK(point_x.get_value(point).to_int() == 23);
-            CHECK(point_y.get_value(point).to_int() == 42);
+            variant var_x = point_x.get_value(point).extract_pointer_value();
+            variant var_y = point_y.get_value(point).extract_pointer_value();
+            CHECK(var_x.get_type().get_name() == "int");
+            CHECK(var_y.get_type().get_name() == "int");
+            CHECK(var_x.to_int() == 23);
+            CHECK(var_y.to_int() == 42);
 
             CHECK(prop.set_value(var_obj, point) == true);
         }

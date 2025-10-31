@@ -84,9 +84,9 @@ std::string rttr_prop_approach1(
     // get value from property
     const auto& iam_var = prop.get_value(vinst);
     REQUIRE(iam_var.is_valid() == true);
-    REQUIRE(iam_var.is_type<std::string>() == true) ;
+    REQUIRE(iam_var.is_type<std::string*>() == true) ;
 
-    return iam_var.get_value<std::string>();
+    return *iam_var.get_value<std::string*>();
 }
 
 // approach 2 gets the property value from rttr::type
@@ -99,9 +99,9 @@ std::string rttr_prop_approach2(
     // get_value via type
     const auto& iam_var = inst_t.get_property_value(prop_name, vinst);
     REQUIRE(iam_var.is_valid() == true);
-    REQUIRE(iam_var.is_type<std::string>() == true) ;
+    REQUIRE(iam_var.is_type<std::string*>() == true) ;
 
-    return iam_var.get_value<std::string>();
+    return *iam_var.get_value<std::string*>();
 }
 
 template<class TT>

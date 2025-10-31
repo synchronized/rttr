@@ -100,7 +100,7 @@ RTTR_REGISTRATION
         .property_readonly("p8", &property_member_obj_test::_p8)
         .property("p9", &property_member_obj_test::_p9)
         .property_readonly("p10", &property_member_obj_test::_p10)
-        .property("p11", &property_member_obj_test::_p11)
+        .property("p11", &property_member_obj_test::_p11) 
         ;
 }
 
@@ -119,14 +119,15 @@ TEST_CASE("property - class object", "[property]")
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == false);
     CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get<int*>());
     CHECK(prop.get_declaring_type() == type::get<property_member_obj_test>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // invoke
     CHECK(prop.set_value(obj, 42) == true);
-    CHECK(prop.get_value(obj).is_type<int>() == true);
-    CHECK(prop.get_value(obj).get_value<int>() == 42);
+    CHECK(prop.get_value(obj).is_type<int*>() == true);
+    CHECK(*prop.get_value(obj).get_value<int*>() == 42);
 
     // invalid invoke
     CHECK(prop.set_value(obj, "test") == false);
@@ -147,12 +148,17 @@ TEST_CASE("property - class object - read only", "[property]")
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == false);
     CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get<const int*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // invoke
-    CHECK(prop.get_value(obj).is_type<int>() == true);
-    CHECK(prop.get_value(obj).get_value<int>() == 12);
+    variant val = prop.get_value(obj);
+    type val_type = val.get_type();
+    std::string val_type_name = val_type.get_name().to_string();
+    CHECK(val_type_name == "const int*");
+    CHECK(prop.get_value(obj).is_type<const int*>() == true);
+    CHECK(*prop.get_value(obj).get_value<const int*>() == 12);
 
     // invalid invoke
     CHECK(prop.set_value(obj, 23) == false);
@@ -173,7 +179,8 @@ TEST_CASE("property - class object - bind as ptr", "[property]")
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == false);
     CHECK(prop.get_type().get_raw_type().is_sequential_container() == true);
-    CHECK(prop.get_type() == type::get<std::vector<int>*>());
+    CHECK(prop.get_type() == type::get<std::vector<int>>());
+    CHECK(prop.get_policy_type() == type::get<std::vector<int>*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -206,8 +213,9 @@ TEST_CASE("property - class object - read only - bind as ptr", "[property]")
     // metadata
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == false);
-    CHECK(prop.get_type().get_raw_type().is_sequential_container() == true);
-    CHECK(prop.get_type() == type::get<const std::vector<int>*>());
+    CHECK(prop.get_type().is_sequential_container() == true);
+    CHECK(prop.get_type() == type::get<std::vector<int>>());
+    CHECK(prop.get_policy_type() == type::get<const std::vector<int>*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -240,9 +248,10 @@ TEST_CASE("property - class object - as_reference_wrapper", "[property]")
     // metadata
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == false);
-    CHECK(prop.get_type().get_wrapped_type().is_sequential_container() == true);
-    CHECK(prop.get_type() == type::get<std::reference_wrapper<std::vector<int>>>());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.get_type().is_sequential_container() == true);
+    CHECK(prop.get_type() == type::get<std::vector<int>>());
+    CHECK(prop.get_policy_type() == type::get<std::reference_wrapper<std::vector<int>>>());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -283,9 +292,9 @@ TEST_CASE("property - class object - read only - as_reference_wrapper", "[proper
     // metadata
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == false);
-    CHECK(prop.get_type().get_wrapped_type().is_sequential_container() == true);
-    CHECK(prop.get_type() == type::get<std::reference_wrapper<const std::vector<int>>>());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.get_type().is_sequential_container() == true);
+    CHECK(prop.get_policy_type() == type::get<std::reference_wrapper<const std::vector<int>>>());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -380,8 +389,8 @@ TEST_CASE("property - raw pointer as property", "[property]")
         variant var = prop.get_value(obj);
         CHECK(obj._p10 == &obj._p1);
 
-        CHECK(var.get_type() == type::get<int*>());
-        CHECK(obj._p10 == var.get_value<int*>());
+        CHECK(var.get_type() == type::get<int*const*>());
+        CHECK(obj._p10 == *var.get_value<int*const*>());
     }
 }
 
@@ -395,6 +404,11 @@ TEST_CASE("property - array property", "[property]")
     REQUIRE(prop.is_valid() == true);
 
     auto var = prop.get_value(obj);
+    CHECK(prop.get_type() == type::get<int[4][4]>());
+    CHECK(prop.get_policy_type() == type::get<int(*)[4][4]>());
+    CHECK(var.get_type().is_pointer() == true);
+    CHECK(var.get_type().get_raw_type().is_array() == true);
+    CHECK(var.get_type().get_raw_type().is_sequential_container() == true);
     auto view = var.create_sequential_view();
     CHECK(view.get_rank() == 2);
     int line[4] = { 1, 2, 3, 4 };
@@ -403,7 +417,8 @@ TEST_CASE("property - array property", "[property]")
     CHECK(view.set_value(2, line) == true);
 
     CHECK(prop.set_value(obj, var) == true);
-    CHECK(var == obj._p11);
+    variant var1 = var.extract_pointer_value();
+    CHECK(var1 == obj._p11);
 
 }
 

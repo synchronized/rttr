@@ -501,8 +501,8 @@ TEST_CASE("property - class - inheritance - invoke", "[property]")
     property base_prop = t.get_property("top");
 
     variant ret = base_prop.get_value(top);
-    REQUIRE(ret.is_type<int>() == true);
-    CHECK(ret.get_value<int>() == 12);
+    REQUIRE(ret.is_type<int*>() == true);
+    CHECK(*ret.get_value<int*>() == 12);
     // try to change the value
     base_prop.set_value(top, 2000);
     CHECK(instance._p1 == 2000);
@@ -510,8 +510,8 @@ TEST_CASE("property - class - inheritance - invoke", "[property]")
     // and now the other way around, from bottom a top property
     property bottom_prop = t.get_property("bottom");
     ret = bottom_prop.get_value(instance);
-    REQUIRE(ret.is_type<double>() == true);
-    CHECK(ret.get_value<double>() == 23.0);
+    REQUIRE(ret.is_type<double*>() == true);
+    CHECK(*ret.get_value<double*>() == 23.0);
     // try to change the value
     bottom_prop.set_value(top, 42.0);
     CHECK(instance._p5 == 42.0);

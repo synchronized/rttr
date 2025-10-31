@@ -180,6 +180,7 @@ TEST_CASE("property - get_type()", "[property]")
 {
     property prop = type::get<prop_misc_test>().get_property("value_1");
     CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get<int*>());
 
     prop = type::get<prop_misc_test>().get_property("");
     CHECK(prop.is_valid() == false);
