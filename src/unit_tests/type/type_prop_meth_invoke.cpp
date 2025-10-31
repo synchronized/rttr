@@ -66,8 +66,8 @@ TEST_CASE("Test property shortcuts to set/get property", "[property]")
     {
         type_prop_invoke_test_base obj;
         variant var = type::get(obj).get_property_value("p1", obj);
-        REQUIRE(var.is_type<int>() == true);
-        CHECK(var.get_value<int>() == 12);
+        REQUIRE(var.is_type<int*>() == true);
+        CHECK(*var.get_value<int*>() == 12);
 
         bool success = type::get(obj).set_property_value("p1", obj, 500);
         CHECK(success == true);
@@ -80,8 +80,8 @@ TEST_CASE("Test property shortcuts to set/get property", "[property]")
         type_prop_invoke_test obj;
 
         variant var = type::get(obj).get_property_value("p2", obj);
-        REQUIRE(var.is_type<std::string>() == true);
-        CHECK(var.get_value<std::string>() == "text");
+        REQUIRE(var.is_type<std::string*>() == true);
+        CHECK(*var.get_value<std::string*>() == "text");
 
         bool success = type::get(obj).set_property_value("p2", obj, std::string("Hello World"));
         CHECK(success == true);
@@ -94,8 +94,8 @@ TEST_CASE("Test property shortcuts to set/get property", "[property]")
         CHECK(success == true);
 
         variant var = type::get_property_value("g_prop_invoke");
-        REQUIRE(var.is_type<int>() == true);
-        CHECK(var.get_value<int>() == 23);
+        REQUIRE(var.is_type<int*>() == true);
+        CHECK(*var.get_value<int*>() == 23);
     }
 }
 

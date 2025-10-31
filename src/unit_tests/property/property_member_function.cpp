@@ -115,17 +115,25 @@ TEST_CASE("property - class function", "[property]")
     REQUIRE(prop.is_valid() == true);
 
     // metadata
+    type prop_type2 = prop.get_type();
+    std::string prop_type_name2 = prop_type2.get_name().to_string();
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == false);
+    CHECK(prop_type_name2 == "std::string");
     CHECK(prop.get_type() == type::get<std::string>());
+    CHECK(prop.get_policy_type() == type::get<const std::string*>());
     CHECK(prop.get_declaring_type() == type::get<property_member_func_test>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // valid invoke
-    CHECK(prop.set_value(obj, std::string("New Text")) == true);
-    CHECK(prop.get_value(obj).is_type<std::string>() == true);
-    CHECK(prop.get_value(obj).get_value<std::string>() == "New Text");
+    CHECK(prop.get_value(obj).is_type<const std::string*>() == true);
+
+    std::string strval = std::string("New Text");
+    CHECK(prop.set_value(obj, &strval) == true);
+    CHECK(*prop.get_value(obj).get_value<const std::string*>() == "New Text");
+    CHECK(prop.set_value(obj, std::string("New Text1")) == true);
+    CHECK(*prop.get_value(obj).get_value<const std::string*>() == "New Text1");
 
     // invalid invoke
     CHECK(prop.set_value(obj, 42) == false);
@@ -172,12 +180,13 @@ TEST_CASE("property - class function - bind as ptr", "[property]")
     // metadata
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == false);
-    CHECK(prop.get_type() == type::get<const std::string*>());
+    CHECK(prop.get_type() == type::get<const std::string>());
+    CHECK(prop.get_policy_type() == type::get<const std::string*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // valid invoke
-    const std::string text("Hello World");
+    std::string text("Hello World");
     CHECK(prop.set_value(obj, &text) == true);
     CHECK(prop.get_value(obj).is_type<const std::string*>() == true);
     CHECK(*prop.get_value(obj).get_value<const std::string*>() == "Hello World");
@@ -202,7 +211,8 @@ TEST_CASE("property - class function - read only - bind as ptr", "[property]")
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == false);
 
-    CHECK(prop.get_type() == type::get<const int*>());
+    CHECK(prop.get_type() == type::get<const int>());
+    CHECK(prop.get_policy_type() == type::get<const int*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -247,8 +257,9 @@ TEST_CASE("property - class function - as_reference_wrapper", "[property]")
     // metadata
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == false);
-    CHECK(prop.get_type() == type::get<std::reference_wrapper<const std::string>>());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.get_type() == type::get<std::string>());
+    CHECK(prop.get_policy_type() == type::get<std::reference_wrapper<const std::string>>());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -277,8 +288,9 @@ TEST_CASE("property - class function - read only - as_reference_wrapper", "[prop
     // metadata
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == false);
-    CHECK(prop.get_type() == type::get<std::reference_wrapper<const int>>());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.get_type() == type::get<const int>());
+    CHECK(prop.get_policy_type() == type::get<std::reference_wrapper<const int>>());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 

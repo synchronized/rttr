@@ -84,13 +84,14 @@ TEST_CASE("property - global object", "[property]")
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == true);
     CHECK(prop.get_type() == type::get<std::string>());
+    CHECK(prop.get_policy_type() == type::get<std::string*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // valid invoke
     CHECK(prop.set_value(instance(), std::string("New Text")) == true);
-    CHECK(prop.get_value(instance()).is_type<std::string>() == true);
-    CHECK(prop.get_value(instance()).get_value<std::string>() == "New Text");
+    CHECK(prop.get_value(instance()).is_type<std::string*>() == true);
+    CHECK(*prop.get_value(instance()).get_value<std::string*>() == "New Text");
 
     // invalid invoke
     CHECK(prop.set_value(instance(), 42) == false);
@@ -108,12 +109,13 @@ TEST_CASE("property - global object - read only", "[property]")
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == true);
     CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get<const int*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // valid invoke
-    CHECK(prop.get_value(instance()).is_type<int>() == true);
-    CHECK(prop.get_value(instance()).get_value<int>() == 23);
+    CHECK(prop.get_value(instance()).is_type<const int*>() == true);
+    CHECK(*prop.get_value(instance()).get_value<const int*>() == 23);
 
     // invalid invoke
     CHECK(prop.set_value(instance(), 42) == false);
@@ -128,9 +130,9 @@ TEST_CASE("property - global object - bind as ptr", "[property]")
 
     // metadata
     CHECK(prop.is_readonly() == false);
-    CHECK(prop.is_static() == false);
-    CHECK(prop.get_type().get_raw_type().is_sequential_container() == true);
-    CHECK(prop.get_type() == type::get<std::vector<int>*>());
+    CHECK(prop.is_static() == true);
+    CHECK(prop.get_type().is_sequential_container() == true);
+    CHECK(prop.get_policy_type() == type::get<std::vector<int>*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -158,7 +160,8 @@ TEST_CASE("property - global object - read only - bind as ptr", "[property]")
     // metadata
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == true);
-    CHECK(prop.get_type() == type::get<const int*>());
+    CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get<const int*>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -179,10 +182,10 @@ TEST_CASE("property - global object - as_reference_wrapper", "[property]")
 
     // metadata
     CHECK(prop.is_readonly() == false);
-    CHECK(prop.is_static() == false);
-    CHECK(prop.get_type().get_wrapped_type().is_sequential_container() == true);
-    CHECK(prop.get_type() == type::get< std::reference_wrapper<std::vector<int>> >());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.is_static() == true);
+    CHECK(prop.get_type().is_sequential_container() == true);
+    CHECK(prop.get_policy_type() == type::get< std::reference_wrapper<std::vector<int>> >());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -210,8 +213,9 @@ TEST_CASE("property - global object - read only - as_reference_wrapper", "[prope
     // metadata
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == true);
-    CHECK(prop.get_type() == type::get< std::reference_wrapper<const int> >());
-    CHECK(prop.get_type().is_wrapper() == true);
+    CHECK(prop.get_type() == type::get<int>());
+    CHECK(prop.get_policy_type() == type::get< std::reference_wrapper<const int> >());
+    CHECK(prop.get_policy_type().is_wrapper() == true);
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
