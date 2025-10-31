@@ -37,6 +37,10 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
     : public property_wrapper_base, public metadata_handler<Metadata_Count>
 {
     using accessor = A (C::*);
+
+    using prop_type     = A;
+    using policy_type   = prop_type;
+
     public:
         property_wrapper(string_view name,
                          accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
@@ -47,11 +51,12 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
             init();
         }
 
-        access_levels get_access_level() const RTTR_NOEXCEPT    { return Acc_Level; }
-        bool is_valid()     const RTTR_NOEXCEPT                 { return true;  }
-        bool is_readonly()  const RTTR_NOEXCEPT                 { return false; }
-        bool is_static()    const RTTR_NOEXCEPT                 { return false; }
-        type get_type()     const RTTR_NOEXCEPT                 { return type::get<A>(); }
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return false; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -92,6 +97,10 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
     : public property_wrapper_base, public metadata_handler<Metadata_Count>
 {
     using accessor = A (C::*);
+
+    using prop_type     = A;
+    using policy_type   = prop_type;
+
     public:
         property_wrapper(string_view name,
                          accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
@@ -102,11 +111,12 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
             init();
         }
 
-        access_levels get_access_level() const RTTR_NOEXCEPT    { return Acc_Level; }
-        bool is_valid()     const RTTR_NOEXCEPT                 { return true;  }
-        bool is_readonly()  const RTTR_NOEXCEPT                 { return true; }
-        bool is_static()    const RTTR_NOEXCEPT                 { return false; }
-        type get_type()     const RTTR_NOEXCEPT                 { return type::get<A>(); }
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return true; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -142,6 +152,9 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
     : public property_wrapper_base, public metadata_handler<Metadata_Count>
 {
     using accessor = A (C::*);
+    using prop_type     = A;
+    using policy_type   = add_pointer_t<prop_type>;
+
     public:
         property_wrapper(string_view name,
                          accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
@@ -154,11 +167,12 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
             init();
         }
 
-        access_levels get_access_level() const RTTR_NOEXCEPT    { return Acc_Level; }
-        bool is_valid()     const RTTR_NOEXCEPT                 { return true;  }
-        bool is_readonly()  const RTTR_NOEXCEPT                 { return false; }
-        bool is_static()    const RTTR_NOEXCEPT                 { return false; }
-        type get_type()     const RTTR_NOEXCEPT                 { return type::get<A*>(); }
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return false; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -202,6 +216,10 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
     : public property_wrapper_base, public metadata_handler<Metadata_Count>
 {
     using accessor = A (C::*);
+    
+    using prop_type     = A;
+    using policy_type   = add_pointer_t<add_const_t<prop_type>>;
+
     public:
         property_wrapper(string_view name,
                          accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
@@ -213,11 +231,12 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
             init();
         }
 
-        access_levels get_access_level() const RTTR_NOEXCEPT    { return Acc_Level; }
-        bool is_valid()     const RTTR_NOEXCEPT                 { return true;  }
-        bool is_readonly()  const RTTR_NOEXCEPT                 { return true; }
-        bool is_static()    const RTTR_NOEXCEPT                 { return false; }
-        type get_type()     const RTTR_NOEXCEPT                 { return type::get<typename std::add_const<A>::type*>(); }
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return true; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -253,6 +272,10 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
     : public property_wrapper_base, public metadata_handler<Metadata_Count>
 {
     using accessor = A (C::*);
+
+    using prop_type     = A;
+    using policy_type   = std::reference_wrapper<prop_type>;
+
     public:
         property_wrapper(string_view name,
                          accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
@@ -265,11 +288,12 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
             init();
         }
 
-        access_levels get_access_level() const RTTR_NOEXCEPT    { return Acc_Level; }
-        bool is_valid()     const RTTR_NOEXCEPT                 { return true;  }
-        bool is_readonly()  const RTTR_NOEXCEPT                 { return false; }
-        bool is_static()    const RTTR_NOEXCEPT                 { return false; }
-        type get_type()     const RTTR_NOEXCEPT                 { return type::get<std::reference_wrapper<A>>(); }
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return false; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -309,6 +333,10 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
     : public property_wrapper_base, public metadata_handler<Metadata_Count>
 {
     using accessor = A (C::*);
+
+    using prop_type     = A;
+    using policy_type   = std::reference_wrapper<add_const_t<prop_type>>;
+
     public:
         property_wrapper(string_view name,
                          accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
@@ -319,12 +347,12 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
 
             init();
         }
-        using policy_type = std::reference_wrapper<add_const_t<A>>;
-        access_levels get_access_level() const RTTR_NOEXCEPT    { return Acc_Level; }
-        bool is_valid()     const RTTR_NOEXCEPT                 { return true;  }
-        bool is_readonly()  const RTTR_NOEXCEPT                 { return true; }
-        bool is_static()    const RTTR_NOEXCEPT                 { return false; }
-        type get_type()     const RTTR_NOEXCEPT                 { return type::get< std::reference_wrapper<add_const_t<A>> >(); }
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return true; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -344,6 +372,141 @@ class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Leve
         void visit(visitor& visitor, property prop) const RTTR_NOEXCEPT
         {
             auto obj = make_property_info<Declaring_Typ, get_as_ref_wrapper, accessor>(prop, m_acc);
+            visitor_iterator<Visitor_List>::visit(visitor, make_property_visitor_invoker<read_only>(obj));
+        }
+
+    private:
+        accessor m_acc;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+// pointer to member - read write
+
+template<typename Declaring_Typ, typename C, typename A, access_levels Acc_Level, std::size_t Metadata_Count, typename Visitor_List>
+class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Level, most_get_as_ptr, most_set_as_ptr, Metadata_Count, Visitor_List>
+    : public property_wrapper_base, public metadata_handler<Metadata_Count>
+{
+    using accessor = A (C::*);
+
+    using prop_type     = A;
+    using policy_type   = add_pointer_t<prop_type>;
+
+    using get_policy = most_get_as_ptr;;
+    using set_policy = most_set_as_ptr;
+
+    public:
+        property_wrapper(string_view name,
+                         accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
+        :   property_wrapper_base(name, type::get<Declaring_Typ>()),
+            metadata_handler<Metadata_Count>(std::move(metadata_list)),
+            m_acc(acc)
+        {
+            //static_assert(!std::is_pointer<A>::value, "The data type of the property is already a pointer type! The given policy cannot be used for this property.");
+
+            init();
+        }
+
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return false; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
+
+        variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
+
+        bool set_value(instance& object, argument& arg) const
+        {
+            C* ptr = object.try_convert<C>();
+            if (!ptr) return false;
+
+            //pointer
+            if (arg.is_type<A*>()) {
+                return property_accessor<A>::set_value((ptr->*m_acc), *arg.get_value<A*>());
+            }
+            //reference
+            if (arg.is_type<std::reference_wrapper<A>>()) {
+                auto ref_val = arg.get_value<std::reference_wrapper<A>>();
+                return property_accessor<A>::set_value((ptr->*m_acc), ref_val.get());
+            }
+            //raw value
+            if (arg.is_type<A>()) {
+                return property_accessor<A>::set_value((ptr->*m_acc), arg.get_value<A>());
+            }
+            return false;
+        }
+
+        variant get_value(instance& object) const
+        {
+            if (C* ptr = object.try_convert<C>())
+                return variant(&(ptr->*m_acc));
+            else
+                return variant();
+        }
+
+        void visit(visitor& visitor, property prop) const RTTR_NOEXCEPT
+        {
+            auto obj = make_property_info<Declaring_Typ, get_policy, accessor>(prop, m_acc);
+            visitor_iterator<Visitor_List>::visit(visitor, make_property_visitor_invoker(obj));
+        }
+
+    private:
+        accessor m_acc;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+// pointer to member - read only
+
+template<typename Declaring_Typ, typename C, typename A, access_levels Acc_Level, std::size_t Metadata_Count, typename Visitor_List>
+class property_wrapper<member_object_ptr, Declaring_Typ, A(C::*), void, Acc_Level, most_get_as_ptr, read_only, Metadata_Count, Visitor_List>
+    : public property_wrapper_base, public metadata_handler<Metadata_Count>
+{
+    using accessor = A (C::*);
+
+    using prop_type     = A;
+    using policy_type   = add_pointer_t<add_const_t<prop_type>>;
+
+    using get_policy = most_get_as_ptr;;
+    using set_policy = read_only;
+
+    public:
+        property_wrapper(string_view name,
+                         accessor acc, std::array<metadata, Metadata_Count> metadata_list) RTTR_NOEXCEPT
+        :   property_wrapper_base(name, type::get<Declaring_Typ>()),
+            metadata_handler<Metadata_Count>(std::move(metadata_list)), m_acc(acc)
+        {
+            //static_assert(!std::is_pointer<A>::value, "The data type of the property is already a pointer type! The given policy cannot be used for this property.");
+
+            init();
+        }
+
+        access_levels get_access_level() const RTTR_NOEXCEPT { return Acc_Level; }
+        bool is_valid()        const RTTR_NOEXCEPT { return true; }
+        bool is_readonly()     const RTTR_NOEXCEPT { return true; }
+        bool is_static()       const RTTR_NOEXCEPT { return false; }
+        type get_type()        const RTTR_NOEXCEPT { return type::get<prop_type>(); }
+        type get_policy_type() const RTTR_NOEXCEPT { return type::get<policy_type>(); }
+
+        variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
+
+        bool set_value(instance& object, argument& arg) const
+        {
+            return false;
+        }
+
+        variant get_value(instance& object) const
+        {
+            if (C* ptr = object.try_convert<C>())
+                return variant(const_cast<const A*>(&(ptr->*m_acc)));
+            else
+                return variant();
+        }
+
+        void visit(visitor& visitor, property prop) const RTTR_NOEXCEPT
+        {
+            auto obj = make_property_info<Declaring_Typ, get_policy, accessor>(prop, m_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_property_visitor_invoker<read_only>(obj));
         }
 

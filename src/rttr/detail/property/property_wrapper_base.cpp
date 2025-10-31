@@ -102,6 +102,11 @@ type property_wrapper_base::get_type() const RTTR_NOEXCEPT
     return get_invalid_type();
 }
 
+type property_wrapper_base::get_policy_type() const RTTR_NOEXCEPT
+{
+    return get_invalid_type();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 variant property_wrapper_base::get_metadata(const variant& key) const
