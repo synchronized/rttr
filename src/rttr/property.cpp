@@ -128,6 +128,13 @@ type property::get_type() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+type property::get_policy_type() const RTTR_NOEXCEPT
+{
+    return m_wrapper->get_policy_type();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 type property::get_declaring_type() const RTTR_NOEXCEPT
 {
     return m_wrapper->get_declaring_type();

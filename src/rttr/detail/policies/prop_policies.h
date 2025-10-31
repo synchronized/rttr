@@ -57,21 +57,57 @@ struct read_only
 struct set_value
 {};
 
+struct most_get_as_ptr
+{};
 
-/////////////////////////////////////////////////////////////////////////////////////////
+struct most_set_as_ptr
+{};
 
 // default getter policy
 template<typename T>
 struct get_getter_policy
 {
-    using type = return_as_copy;
+    using type = most_get_as_ptr;
 };
 
 // default setter policy
 template<typename T>
 struct get_setter_policy
 {
+    using type = most_set_as_ptr;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//以前的默认行为
+struct bind_as_copy
+{};
+
+template<>
+struct get_getter_policy<bind_as_copy>
+{
+    using type = return_as_copy;
+};
+
+template<>
+struct get_setter_policy<bind_as_copy>
+{
     using type = set_value;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+struct most_as_ptr
+{};
+
+template<>
+struct get_getter_policy<most_as_ptr>
+{
+    using type = most_get_as_ptr;
+};
+
+template<>
+struct get_setter_policy<most_as_ptr>
+{
+    using type = most_set_as_ptr;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +152,7 @@ struct get_setter_policy<as_reference_wrapper>
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-using property_policy_list = type_list<bind_as_ptr, read_only, as_reference_wrapper>;
+using property_policy_list = type_list<bind_as_copy, bind_as_ptr, read_only, as_reference_wrapper, most_as_ptr>;
 
 } // end namespace detail;
 

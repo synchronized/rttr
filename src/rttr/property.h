@@ -198,6 +198,15 @@ class RTTR_API property
         type get_type() const RTTR_NOEXCEPT;
 
         /*!
+         * \brief 返回特定policy返回的类型, 与get_type()的区别是get_type()返回property的原类型
+         *
+         * \remark When the property is not valid, this function will return an invalid type object.
+         *
+         * \return \ref type "Type" of the underlying property.
+         */
+        type get_policy_type() const RTTR_NOEXCEPT;
+
+        /*!
          * \brief Returns the \ref type of the class or struct that declares this property.
          *
          * \remark When this property does not belong to a class (i.e. is a global property) it will return an invalid type object.

@@ -346,8 +346,8 @@ template<typename Class_Type, typename A, typename acc_level, typename Visitor_L
 class registration::bind<detail::prop, Class_Type, A, acc_level, Visitor_List> : public registration_derived_t<Class_Type>
 {
     private:
-        using default_getter_policy = detail::return_as_copy;
-        using default_setter_policy = detail::set_value;
+        using default_getter_policy = detail::most_get_as_ptr;
+        using default_setter_policy = detail::most_set_as_ptr;
 
         template<typename Acc>
         static RTTR_INLINE
@@ -442,8 +442,8 @@ template<typename Class_Type, typename A1, typename A2, typename acc_level, type
 class registration::bind<detail::prop, Class_Type, A1, A2, acc_level, Visitor_List> : public registration_derived_t<Class_Type>
 {
     private:
-        using default_getter_policy = detail::return_as_copy;
-        using default_setter_policy = detail::set_value;
+        using default_getter_policy = detail::most_get_as_ptr;
+        using default_setter_policy = detail::most_set_as_ptr;
 
         template<typename Acc1, typename Acc2>
         static RTTR_INLINE
@@ -537,7 +537,7 @@ template<typename Class_Type, typename A, typename acc_level, typename Visitor_L
 class registration::bind<detail::prop_readonly, Class_Type, A, acc_level, Visitor_List> : public registration_derived_t<Class_Type>
 {
     private:
-        using default_getter_policy = detail::return_as_copy;
+        using default_getter_policy = detail::most_get_as_ptr;
         using default_setter_policy = detail::read_only;
 
         template<typename Acc>

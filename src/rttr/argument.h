@@ -57,10 +57,13 @@ class RTTR_API argument
     using is_variant = std::is_same<detail::remove_cv_t<detail::remove_reference_t<T>>, variant>;
 
     template<typename T>
-    using arg_value_t = detail::enable_if_t<!std::is_rvalue_reference<T>::value && !is_variant<T>::value, T>;
+    using is_variant_ptr = std::is_same<detail::remove_cv_t<detail::remove_pointer_t<T>>, variant>;
 
     template<typename T>
-    using arg_rvalue_t = detail::enable_if_t<std::is_rvalue_reference<T>::value && !is_variant<T>::value, detail::remove_reference_t<T> >;
+    using arg_value_t = detail::enable_if_t<!std::is_rvalue_reference<T>::value && !is_variant<T>::value && !is_variant_ptr<T>::value, T>;
+
+    template<typename T>
+    using arg_rvalue_t = detail::enable_if_t<std::is_rvalue_reference<T>::value && !is_variant<T>::value && !is_variant_ptr<T>::value, detail::remove_reference_t<T> >;
 
     template<typename T>
     using ptr_type = detail::enable_if_t<std::is_pointer<T>::value, bool>;
@@ -74,6 +77,9 @@ class RTTR_API argument
     template<typename T>
     using is_variant_ref_t = detail::enable_if_t<is_variant<T>::value && std::is_rvalue_reference<T>::value, detail::remove_reference_t<T>>;
 
+    template<typename T>
+    using is_variant_ptr_t = detail::enable_if_t<is_variant_ptr<T>::value && std::is_pointer<T>::value, detail::remove_pointer_t<T>>;
+
 public:
 
     RTTR_INLINE argument() RTTR_NOEXCEPT;
@@ -81,6 +87,7 @@ public:
     RTTR_INLINE argument(const argument& other) RTTR_NOEXCEPT;
     RTTR_INLINE argument(variant& var) RTTR_NOEXCEPT;
     RTTR_INLINE argument(const variant& var) RTTR_NOEXCEPT;
+    RTTR_INLINE argument(variant* var) RTTR_NOEXCEPT;
 
     template<typename T, typename Tp = decay_arg_t<T>>
     RTTR_INLINE argument(const T& data) RTTR_NOEXCEPT;
@@ -111,6 +118,8 @@ public:
     RTTR_INLINE is_variant_t<T>& get_value() const RTTR_NOEXCEPT;
     template<typename T>
     RTTR_INLINE is_variant_ref_t<T> && get_value() const RTTR_NOEXCEPT;
+    template<typename T>
+    RTTR_INLINE is_variant_ptr_t<T>* get_value() const RTTR_NOEXCEPT;
 #endif
 
 private:

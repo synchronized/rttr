@@ -122,6 +122,12 @@ struct RTTR_API policy
      */
     struct RTTR_API prop
     {
+
+        /*!
+         * 以前的默认行为,绑定为复制值
+         */
+        static const detail::bind_as_copy        bind_as_copy;
+
         /*!
          * The \ref bind_as_ptr policy will bind a member object as *pointer* type.
          *
@@ -191,6 +197,59 @@ struct RTTR_API policy
          * \endcode
          */
         static const detail::as_reference_wrapper        as_reference_wrapper;
+
+        /*!
+         * The \ref most_as_ptr policy will bind a member object as *pointer* type.
+         *
+         * This can be useful when binding big data types, like arrays, to avoid copies during get/set of the property.
+         *
+         * See following example code:
+         * \code{.cpp}
+         * using namespace rttr;
+         * struct Foo
+         * {
+         *   std::vector<int> vec;
+         *   int intval;
+         * 
+         *   void set_val(int val) { intval = val; }
+         *   int get_val() const { return intval; }
+         * };
+         *
+         * RTTR_REGISTRATION
+         * {
+         *      registration::class_<Foo>("Foo")
+         *                   .property("vec", &Foo::vec)
+         *                   (
+         *                       policy::prop::most_as_ptr
+         *                   );
+         *                   .property("val", &Foo::get_val, &Foo::set_val)
+         *                   (
+         *                       policy::prop::most_as_ptr
+         *                   );
+         * }
+         *
+         * int main()
+         * {
+         *   Foo obj;
+         *   property prop1 = type::get<Foo>().get_property("vec");
+         *   variant var = prop1.get_value(obj);
+         *   std::cout << var.is_type<std::vector<int>*>(); // prints "true"
+         *   
+         *   //接受T, T*, std::reference_wrapper<T>
+         *   std::vector<int> some_vec(1, 12);
+         *   prop1.set_value(obj, some_vec); // T
+         *   prop1.set_value(obj, &some_vec); // T*
+         *   prop1.set_value(obj, std::ref(some_vec)); // std::reference_wrapper<T>
+         * 
+         *   property prop2 = type::get<Foo>().get_property("val");
+         *   variant var2 = prop2.get_value(obj); //只能返回int
+         *   std::cout << var2.is_type<int>(); // 输出true 因为返回值是int类型,只能返回int类型
+         * 
+         *   return 0;
+         * }
+         * \endcode
+         */
+        static const detail::most_as_ptr        most_as_ptr;
     };
 
     /*!

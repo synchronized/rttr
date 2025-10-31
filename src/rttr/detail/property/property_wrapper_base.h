@@ -72,6 +72,8 @@ class RTTR_API property_wrapper_base
 
         virtual type get_type() const RTTR_NOEXCEPT;
 
+        virtual type get_policy_type() const RTTR_NOEXCEPT;
+
         virtual variant get_metadata(const variant& key) const;
 
         virtual bool set_value(instance& object, argument& arg) const;
