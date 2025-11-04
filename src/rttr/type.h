@@ -184,6 +184,7 @@ class RTTR_API type
          *
          */
         RTTR_INLINE type(const type& other) RTTR_NOEXCEPT;
+        RTTR_INLINE type(type&& other) RTTR_NOEXCEPT;
 
         /*!
          * \brief Assigns a type to another one.
@@ -191,6 +192,7 @@ class RTTR_API type
          * \return A type object.
          */
         RTTR_INLINE type& operator=(const type& other) RTTR_NOEXCEPT;
+        RTTR_INLINE type& operator=(type&& other) RTTR_NOEXCEPT;
 
         /*!
          * \brief Comparison operator for sorting the type data according to some internal criterion.

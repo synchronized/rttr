@@ -63,8 +63,29 @@ RTTR_INLINE type::type(const type& other) RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+RTTR_INLINE type::type(type&& other) RTTR_NOEXCEPT
+:   m_type_data(other.m_type_data)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 RTTR_INLINE type& type::operator=(const type& other) RTTR_NOEXCEPT
 {
+    if (this == std::addressof(other)) {
+        return *this;
+    }
+    m_type_data = other.m_type_data;
+    return *this;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+RTTR_INLINE type& type::operator=(type&& other) RTTR_NOEXCEPT
+{
+    if (this == std::addressof(other)) {
+        return *this;
+    }
     m_type_data = other.m_type_data;
     return *this;
 }
