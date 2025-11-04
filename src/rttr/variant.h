@@ -477,7 +477,7 @@ class RTTR_API variant
          *  variant var = std::ref(value);
          *
          *  if (var.get_type().get_wrapped_type() == type::get<int>())  // yields to true
-         *    const int& ref_value = var.get_wrapped_value<int>();  // extracts the value by reference
+         *    const int& ref_value = var.get_wrapped_ref_value<int>();  // extracts the value by reference
          * \endcode
          *
          * \remark Only call this method when it is possible to return the containing value as the given type \p T.
@@ -489,7 +489,10 @@ class RTTR_API variant
          * \return A reference to the stored wrapped value.
          */
         template<typename T>
-        const T& get_wrapped_value() const;
+        const T* get_wrapped_ptr_value() const;
+
+        template<typename T>
+        const T& get_wrapped_ref_value() const;
 
         /*!
          * \brief Extracts the point raw value and copies its content into a new variant.
@@ -525,7 +528,7 @@ class RTTR_API variant
          *
          *  if (var1.get_type().get_wrapped_type() == type::get<int>())  // yields to true
          *  {
-         *     variant var2 = var1.extract_wrapped_value(); // value will be copied into "var2"
+         *     variant var2 = var1.extract_wrapped_ref_value(); // value will be copied into "var2"
          *     var2.get_type() == type::get<int>(); // yields to true
          *     const int& value2 = var2.get_value<int>();
          *     std::cout << value2 << std::endl;    // prints "23"
@@ -539,7 +542,9 @@ class RTTR_API variant
          *
          * \see type::is_wrapper()
          */
-        variant extract_wrapped_value() const;
+        variant extract_wrapped_ptr_value() const;
+
+        variant extract_wrapped_ref_value() const;
 
         /*!
          * \brief Returns `true` if the contained value can be converted to the given type \p T.
@@ -677,8 +682,8 @@ class RTTR_API variant
          *   std::size_t x = view.get_size();                               // return number of elements x = 3
          *   for (auto& item : view)                                        // iterates over all items stored in the container
          *   {
-         *      auto key = item.first.extract_wrapped_value().to_string();
-         *      auto value = item.second.extract_wrapped_value().to_string();
+         *      auto key = item.first.extract_wrapped_ref_value().to_string();
+         *      auto value = item.second.extract_wrapped_ref_value().to_string();
          *      std::cout << "key: " << key << " value: " << value << std::endl;
          *   }
          * \endcode

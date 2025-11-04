@@ -303,6 +303,10 @@ class RTTR_API type
          */
         RTTR_INLINE type get_wrapped_type() const RTTR_NOEXCEPT;
 
+        RTTR_INLINE type get_wrapped_ptr_type() const RTTR_NOEXCEPT;
+
+        RTTR_INLINE type get_remove_ptr_type() const RTTR_NOEXCEPT;
+
         /*!
          * \brief Returns a type object for the given template type \a T.
          *
@@ -1194,7 +1198,8 @@ class RTTR_API type
          * \brief Creates a wrapped value from the given argument \p arg and moves it into the
          *        the given variant \p var.
          */
-        void create_wrapped_value(const argument& arg, variant& var) const;
+        void create_wrapped_ptr_value(const argument& arg, variant& var) const;
+        void create_wrapped_ref_value(const argument& arg, variant& var) const;
 
         /*!
          * \brief Visits the current type, with the given visitor \p visitor.

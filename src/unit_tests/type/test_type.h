@@ -36,6 +36,7 @@ struct custom_wrapper
     public:
         custom_wrapper(T& obj) : m_value(std::addressof(obj)) {}
         T& get_data() const { return *m_value; }
+
     private:
         T* m_value;
 };
@@ -45,15 +46,20 @@ namespace rttr
 template<typename T>
 struct wrapper_mapper<custom_wrapper<T>>
 {
-    typedef decltype(std::declval<custom_wrapper<T>>().get_data()) wrapped_type;
-    typedef custom_wrapper<T> type;
-    inline static wrapped_type get(const type& obj)
+    using wrapped_type = T;
+    using type = custom_wrapper<T>;
+
+    inline static wrapped_type* get_pointer(const type& obj)
     {
        return obj.get_data();
     }
-    inline static type create(const wrapped_type& value)
+    inline static wrapped_type& get_reference(const type& obj)
     {
-       return custom_wrapper<T>(value);
+       return *obj.get_data();
+    }
+    inline static type create(wrapped_type* const value)
+    {
+       return custom_wrapper<T>(*value);
     }
 };
 

@@ -139,12 +139,22 @@ struct wrapper_mapper
     using wrapped_type  = typename wrapper_type::encapsulated_type;
     using type          = T;
 
-    inline static wrapped_type get(const type& obj)
+    inline static wrapped_type get_pointer(const type& obj)
     {
         return obj.get();
     }
 
-    inline static type create(const wrapped_type& value)
+    inline static wrapped_type get_reference(const type& obj)
+    {
+        return *obj.get();
+    }
+
+    inline static type create(wrapped_type* value)
+    {
+        return type(value);
+    }
+
+    inline static type create(wrapped_type& value)
     {
         return type(value);
     }

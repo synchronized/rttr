@@ -93,7 +93,7 @@ TEST_CASE("instance - wrapped derived type", "[instance]")
 
     CHECK(obj.get_derived_type() == type::get<std::shared_ptr<instance_base>>());
     CHECK(obj.get_wrapped_instance().is_valid() == true);
-    CHECK(obj.get_wrapped_instance().get_type() == type::get<instance_base*>());
+    CHECK(obj.get_wrapped_instance().get_type() == type::get<instance_base>());
     CHECK(obj.get_wrapped_instance().get_derived_type() == type::get<instance_derived>());
 }
 

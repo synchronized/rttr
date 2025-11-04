@@ -557,10 +557,18 @@ destructor type::get_destructor() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void type::create_wrapped_value(const argument& arg, variant& var) const
+void type::create_wrapped_ptr_value(const argument& arg, variant& var) const
 {
-    if (m_type_data->create_wrapper)
-        m_type_data->create_wrapper(arg, var);
+    if (m_type_data->create_wrapper_by_ptr)
+        m_type_data->create_wrapper_by_ptr(arg, var);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+void type::create_wrapped_ref_value(const argument& arg, variant& var) const
+{
+    if (m_type_data->create_wrapper_by_ref)
+        m_type_data->create_wrapper_by_ref(arg, var);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

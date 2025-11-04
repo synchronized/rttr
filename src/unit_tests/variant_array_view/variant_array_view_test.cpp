@@ -851,12 +851,19 @@ TEST_CASE("variant_array_view::get_value_as_ref", "[variant_array_view]")
         variant var_value = array_view.get_value_as_ref(0);
         CHECK(var_value.get_type() == type::get<std::reference_wrapper<int>>());
 
-        auto& value_ref = var_value.get_wrapped_value<int>();
-        CHECK(value_ref == 1);
+        auto value_ref = var_value.get_wrapped_ptr_value<int>();
+        CHECK(*value_ref == 1);
 
-        variant extr_var = var_value.extract_wrapped_value();
-        REQUIRE(extr_var.get_type()     == type::get<int>());
-        CHECK(extr_var.get_value<int>() == 1);
+        variant extr_var = var_value.extract_wrapped_ptr_value();
+        REQUIRE(extr_var.get_type()     == type::get<int*>());
+        CHECK(*extr_var.get_value<int*>() == 1);
+
+        auto& value_ref2 = var_value.get_wrapped_ref_value<int>();
+        CHECK(value_ref2 == 1);
+
+        variant extr_var2 = var_value.extract_wrapped_ref_value();
+        REQUIRE(extr_var2.get_type()     == type::get<int>());
+        CHECK(extr_var2.get_value<int>() == 1);
     }
 
     SECTION("negative test")

@@ -81,8 +81,8 @@ namespace rttr
  *      for (const auto& item : view)
  *      {
  *          // remark that the key and value are stored inside a 'std::reference_wrapper'
- *          std::cout << "Key: " << item.first.extract_wrapped_value().to_string() << " ";
- *          std::cout << "Value: " << item.second.extract_wrapped_value().to_string() << std::endl;
+ *          std::cout << "Key: " << item.first.extract_wrapped_ref_value().to_string() << " ";
+ *          std::cout << "Value: " << item.second.extract_wrapped_ref_value().to_string() << std::endl;
  *      }
  *  }
  * \endcode
@@ -250,7 +250,7 @@ class RTTR_API variant_associative_view
          *      auto range = view.equal_range(i);
          *      for (auto itr = range.first; itr != range.second; ++itr)
          *      {
-         *          std::cout << " " << itr.value().extract_wrapped_value().to_string();
+         *          std::cout << " " << itr.value().extract_wrapped_ref_value().to_string();
          *      }
          *      std::cout << std::endl;
          *  }
@@ -304,8 +304,8 @@ class RTTR_API variant_associative_view
          *      for (const auto& item : view)
          *      {
          *          // remark that the key and value are stored inside a 'std::reference_wrapper'
-         *          std::cout << "Key: " << item.first.extract_wrapped_value().to_string() << " ";
-         *          std::cout << "Value: " << item.second.extract_wrapped_value().to_string() << std::endl;
+         *          std::cout << "Key: " << item.first.extract_wrapped_ref_value().to_string() << " ";
+         *          std::cout << "Value: " << item.second.extract_wrapped_ref_value().to_string() << std::endl;
          *      }
          *  }
          * \endcode
@@ -337,7 +337,8 @@ class RTTR_API variant_associative_view
                  * Returns the underlying key and value stored in a `std::pair<key, value>`.
                  * The actual data in the variant is stored inside a `std::reference_wrapper<T>`
                  *
-                 * \see variant::extract_wrapped_value(), variant::get_wrapped_value<T>()
+                 * \see variant::extract_wrapped_ptr_value(), variant::get_wrapped_ptr_value<T>()
+                 *      variant::extract_wrapped_ref_value(), variant::get_wrapped_ref_value<T>()
                  */
                 const std::pair<variant, variant> operator*() const;
 
@@ -345,7 +346,8 @@ class RTTR_API variant_associative_view
                  * \brief Returns the current key, stored inside a `std::reference_wrapper<T>`
                  *        and copied to a variant.
                  *
-                 * \see variant::extract_wrapped_value(), variant::get_wrapped_value<T>()
+                 * \see variant::extract_wrapped_ptr_value(), variant::get_wrapped_ptr_value<T>()
+                 *      variant::extract_wrapped_ref_value(), variant::get_wrapped_ref_value<T>()
                  */
                 const variant get_key() const;
 
@@ -353,7 +355,8 @@ class RTTR_API variant_associative_view
                  * \brief Returns the current value, stored inside a `std::reference_wrapper<T>`
                  *        and copied to a variant.
                  *
-                 * \see variant::extract_wrapped_value(), variant::get_wrapped_value<T>()
+                 * \see variant::extract_wrapped_ptr_value(), variant::get_wrapped_ptr_value<T>()
+                 *      variant::extract_wrapped_ref_value(), variant::get_wrapped_ref_value<T>()
                  */
                 const variant get_value() const;
 

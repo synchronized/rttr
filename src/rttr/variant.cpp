@@ -163,7 +163,7 @@ variant::operator bool() const
 variant variant::operator *() {
     auto var_type = get_type();
     if (var_type.is_wrapper()) {
-        return extract_wrapped_value();
+        return extract_wrapped_ptr_value();
     }
     if (var_type.is_pointer()) {
         return extract_pointer_value();
@@ -212,10 +212,19 @@ variant variant::extract_pointer_value() const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant variant::extract_wrapped_value() const
+variant variant::extract_wrapped_ptr_value() const
 {
     variant var;
-    m_policy(detail::variant_policy_operation::EXTRACT_WRAPPED_VALUE, m_data, var);
+    m_policy(detail::variant_policy_operation::EXTRACT_WRAPPED_PTR_VALUE, m_data, var);
+    return var;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+variant variant::extract_wrapped_ref_value() const
+{
+    variant var;
+    m_policy(detail::variant_policy_operation::EXTRACT_WRAPPED_REF_VALUE, m_data, var);
     return var;
 }
 
@@ -224,7 +233,13 @@ variant variant::extract_wrapped_value() const
 variant variant::create_wrapped_value(const type& wrapped_type) const
 {
     variant var;
-    m_policy(detail::variant_policy_operation::CREATE_WRAPPED_VALUE, m_data, std::tie(var, wrapped_type));
+    const type var_type = get_type();
+    if (var_type == wrapped_type.get_wrapped_type()) {
+        m_policy(detail::variant_policy_operation::CREATE_WRAPPED_REF_VALUE, m_data, std::tie(var, wrapped_type));
+    }
+    if (var_type.is_pointer() && var_type.get_remove_ptr_type() == wrapped_type.get_wrapped_type()) {
+        m_policy(detail::variant_policy_operation::CREATE_WRAPPED_PTR_VALUE, m_data, std::tie(var, wrapped_type));
+    }
     return var;
 }
 
@@ -268,6 +283,9 @@ bool variant::can_convert(const type& target_type) const
     if (source_type == target_type)
         return true;
 
+    if (source_type.is_pointer() && source_type.get_remove_ptr_type() == target_type)
+        return true;
+
     if (source_type.get_pointer_dimension() == 1 && target_type.get_pointer_dimension() == 1)
     {
         if (type::apply_offset(get_raw_ptr(), source_type, target_type))
@@ -276,8 +294,14 @@ bool variant::can_convert(const type& target_type) const
 
     if (!source_type.is_wrapper() && target_type.is_wrapper())
     {
-        if (target_type.get_wrapped_type() == source_type && target_type.m_type_data->create_wrapper)
+        const type target_wrapped_type = target_type.get_wrapped_type();
+        if (source_type == target_wrapped_type && target_type.m_type_data->create_wrapper_by_ref)
             return true;
+
+        if (source_type.is_pointer())  {
+            if (source_type.get_remove_ptr_type() == target_wrapped_type && target_type.m_type_data->create_wrapper_by_ptr)
+                return true;
+        }
     }
 
     if (source_type.get_type_converter(target_type))
@@ -322,19 +346,40 @@ bool variant::convert(const type& target_type, variant& target_var) const
         target_var = *this;
         return true; // the current variant is already the target type, we don't need to do anything
     }
-    else if (!source_type.is_wrapper() && target_type.is_wrapper() &&
-             target_type.get_wrapped_type() == source_type)
-    {
-        target_var = create_wrapped_value(target_type);
-        ok = target_var.is_valid();
+    if (!source_type.is_wrapper() && target_type.is_wrapper()) {
+        const type target_wrapped_type = target_type.get_wrapped_type();
+        if (source_type == target_wrapped_type) {
+            target_var = create_wrapped_value(target_type);
+            return target_var.is_valid();
+        } 
+        if (source_type.is_pointer() && source_type.get_remove_ptr_type() == target_wrapped_type) {
+            target_var = create_wrapped_value(target_type);
+            return target_var.is_valid();
+        }
     }
-    else if (source_type.is_wrapper() && !target_type.is_wrapper())
+    if (source_type.is_wrapper() && !target_type.is_wrapper())
     {
-        variant var = extract_wrapped_value();
-        ok = var.convert(target_type);
-        target_var = var;
+        const type source_wrapped_type = source_type.get_wrapped_type();
+        if (source_wrapped_type == target_type) {
+            variant var = extract_wrapped_ref_value();
+            ok = var.convert(target_type);
+            target_var = var;
+            return ok;
+        }
+        if (target_type.is_pointer() && source_wrapped_type == target_type.get_remove_ptr_type()) {
+            variant var = extract_wrapped_ptr_value();
+            ok = var.convert(target_type);
+            target_var = var;
+            return ok;
+        } 
+        if (source_wrapped_type.is_pointer() && source_wrapped_type.get_remove_ptr_type() == target_type) {
+            variant var = extract_wrapped_ref_value();
+            ok = var.convert(target_type);
+            target_var = var;
+            return ok;
+        }
     }
-    else if ((source_is_arithmetic && target_is_arithmetic) ||
+    if ((source_is_arithmetic && target_is_arithmetic) ||
             (source_is_arithmetic && target_type == string_type) ||
             (source_type == string_type && target_is_arithmetic) ||
             (source_type.is_enumeration() && target_is_arithmetic) ||

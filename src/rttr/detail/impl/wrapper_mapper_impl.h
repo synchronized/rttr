@@ -45,17 +45,26 @@ class type;
 template<typename T>
 struct wrapper_mapper<std::shared_ptr<T>>
 {
-    using wrapped_type = decltype(std::shared_ptr<T>().get());
+    using wrapped_type = typename std::shared_ptr<T>::element_type;
     using type = std::shared_ptr<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static RTTR_INLINE wrapped_type* get_pointer(const type& obj)
     {
         return obj.get();
     }
 
-    static RTTR_INLINE type create(const wrapped_type& t)
+    static RTTR_INLINE wrapped_type& get_reference(const type& obj)
+    {
+        return *obj.get();
+    }
+
+    static RTTR_INLINE type create(wrapped_type* const t)
     {
         return type(t);
+    }
+    static RTTR_INLINE type create(wrapped_type& t)
+    {
+        return std::make_shared<T>(t);
     }
 
     template<typename U>
@@ -79,17 +88,22 @@ struct wrapper_mapper<std::shared_ptr<T>>
 template<typename T>
 struct wrapper_mapper<std::reference_wrapper<T>>
 {
-    using wrapped_type  = decltype(std::declval<std::reference_wrapper<T>>().get());
+    using wrapped_type  = typename std::reference_wrapper<T>::type;
     using type          = std::reference_wrapper<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static RTTR_INLINE wrapped_type* get_pointer(const type& obj)
+    {
+        return std::addressof(obj.get());
+    }
+
+    static RTTR_INLINE wrapped_type& get_reference(const type& obj)
     {
         return obj.get();
     }
 
-    static RTTR_INLINE type create(const wrapped_type& t)
+    static RTTR_INLINE type create(wrapped_type* const t)
     {
-        return type(t);
+        return type(*t);
     }
 };
 
@@ -98,17 +112,26 @@ struct wrapper_mapper<std::reference_wrapper<T>>
 template<typename T>
 struct wrapper_mapper<std::unique_ptr<T>>
 {
-    using wrapped_type  = decltype(std::declval<std::unique_ptr<T>>().get());
+    using wrapped_type  = typename std::unique_ptr<T>::element_type;
     using type          = std::unique_ptr<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static RTTR_INLINE wrapped_type* get_pointer(const type& obj)
     {
         return obj.get();
     }
 
-    static RTTR_INLINE type create(const wrapped_type& t)
+    static RTTR_INLINE wrapped_type& get_reference(const type& obj)
+    {
+        return *obj.get();
+    }
+
+    static RTTR_INLINE type create(wrapped_type* const t)
     {
         return type(t);
+    }
+    static RTTR_INLINE type create(wrapped_type& t)
+    {
+        return std::make_unique<T>(t);
     }
 };
 
@@ -117,12 +140,17 @@ struct wrapper_mapper<std::unique_ptr<T>>
 template<typename T>
 struct wrapper_mapper<std::weak_ptr<T>>
 {
-    using wrapped_type  = decltype(std::declval<std::weak_ptr<T>>().lock().get());
+    using wrapped_type  = typename std::shared_ptr<T>::element_type;
     using type          = std::weak_ptr<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static RTTR_INLINE wrapped_type* get_pointer(const type& obj)
     {
         return obj.lock().get();
+    }
+
+    static RTTR_INLINE wrapped_type& get_reference(const type& obj)
+    {
+        return *obj.lock().get();
     }
 
     // there is no create method because, weak pointer can only be created by a referencing a shared_ptr.
@@ -157,7 +185,7 @@ template<typename T>
 typename std::enable_if<is_wrapper<T>::value, raw_addressof_return_type_t< wrapper_mapper_t<T>> >::type wrapped_raw_addressof(T& obj)
 {
     using raw_wrapper_type = remove_cv_t<remove_reference_t<T>>;
-    wrapper_mapper_t<T> value = wrapper_mapper<raw_wrapper_type>::get(obj);
+    wrapper_mapper_t<T>* value = wrapper_mapper<raw_wrapper_type>::get_pointer(obj);
     return raw_addressof(value);
 }
 
@@ -176,12 +204,31 @@ typename std::enable_if<!is_wrapper<T>::value, raw_addressof_return_type_t<T>>::
  * 'wrapper create(const wrapper_type&)' declared.
  */
 template <typename T, typename Tp = typename std::remove_cv<typename std::remove_reference<T>::type>::type>
-class has_create_wrapper_func_impl
+class has_ptr_create_wrapper_func_impl
 {
     using YesType = char[1];
     using NoType  = char[2];
 
-    template <typename U, typename V, U (*)(const V&)>
+    template <typename U, typename V, U (*)(V*const)>
+    class check { };
+
+    template <typename C>
+    static YesType& f(check<C, wrapper_mapper_t<C>, &wrapper_mapper<C>::create>*);
+
+    template <typename C>
+    static NoType& f(...);
+
+public:
+    static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<Tp>(0)) == sizeof(YesType));
+};
+
+template <typename T, typename Tp = typename std::remove_cv<typename std::remove_reference<T>::type>::type>
+class has_ref_create_wrapper_func_impl
+{
+    using YesType = char[1];
+    using NoType  = char[2];
+
+    template <typename U, typename V, U (*)(V&)>
     class check { };
 
     template <typename C>
@@ -195,7 +242,10 @@ public:
 };
 
 template<typename T>
-using has_create_wrapper_func = std::integral_constant<bool, has_create_wrapper_func_impl<T>::value>;
+using has_ptr_create_wrapper_func = std::integral_constant<bool, has_ptr_create_wrapper_func_impl<T>::value>;
+
+template<typename T>
+using has_ref_create_wrapper_func = std::integral_constant<bool, has_ref_create_wrapper_func_impl<T>::value>;
 
 //////////////////////////////////////////////////////////////////////////////////////
 

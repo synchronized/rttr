@@ -145,6 +145,21 @@ bool type_register::unregister_enumeration(enumeration_wrapper_base* enum_data)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+void type_register::register_class_ptr(type& t, type& ptr_t)
+{
+    t.m_type_data->ptr_type_data = ptr_t.m_type_data;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+bool type_register::unregister_class_ptr(type& t, type& ptr_t)
+{
+    t.m_type_data->ptr_type_data = nullptr;
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 void type_register::custom_name(type& t, string_view custom_name)
 {
      type_register_private::get_instance().register_custom_name(t, custom_name);

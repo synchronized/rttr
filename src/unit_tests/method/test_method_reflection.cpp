@@ -469,7 +469,7 @@ TEST_CASE("Invoke method via wrapper", "[method]")
 
         type wrapper_t = obj_t.get_wrapped_type();
         REQUIRE(wrapper_t.is_wrapper() == false);
-        REQUIRE(wrapper_t == type::get<method_test*>());
+        REQUIRE(wrapper_t == type::get<method_test>());
         method m1 = wrapper_t.get_method("method_1");
 
         variant ret = m1.invoke(obj);
@@ -486,7 +486,7 @@ TEST_CASE("Invoke method via wrapper", "[method]")
 
         type wrapper_t = obj_t.get_wrapped_type();
         REQUIRE(wrapper_t.is_wrapper() == false);
-        REQUIRE(wrapper_t == type::get<method_test*>());
+        REQUIRE(wrapper_t == type::get<method_test>());
         method m1 = wrapper_t.get_method("method_1");
 
         variant ret = m1.invoke(var);

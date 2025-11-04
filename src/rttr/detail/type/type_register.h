@@ -103,6 +103,9 @@ public:
     static bool register_enumeration(enumeration_wrapper_base* enum_data);
     static bool unregister_enumeration(enumeration_wrapper_base* enum_data);
 
+    static void register_class_ptr(type& t, type& ptr_t);
+    static bool unregister_class_ptr(type& t, type& ptr_t);
+
     static void custom_name(type& t, string_view name);
 
     static void metadata( const type& t, std::vector<metadata> data);

@@ -158,7 +158,18 @@ RTTR_INLINE const T& variant::get_value() const
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE const T& variant::get_wrapped_value() const
+RTTR_INLINE const T* variant::get_wrapped_ptr_value() const
+{
+    detail::data_address_container result{detail::get_invalid_type(), detail::get_invalid_type(), nullptr, nullptr};
+    m_policy(detail::variant_policy_operation::GET_ADDRESS_CONTAINER, m_data, result);
+    using nonRef = detail::remove_cv_t<T>;
+    return reinterpret_cast<const nonRef*>(result.m_data_address_wrapped_type);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+RTTR_INLINE const T& variant::get_wrapped_ref_value() const
 {
     detail::data_address_container result{detail::get_invalid_type(), detail::get_invalid_type(), nullptr, nullptr};
     m_policy(detail::variant_policy_operation::GET_ADDRESS_CONTAINER, m_data, result);
@@ -306,17 +317,42 @@ RTTR_INLINE bool variant::convert(T& value) const
     const type target_type = type::get<T>();
     if (source_type.is_wrapper() && !target_type.is_wrapper())
     {
-        variant var = extract_wrapped_value();
-        return var.convert<T>(value);
+        //source_type = type::get<wrapper<T>>()
+        //target_type = type::get<T>()
+        const type source_wrapped_type = source_type.get_wrapped_type();
+        if (source_wrapped_type == target_type) {
+            variant var = extract_wrapped_ref_value();
+            return var.convert<T>(value);
+        }
+        //source_type = type::get<wrapper<T*>>(), 
+        //target_type = type::get<T>()
+        if (source_wrapped_type.is_pointer() && source_wrapped_type.get_remove_ptr_type() == target_type) {
+            variant var = extract_wrapped_ref_value();
+            return var.convert<T>(value);
+        }
+        //source_type = type::get<wrapper<T>>(), 
+        //target_type = type::get<T*>()
+        if (target_type.is_pointer() && source_wrapped_type == target_type.get_remove_ptr_type()) {
+            variant var = extract_wrapped_ptr_value();
+            return var.convert<T>(value);
+        }
     }
-    else if (!source_type.is_wrapper() && target_type.is_wrapper() &&
-             target_type.get_wrapped_type() == source_type)
+    if (!source_type.is_wrapper() && target_type.is_wrapper())
     {
-        variant var = create_wrapped_value(target_type);
-        if ((ok = var.is_valid()) == true)
-            value = var.get_value<T>();
+        if (target_type.get_wrapped_type() == source_type) {
+            variant var = create_wrapped_value(target_type);
+            if ((ok = var.is_valid()) == true)
+                value = var.get_value<T>();
+            return ok;
+        } 
+        if (source_type.is_pointer() && target_type.get_wrapped_type() == source_type.get_remove_ptr_type()) {
+            variant var = create_wrapped_value(target_type);
+            if ((ok = var.is_valid()) == true)
+                value = var.get_value<T>();
+            return ok;
+        }
     }
-    else if (target_type == source_type)
+    if (target_type == source_type)
     {
         value = const_cast<variant&>(*this).get_value<T>();
         ok = true;
@@ -337,7 +373,7 @@ RTTR_INLINE bool variant::convert(T& value) const
     }
     else if (source_type.is_pointer() && !target_type.is_pointer() && 
              source_type.get_pointer_dimension() == 1 &&
-             source_type.get_raw_type() == target_type) 
+             source_type.get_remove_ptr_type() == target_type) 
     {
         variant var = extract_pointer_value();
         return var.convert<T>(value);

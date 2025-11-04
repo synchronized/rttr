@@ -694,7 +694,7 @@ TEST_CASE("variant test - convert from wrapped value", "[variant]")
         auto raw_ptr = new int(42);
         variant var = std::shared_ptr<int>(raw_ptr);
 
-        CHECK(var.can_convert(type::get<int*>()) == true);
+        CHECK(var.can_convert(type::get<int>()) == true);
 
         bool ok = false;
         auto val = var.convert<int*>(&ok);
@@ -784,7 +784,7 @@ TEST_CASE("variant test - convert to wrapped value", "[variant]")
         CHECK(var.can_convert(type::get<std::unique_ptr<int>>())        == false);
         CHECK(var.can_convert(type::get<std::reference_wrapper<int>>()) == false);
         CHECK(var.can_convert(type::get<std::weak_ptr<int>>())          == false);
-        CHECK(var.can_convert(type::get<std::shared_ptr<int>>())        == false);
+        CHECK(var.can_convert(type::get<std::shared_ptr<int>>())        == true);
 
         var = &obj;
 

@@ -588,14 +588,19 @@ TEST_CASE("Test rttr::type - get_template_arguments()", "[type]")
 
 TEST_CASE("Test rttr::type - Check get_wrapped_type", "[type]")
 {
-    CHECK(type::get<std::shared_ptr<int>>().get_wrapped_type()          == type::get<int*>());
-    CHECK(type::get<std::reference_wrapper<int>>().get_wrapped_type()   == type::get<int>());
+    CHECK(type::get<std::shared_ptr<int>>().get_wrapped_type()            == type::get<int>());
+    CHECK(type::get<std::shared_ptr<int>>().get_wrapped_ptr_type()        == type::get<int*>());
+    CHECK(type::get<std::reference_wrapper<int>>().get_wrapped_type()     == type::get<int>());
+    CHECK(type::get<std::reference_wrapper<int>>().get_wrapped_ptr_type() == type::get<int*>());
 
-    CHECK(type::get<std::shared_ptr<const int>>().get_wrapped_type()          == type::get<const int*>());
-    CHECK(type::get<std::reference_wrapper<const int>>().get_wrapped_type()   == type::get<int>());
+    CHECK(type::get<std::shared_ptr<const int>>().get_wrapped_type()            == type::get<const int>());
+    CHECK(type::get<std::shared_ptr<const int>>().get_wrapped_ptr_type()        == type::get<const int*>());
+    CHECK(type::get<std::reference_wrapper<const int>>().get_wrapped_type()     == type::get<int>());
+    CHECK(type::get<std::reference_wrapper<const int>>().get_wrapped_ptr_type() == type::get<const int*>());
 
     std::shared_ptr<ClassSingle6A> sharedPtr = std::make_shared<ClassSingle6A>();
-    CHECK(type::get(sharedPtr).get_wrapped_type()           == type::get<ClassSingle6A*>());
+    CHECK(type::get(sharedPtr).get_wrapped_type()           == type::get<ClassSingle6A>());
+    CHECK(type::get(sharedPtr).get_wrapped_ptr_type()           == type::get<ClassSingle6A*>());
 
     // negative test
     CHECK(type::get<int>().get_wrapped_type().is_valid()    == false);

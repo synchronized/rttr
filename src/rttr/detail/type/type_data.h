@@ -132,7 +132,10 @@ struct RTTR_LOCAL type_data
 {
     type_data* raw_type_data;
     type_data* wrapped_type;
+    type_data* wrapped_ptr_type;
     type_data* array_raw_type;
+    type_data* remove_ptr_type;
+    type_data* ptr_type_data;
 
     std::string name;
     string_view type_name;
@@ -146,7 +149,8 @@ struct RTTR_LOCAL type_data
 
     enumeration_wrapper_base*  enum_wrapper;
     impl::get_metadata_func    get_metadata;
-    impl::create_wrapper_func  create_wrapper;
+    impl::create_wrapper_func  create_wrapper_by_ptr;
+    impl::create_wrapper_func  create_wrapper_by_ref;
     impl::visit_type_func      visit_type;
 
     bool is_valid;
@@ -216,6 +220,25 @@ struct RTTR_LOCAL array_raw_type<T, false>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+template<typename T, bool = std::is_pointer<T>::value && !is_void_pointer<T>::value>
+struct RTTR_LOCAL remove_ptr_type_info
+{
+    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { 
+        //return get_invalid_type();
+        return type::get<remove_pointer_t<T>>(); 
+    }
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+struct RTTR_LOCAL remove_ptr_type_info<T, false>
+{
+    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return get_invalid_type(); }
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 template<typename T, bool = is_wrapper<T>::value>
 struct RTTR_LOCAL wrapper_type_info
 {
@@ -232,14 +255,29 @@ struct RTTR_LOCAL wrapper_type_info<T, false>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename Wrapper, typename Wrapped_Type>
-RTTR_LOCAL RTTR_INLINE void create_wrapper(const argument& arg, variant& var)
+template<typename T, bool = is_wrapper<T>::value>
+struct RTTR_LOCAL wrapper_ptr_type_info
 {
-    if (arg.get_type() != type::get<Wrapped_Type>())
-        return;
+    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return type::get<wrapper_mapper_t<T>*>(); }
+};
 
-    auto& wrapped_type = arg.get_value<Wrapped_Type>();
-    var = wrapper_mapper<Wrapper>::create(wrapped_type);
+/////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+struct RTTR_LOCAL wrapper_ptr_type_info<T, false>
+{
+    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return get_invalid_type(); }
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename Wrapper, typename Wrapped_Type>
+RTTR_LOCAL RTTR_INLINE void create_wrapper_by_ptr(const argument& arg, variant& var)
+{
+    if (arg.get_type() == type::get<Wrapped_Type*>()) {
+        auto wrapped_type = arg.get_value<Wrapped_Type*>();
+        var = wrapper_mapper<Wrapper>::create(wrapped_type);
+    }
 }
 
 template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
@@ -247,10 +285,10 @@ RTTR_LOCAL RTTR_INLINE
 enable_if_t<is_wrapper<Wrapper>::value &&
             ::rttr::detail::is_copy_constructible<Wrapper>::value &&
             std::is_default_constructible<Wrapper>::value &&
-            has_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
-get_create_wrapper_func()
+            has_ptr_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
+get_ptr_create_wrapper_func()
 {
-    return &create_wrapper<Wrapper, Tp>;
+    return &create_wrapper_by_ptr<Wrapper, Tp>;
 }
 
 
@@ -259,8 +297,48 @@ RTTR_LOCAL RTTR_INLINE
 enable_if_t<!is_wrapper<Wrapper>::value ||
             !::rttr::detail::is_copy_constructible<Wrapper>::value ||
             !std::is_default_constructible<Wrapper>::value ||
-            !has_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
-get_create_wrapper_func()
+            !has_ptr_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
+get_ptr_create_wrapper_func()
+{
+    return nullptr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename Wrapper, typename Wrapped_Type>
+RTTR_LOCAL RTTR_INLINE void create_wrapper_by_ref(const argument& arg, variant& var)
+{
+    if (arg.get_type() == type::get<Wrapped_Type>()) {
+        auto& wrapped_type = arg.get_value<Wrapped_Type>();
+        var = wrapper_mapper<Wrapper>::create(wrapped_type);
+    }
+}
+
+template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
+RTTR_LOCAL RTTR_INLINE
+enable_if_t<is_wrapper<Wrapper>::value &&
+            ::rttr::detail::is_copy_constructible<Wrapper>::value &&
+            (
+                std::is_copy_constructible<Tp>::value ||
+                std::is_array<Tp>::value
+            ) &&
+            has_ref_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
+get_ref_create_wrapper_func()
+{
+    return &create_wrapper_by_ref<Wrapper, Tp>;
+}
+
+
+template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
+RTTR_LOCAL RTTR_INLINE
+enable_if_t<!is_wrapper<Wrapper>::value ||
+            !::rttr::detail::is_copy_constructible<Wrapper>::value ||
+            !(
+                std::is_copy_constructible<Tp>::value ||
+                std::is_array<Tp>::value
+            ) ||
+            !has_ref_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
+get_ref_create_wrapper_func()
 {
     return nullptr;
 }
@@ -302,8 +380,12 @@ RTTR_LOCAL std::unique_ptr<type_data> make_type_data()
                (
                         new type_data
                         {
-                            raw_type_info<T>::get_type().m_type_data, wrapper_type_info<T>::get_type().m_type_data,
+                            raw_type_info<T>::get_type().m_type_data,
+                            wrapper_type_info<T>::get_type().m_type_data,
+                            wrapper_ptr_type_info<T>::get_type().m_type_data,
                             array_raw_type<T>::get_type().m_type_data,
+                            remove_ptr_type_info<T>::get_type().m_type_data,
+                            get_invalid_type().m_type_data,
 
                             ::rttr::detail::get_type_name<T>().to_string(), ::rttr::detail::get_type_name<T>(),
 
@@ -314,7 +396,8 @@ RTTR_LOCAL std::unique_ptr<type_data> make_type_data()
                             &base_classes<T>::get_types,
                             nullptr,
                             &get_metadata_func_impl<T>,
-                            get_create_wrapper_func<T>(),
+                            get_ptr_create_wrapper_func<T>(),
+                            get_ref_create_wrapper_func<T>(),
 
                             nullptr,
                             true,

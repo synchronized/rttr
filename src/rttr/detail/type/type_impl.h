@@ -169,6 +169,20 @@ RTTR_INLINE type type::get_wrapped_type() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+RTTR_INLINE type type::get_wrapped_ptr_type() const RTTR_NOEXCEPT
+{
+    return type(m_type_data->wrapped_ptr_type);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+RTTR_INLINE type type::get_remove_ptr_type() const RTTR_NOEXCEPT
+{
+    return type(m_type_data->remove_ptr_type);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 RTTR_INLINE type type::get_raw_array_type() const RTTR_NOEXCEPT
 {
     return type(m_type_data->array_raw_type);

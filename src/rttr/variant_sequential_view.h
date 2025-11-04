@@ -332,7 +332,8 @@ class RTTR_API variant_sequential_view
                  * When the data cannot be returns as reference from the container, the data is stored directly inside the variant.
                  * E.g. for `std::vector<bool>` no reference can be returned.
                  *
-                 * \see variant::extract_wrapped_value(), variant::get_wrapped_value<T>()
+                 * \see variant::extract_wrapped_ptr_value(), variant::get_wrapped_tr_value<T>()
+                 *      variant::extract_wrapped_ref_value(), variant::get_wrapped_ref_value<T>()
                  */
                 const variant operator*() const;
 
@@ -340,7 +341,8 @@ class RTTR_API variant_sequential_view
                  * \brief Returns the current value, stored inside a `std::reference_wrapper<T>`
                  *        and copied to a variant.
                  *
-                 * \see operator*(), variant::extract_wrapped_value(), variant::get_wrapped_value<T>()
+                 * \see operator*(), variant::extract_wrapped_ptr_value(), variant::get_wrapped_ptr_value<T>()
+                 *      variant::extract_wrapped_ref_value(), variant::get_wrapped_ref_value<T>()
                  */
                 const variant get_data() const;
 

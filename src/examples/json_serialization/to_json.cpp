@@ -125,7 +125,7 @@ static void write_array(const variant_sequential_view& view, PrettyWriter<String
         }
         else
         {
-            variant wrapped_var = item.extract_wrapped_value();
+            variant wrapped_var = item.extract_wrapped_ptr_value();
             type value_type = wrapped_var.get_type();
             if (value_type.is_arithmetic() || value_type == type::get<std::string>() || value_type.is_enumeration())
             {
@@ -186,7 +186,7 @@ bool write_variant(const variant& var, PrettyWriter<StringBuffer>& writer)
     bool is_wrapper = wrapped_type != value_type;
 
     if (write_atomic_types_to_json(is_wrapper ? wrapped_type : value_type,
-                                   is_wrapper ? var.extract_wrapped_value() : var, writer))
+                                   is_wrapper ? var.extract_wrapped_ptr_value() : var, writer))
     {
     }
     else if (var.is_sequential_container())

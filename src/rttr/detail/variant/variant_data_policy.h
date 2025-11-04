@@ -123,8 +123,10 @@ enum class variant_policy_operation : uint8_t
     CLONE,
     SWAP,
     EXTRACT_POINTER_VALUE,
-    EXTRACT_WRAPPED_VALUE,
-    CREATE_WRAPPED_VALUE,
+    EXTRACT_WRAPPED_PTR_VALUE,
+    EXTRACT_WRAPPED_REF_VALUE,
+    CREATE_WRAPPED_PTR_VALUE,
+    CREATE_WRAPPED_REF_VALUE,
     GET_VALUE,
     GET_TYPE,
     GET_PTR,
@@ -179,18 +181,38 @@ template<typename T>
 using is_copyable = std::is_copy_constructible<T>;
 
 template<typename T, typename Tp = decay_except_array_t<wrapper_mapper_t<T>> >
-enable_if_t<is_copyable<Tp>::value &&
-            is_wrapper<T>::value, variant> get_wrapped_value(T& value)
+enable_if_t<is_wrapper<T>::value, variant> get_wrapped_ptr_value(T& value)
 {
     using raw_wrapper_type = remove_cv_t<remove_reference_t<T>>;
-    return variant(wrapper_mapper<raw_wrapper_type>::get(value));
+    return variant(wrapper_mapper<raw_wrapper_type>::get_pointer(value));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T, typename Tp = decay_except_array_t<wrapper_mapper_t<T>>>
+enable_if_t<!is_wrapper<T>::value, variant> get_wrapped_ptr_value(T& value)
+{
+    return variant();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+template<typename T>
+using is_copyable = std::is_copy_constructible<T>;
+
+template<typename T, typename Tp = decay_except_array_t<wrapper_mapper_t<T>> >
+enable_if_t<is_copyable<Tp>::value &&
+            is_wrapper<T>::value, variant> get_wrapped_ref_value(T& value)
+{
+    using raw_wrapper_type = remove_cv_t<remove_reference_t<T>>;
+    return variant(wrapper_mapper<raw_wrapper_type>::get_reference(value));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename Tp = decay_except_array_t<wrapper_mapper_t<T>>>
 enable_if_t<!is_copyable<Tp>::value ||
-            !is_wrapper<T>::value, variant> get_wrapped_value(T& value)
+            !is_wrapper<T>::value, variant> get_wrapped_ref_value(T& value)
 {
     return variant();
 }
@@ -287,18 +309,32 @@ struct variant_data_base_policy
                 arg.get_value<variant>() = std::move(var);
                 break;
             }
-            case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_PTR_VALUE:
             {
-                arg.get_value<variant>() = get_wrapped_value(Tp::get_value(src_data));
+                arg.get_value<variant>() = get_wrapped_ptr_value(Tp::get_value(src_data));
                 break;
             }
-            case variant_policy_operation::CREATE_WRAPPED_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_REF_VALUE:
+            {
+                arg.get_value<variant>() = get_wrapped_ref_value(Tp::get_value(src_data));
+                break;
+            }
+            case variant_policy_operation::CREATE_WRAPPED_PTR_VALUE:
             {
                 const auto& params          = arg.get_value<std::tuple<variant&, const type&>>();
                 variant& var                = std::get<0>(params);
                 const type& wrapper_type    = std::get<1>(params);
 
-                wrapper_type.create_wrapped_value(Tp::get_value(src_data), var);
+                wrapper_type.create_wrapped_ptr_value(Tp::get_value(src_data), var);
+                break;
+            }
+            case variant_policy_operation::CREATE_WRAPPED_REF_VALUE:
+            {
+                const auto& params          = arg.get_value<std::tuple<variant&, const type&>>();
+                variant& var                = std::get<0>(params);
+                const type& wrapper_type    = std::get<1>(params);
+
+                wrapper_type.create_wrapped_ref_value(Tp::get_value(src_data), var);
                 break;
             }
             case variant_policy_operation::GET_VALUE:
@@ -684,8 +720,10 @@ struct RTTR_API variant_data_policy_empty
             case variant_policy_operation::DESTROY:
             case variant_policy_operation::CLONE:
             case variant_policy_operation::SWAP:
-            case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
-            case variant_policy_operation::CREATE_WRAPPED_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_PTR_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_REF_VALUE:
+            case variant_policy_operation::CREATE_WRAPPED_PTR_VALUE:
+            case variant_policy_operation::CREATE_WRAPPED_REF_VALUE:
             {
                 break;
             }
@@ -804,7 +842,8 @@ struct RTTR_API variant_data_policy_void
             case variant_policy_operation::DESTROY:
             case variant_policy_operation::CLONE:
             case variant_policy_operation::SWAP:
-            case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_PTR_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_REF_VALUE:
             {
                 break;
             }
@@ -870,7 +909,8 @@ struct RTTR_API variant_data_policy_void
             {
                 break;
             }
-            case variant_policy_operation::CREATE_WRAPPED_VALUE:
+            case variant_policy_operation::CREATE_WRAPPED_PTR_VALUE:
+            case variant_policy_operation::CREATE_WRAPPED_REF_VALUE:
             {
                 return false;
             }
@@ -962,11 +1002,13 @@ struct RTTR_API variant_data_policy_nullptr_t
                 swap(get_value(src_data), arg.get_value<variant_data>());
                 break;
             }
-            case variant_policy_operation::CREATE_WRAPPED_VALUE:
+            case variant_policy_operation::CREATE_WRAPPED_PTR_VALUE:
+            case variant_policy_operation::CREATE_WRAPPED_REF_VALUE:
             {
                 return false;
             }
-            case variant_policy_operation::EXTRACT_WRAPPED_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_PTR_VALUE:
+            case variant_policy_operation::EXTRACT_WRAPPED_REF_VALUE:
             {
                 break;
             }
