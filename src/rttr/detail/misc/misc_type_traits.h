@@ -622,8 +622,9 @@ namespace detail
     std::false_type supports_less_than_test(...);
 
     template<typename T>
-    struct has_less_than_operator : std::integral_constant<bool, std::is_same<std::true_type,
-                                                                             decltype(supports_less_than_test(std::declval<T>()))>::value> {};
+    struct has_less_than_operator : std::integral_constant<bool, 
+            std::is_same<std::true_type,
+            decltype(supports_less_than_test(std::declval<T>()))>::value> {};
 
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
