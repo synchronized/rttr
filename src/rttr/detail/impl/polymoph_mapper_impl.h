@@ -55,7 +55,7 @@ template<typename T, typename ConstType>
 struct polymoph_container_mapper_wrapper 
 {
     using base_class    = polymoph_container_mapper<T>;
-    using value_t       = typename base_class::value_t;
+    using value_type    = typename base_class::value_type;
 
     static ConstType& get_container(void* container)
     {
@@ -154,9 +154,24 @@ struct polymoph_container_mapper_wrapper
         return variant(base_class::get(get_container(container)));
     }
 
-    static std::string get_type_name(void* container)
+    static type get_value_type(void* container)
     {
-        return base_class::get_type_name(get_container(container));
+        return base_class::get_value_type(get_container(container));
+    }
+
+    static type get_value_ptr_type(void* container)
+    {
+        return base_class::get_value_ptr_type(get_container(container));
+    }
+
+    static type get_real_type(void* container)
+    {
+        return base_class::get_real_type(get_container(container));
+    }
+
+    static type get_real_ptr_type(void* container)
+    {
+        return base_class::get_real_ptr_type(get_container(container));
     }
 };
 
@@ -167,7 +182,7 @@ struct polymoph_container_dynamic
 {
     using container_t   = T;
     using wrapped_type  = decltype(std::declval<T>().get());
-    using value_t       = typename T::value_type;
+    using value_type    = typename T::value_type;
 
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -222,9 +237,24 @@ struct polymoph_container_dynamic
         return container.get();
     }
 
-    static std::string get_type_name(const container_t& container)
+    static type get_value_type(const container_t& container)
     {
-        return container.get_type_name();
+        return container.get_value_type();
+    }
+
+    static type get_value_ptr_type(const container_t& container)
+    {
+        return container.get_value_ptr_type();
+    }
+
+    static type get_real_type(const container_t& container)
+    {
+        return container.get_real_type();
+    }
+
+    static type get_real_ptr_type(const container_t& container)
+    {
+        return container.get_real_ptr_type();
     }
 };
 
@@ -273,9 +303,21 @@ struct polymoph_container_empty
         return variant();
     }
 
-    static std::string get_type_name(void* container)
+    static type get_value_type(void* container)
     {
-        return "";
+        return get_invalid_type();
+    }
+    static type get_value_ptr_type(void* container)
+    {
+        return get_invalid_type();
+    }
+    static type get_real_type(void* container)
+    {
+        return get_invalid_type();
+    }
+    static type get_real_ptr_type(void* container)
+    {
+        return get_invalid_type();
     }
 };
 

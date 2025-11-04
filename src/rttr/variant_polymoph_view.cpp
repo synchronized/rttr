@@ -99,11 +99,21 @@ type variant_polymoph_view::get_value_type() const RTTR_NOEXCEPT
     return m_view.get_value_type();
 }
 
+type variant_polymoph_view::get_value_ptr_type() const RTTR_NOEXCEPT
+{
+    return m_view.get_value_ptr_type();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type variant_polymoph_view::get_wrapped_type() const RTTR_NOEXCEPT
+type variant_polymoph_view::get_real_type() const RTTR_NOEXCEPT
 {
-    return m_view.get_wrapped_type();
+    return m_view.get_real_type();
+}
+
+type variant_polymoph_view::get_real_ptr_type() const RTTR_NOEXCEPT
+{
+    return m_view.get_real_ptr_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -143,12 +153,6 @@ variant variant_polymoph_view::get_value() const
 variant variant_polymoph_view::get() const
 {
     return m_view.get();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-std::string variant_polymoph_view::get_type_name() const {
-    return m_view.get_type_name();
 }
 
 } // end namespace rttr

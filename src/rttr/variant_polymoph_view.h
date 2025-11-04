@@ -162,8 +162,10 @@ class RTTR_API variant_polymoph_view
          * \return \ref type "Type" from the value of the polymoph container.
          */
         type get_value_type() const RTTR_NOEXCEPT;
+        type get_value_ptr_type() const RTTR_NOEXCEPT;
 
-        type get_wrapped_type() const RTTR_NOEXCEPT;
+        type get_real_type() const RTTR_NOEXCEPT;
+        type get_real_ptr_type() const RTTR_NOEXCEPT;
 
         /*!
          * \brief Checks if the container has no elements.

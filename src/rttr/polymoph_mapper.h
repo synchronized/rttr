@@ -147,12 +147,10 @@ struct polymoph_container_mapper
 #ifndef DOXYGEN
     using is_valid      = std::false_type;
     using container_t   = T;
-    using wrapped_type  = detail::invalid_type;
-    using value_t       = detail::invalid_type;
+    using value_type    = detail::invalid_type;
 #else
     using container_t = T;                          //!< An alias declaration to the container type itself.
-    using wrapped_type  = typename T::wrapped_type; //!< An alias to the value type.
-    using value_t     = typename T::value_type;    //!< An alias to the value type.
+    using value_type    = typename T::value_type;    //!< An alias to the value type.
 
     /////////////////////////////////////////////////////////////////////////////////////
 

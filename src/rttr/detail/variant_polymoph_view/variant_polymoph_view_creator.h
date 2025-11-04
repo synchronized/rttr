@@ -31,7 +31,6 @@
 #include "rttr/detail/base/core_prerequisites.h"
 #include "rttr/detail/misc/misc_type_traits.h"
 #include "rttr/detail/misc/std_type_traits.h"
-#include "rttr/associative_mapper.h"
 
 #include <memory>
 
@@ -42,8 +41,30 @@ namespace detail
 
 class variant_polymoph_view_private;
 
+//////////////////////////////////////////////////////////////////////////////////////
+
 template<typename T>
-using can_create_polymoph_view = std::integral_constant<bool, is_polymoph_container<raw_type_t<wrapper_address_return_type_t<T>>>::value>;
+using polymoph_mapper_t = typename polymoph_container_mapper<
+        typename std::remove_cv<
+            typename std::remove_reference<T>::type>::type>::value_type;
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+using is_polymoph = std::bool_constant<
+        !std::is_same<invalid_wrapper_type, polymoph_mapper_t<T>>::value >;
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+using polymoph_address_return_type_t = conditional_t<is_polymoph<T>::value,
+                                                    raw_addressof_return_type_t< polymoph_mapper_t< T > >,
+                                                    raw_addressof_return_type_t<T>>;
+
+
+template<typename T>
+using can_create_polymoph_view = std::integral_constant<
+    bool, is_polymoph_container<raw_type_t<wrapper_address_return_type_t<T>>>::value>;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,8 +75,6 @@ create_variant_polymoph_view(T&& value);
 template<typename T>
 enable_if_t<!can_create_polymoph_view<T>::value, variant_polymoph_view_private>
 create_variant_polymoph_view(T&& value);
-
-/////////////////////////////////////////////////////////////////////////////////////////
 
 } // end namespace detail
 } // end namespace rttr
