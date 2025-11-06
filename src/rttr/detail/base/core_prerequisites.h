@@ -30,6 +30,8 @@
 
 #include "rttr/detail/base/version.h"
 
+#include "platform.h"
+
 namespace rttr
 {
 
@@ -112,7 +114,8 @@ namespace rttr
 /////////////////////////////////////////////////////////////////////////////////////////
 // Compiler specific cmds for export and import code to DLL
 /////////////////////////////////////////////////////////////////////////////////////////
-#if RTTR_COMPILER == RTTR_COMPILER_MSVC || __MINGW32__ || __CYGWIN__
+/*
+#if RTTR_COMPILER == RTTR_COMPILER_MSVC || defined(__MINGW32__) || defined(__CYGWIN__)
 #     define RTTR_HELPER_DLL_IMPORT __declspec( dllimport )
 #     define RTTR_HELPER_DLL_EXPORT __declspec( dllexport )
 #     define RTTR_HELPER_DLL_LOCAL
@@ -133,6 +136,17 @@ namespace rttr
 #else
 #   error "Do not know how to export classes for this platform"
 #endif
+*/
+
+#if BX_PLATFORM_WINDOWS || BX_PLATFORM_WINRT
+#   define RTTR_HELPER_DLL_EXPORT __declspec(dllexport)
+#   define RTTR_HELPER_DLL_IMPORT __declspec(dllimport)
+#   define RTTR_HELPER_DLL_LOCAL
+#else
+#   define RTTR_HELPER_DLL_EXPORT __attribute__((visibility("default")))
+#   define RTTR_HELPER_DLL_IMPORT
+#   define RTTR_HELPER_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+#endif // BX_PLATFORM_WINDOWS
 
 #ifdef RTTR_DLL // compiled as a DLL
 #   ifdef RTTR_DLL_EXPORTS // defined if we are building the DLL
