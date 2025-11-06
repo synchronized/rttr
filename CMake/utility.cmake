@@ -536,11 +536,7 @@ function(get_latest_supported_cxx CXX_STANDARD)
     endif()
     
     # we need to set CMAKE_CXX_STANDARD in order to use the flags for 'check_cxx_source_compiles'
-    if(${CMAKE_VERSION} VERSION_LESS "3.8.0") 
-        set(CMAKE_CXX_STANDARD 17)
-    else()
-        set(CMAKE_CXX_STANDARD 17)
-    endif()    
+    set(CMAKE_CXX_STANDARD 17)
 
     include(CheckCXXSourceCompiles)
 
@@ -600,14 +596,10 @@ function(get_latest_supported_cxx CXX_STANDARD)
                                HAS_PARTIAL_SPECIALIZATION_FOR_ARRAYS)
 
     if (HAS_NO_EXCEPT_TYPE_SIGNATURE_SUPPORT AND HAS_STL_NO_EXCEPT_TYPE_SIGNATURE_SUPPORT AND
-        HAS_PARTIAL_SPECIALIZATION_FOR_ARRAYS)
+        HAS_PARTIAL_SPECIALIZATION_FOR_ARRAYS AND HAS_CXX_CONSTEXPR)
         set(MAX_CXX_STD 17)
     else()
-        if (HAS_CXX_CONSTEXPR)
-            set(MAX_CXX_STD 14)
-        else()
-            set(MAX_CXX_STD 11)
-        endif()
+        message(FATAL_ERROR "最低需要c++17")
     endif()
     
     set(${CXX_STANDARD} ${MAX_CXX_STD} PARENT_SCOPE)

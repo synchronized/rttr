@@ -45,8 +45,10 @@ endif()
 add_library(unit_test_plugin SHARED ${SRC_FILES} ${HPP_FILES})
 target_link_libraries(unit_test_plugin RTTR::Core unit_test_base)
 set_target_properties(unit_test_plugin PROPERTIES 
-                                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                                       FOLDER "Testing")
+                      DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
+                      FOLDER "Testing"
+                      CXX_STANDARD ${MAX_CXX_STANDARD}
+                      )
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     # we have to use this flag, otherwise dlclose does not call the destructor function
