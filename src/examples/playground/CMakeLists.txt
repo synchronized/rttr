@@ -2,7 +2,7 @@
 #                                                                                  #
 #  Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>                           #
 #                                                                                  #
-#  This file is part of RTTR (Run Time Type Reflection)                            #
+#  This file is part of the examples of RTTR (Run Time Type Reflection)            #
 #  License: MIT License                                                            #
 #                                                                                  #
 #  Permission is hereby granted, free of charge, to any person obtaining           #
@@ -25,14 +25,28 @@
 #                                                                                  #
 ####################################################################################
 
-# for compiling all examples with only one target
-add_custom_target(examples ALL
-                  COMMENT "compile all examples")
-                                    
-set_target_properties(examples PROPERTIES 
-                      FOLDER "Examples")
-                  
-add_subdirectory (json_serialization)
-add_subdirectory (library_loading)
-add_subdirectory (scripting)
-add_subdirectory (playground)
+project(playground_example LANGUAGES CXX)
+
+message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
+message(STATUS "===========================")
+
+generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
+                                "RTTR Examples: scripting binding" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
+
+
+add_executable(playground_example main.cpp)
+target_link_libraries(playground_example RTTR::Core)
+# chaiscript minimum C++ version is 14
+set_target_properties(playground_example PROPERTIES 
+                      DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
+                      FOLDER "Examples"
+                      CXX_STANDARD ${MAX_CXX_STANDARD}
+                      )
+if (MSVC)
+    target_compile_options(playground_example PRIVATE /bigobj) 
+endif()
+
+add_dependencies(examples playground_example)
+
+message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
+message(STATUS "")
