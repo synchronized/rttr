@@ -25,7 +25,7 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <catch/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <rttr/type>
 #include <rttr/registration>
@@ -54,10 +54,11 @@ struct poly_base
     int ctor_type = 0;
     int val{};
 
+    virtual ~poly_base() {}
     RTTR_ENABLE();
 };
 
-struct poly_sub: public poly_base
+struct poly_sub final: public poly_base
 {
     poly_sub() {
         ctor_type = 101;
@@ -83,6 +84,7 @@ struct poly_sub: public poly_base
 
     int sub_val{};
 
+    ~poly_sub() {}
     RTTR_ENABLE(poly_base);
 };
 

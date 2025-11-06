@@ -25,7 +25,7 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <catch/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <rttr/type>
 
@@ -153,7 +153,8 @@ TEST_CASE("variant::operator=() - self assignment", "[variant]")
     SECTION("self assign - empty")
     {
         variant a;
-        a = a;
+        variant& b = a;
+        a = b;
 
         CHECK(a.is_valid() == false);
     }
@@ -161,7 +162,8 @@ TEST_CASE("variant::operator=() - self assignment", "[variant]")
     SECTION("self assign - full")
     {
         variant a = 1;
-        a = a;
+        variant& b = a;
+        a = b;
 
         CHECK(a.is_valid() == true);
     }

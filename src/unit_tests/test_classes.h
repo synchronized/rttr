@@ -138,18 +138,24 @@ struct DiamondTop
 {
 
     double foo = 12;
+
+    virtual ~DiamondTop() {}
     RTTR_ENABLE()
 };
 
 struct DiamondLeft : virtual DiamondTop
 {
     bool _left_var = true;
+
+    virtual ~DiamondLeft() {}
     RTTR_ENABLE(DiamondTop)
 };
 
 struct DiamondRight : virtual DiamondTop
 {
     std::string _text = "Hello World";
+
+    virtual ~DiamondRight() {}
     RTTR_ENABLE(DiamondTop)
 };
 
@@ -157,6 +163,8 @@ struct DiamondRight : virtual DiamondTop
 struct DiamondBottom : DiamondLeft, DiamondRight
 {
     int _finalVar = 42;
+
+    virtual ~DiamondBottom() {}
     RTTR_ENABLE(DiamondLeft, DiamondRight)
 };
 

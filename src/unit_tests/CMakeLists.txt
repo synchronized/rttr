@@ -45,7 +45,7 @@ if (USE_PCH)
 endif()
 
 add_executable(unit_tests ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(unit_tests RTTR::Core unit_test_base Catch2::Catch)
+target_link_libraries(unit_tests RTTR::Core unit_test_base Catch2::Catch2 Catch2::Catch2WithMain)
 add_dependencies(unit_tests RTTR::Core)
 set_target_properties(unit_tests PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
