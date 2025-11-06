@@ -60,15 +60,21 @@ if (MSVC)
 endif()
 
 # run tests
-if (RUN_UNIT_TESTS)
-add_custom_target(run_tests ALL
-                  COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib "$<TARGET_FILE:unit_tests>"
-                  DEPENDS unit_tests
-                  COMMENT "Running unit_tests")
+#add_custom_target(run_tests ALL
+#                  COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib "$<TARGET_FILE:unit_tests>"
+#                  DEPENDS unit_tests
+#                  COMMENT "Running unit_tests")
 
-set_target_properties(run_tests PROPERTIES
-                                FOLDER "Testing")
-endif()
+add_test(NAME unit_tests_all
+         COMMAND unit_tests
+         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+# 为测试添加标签
+set_tests_properties(unit_tests_all PROPERTIES 
+    LABELS "rttr;unit;catch2"
+    TIMEOUT 120
+)
 
 add_subdirectory(plugin)
 
