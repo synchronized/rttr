@@ -131,7 +131,7 @@ public:
 
 private:
 
-    friend class type;
+    friend class rttr::type;
     template<typename T>
     friend class class_;
 

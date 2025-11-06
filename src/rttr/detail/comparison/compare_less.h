@@ -61,20 +61,7 @@ using is_less_than_comparable = std::integral_constant<bool,
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<is_less_than_comparable<T>::value && !std::is_array<T>::value, bool>::type
-compare_less_than(const T& lhs, const T& rhs, int& result);
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-RTTR_INLINE typename std::enable_if<!is_less_than_comparable<T>::value && !std::is_array<T>::value, bool>::type
-compare_less_than(const T& lhs, const T& rhs, int& result);
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-RTTR_INLINE typename std::enable_if<!is_less_than_comparable<T>::value && std::is_array<T>::value, bool>::type
-compare_less_than(const T& lhs, const T& rhs, int& result);
+bool compare_less_than(const T& lhs, const T& rhs, int& result);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

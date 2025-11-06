@@ -39,6 +39,18 @@ int main(int argc, char** argv)
     std::cout << "common_type<char, uint32_t>: " 
               << typeid(std::common_type<char, uint32_t>::type).name() << std::endl;
 
+    std::cout << "common_type<float, uint32_t>: " 
+              << typeid(std::common_type<float, uint32_t>::type).name() << std::endl;
+
+    std::cout << "common_type<float, long long>: " 
+              << typeid(std::common_type<float, long long>::type).name() << std::endl;
+
+    std::cout << "common_type<double, uint32_t>: " 
+              << typeid(std::common_type<double, uint32_t>::type).name() << std::endl;
+
+    std::cout << "common_type<double, long long>: " 
+              << typeid(std::common_type<double, long long>::type).name() << std::endl;
+
 
     return 0;
 }

@@ -39,31 +39,71 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+// 定义标签
+struct cmp_less_function_ptr_tag {};
+struct cmp_less_array_tag {};
+struct cmp_less_comparable_tag {};
+
 template<typename T>
-RTTR_INLINE typename std::enable_if<is_less_than_comparable<T>::value && !std::is_array<T>::value, bool>::type
-compare_less_than(const T& lhs, const T& rhs, int& result)
-{
-    result = (lhs < rhs ? - 1 : ((rhs < lhs) ? 1 : 0));
-    return true;
-}
+struct compare_trait {
+    using type = conditional_t<
+            is_function_ptr<T>::value, cmp_less_function_ptr_tag,
+        conditional_t<
+            std::is_array<T>::value, cmp_less_array_tag,
+        conditional_t<
+            is_less_than_comparable<T>::value, cmp_less_comparable_tag,
+            void
+            >
+        >
+    >;
+};
+
+template<typename T>
+using compare_trait_t = typename compare_trait<T>::type;
+
+template<typename T, typename Tp = void>
+struct compare_less_than_impl {
+    static bool cmp(const T& lhs, const T& rhs, int& result) {
+        return compare_types_less_than(&lhs, &rhs, type::get<T>(), result);
+    }
+};
+
+template<typename T>
+struct compare_less_than_impl<T, cmp_less_function_ptr_tag>{
+    static bool cmp(const T& lhs, const T& rhs, int& result) {
+        uint64_t lhs_addr = (uint64_t)(void*)lhs;
+        uint64_t rhs_addr = (uint64_t)(void*)rhs;
+        result = (lhs_addr < rhs_addr ? - 1 : ((rhs_addr < lhs_addr) ? 1 : 0));
+        return true;
+    }
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<!is_less_than_comparable<T>::value && !std::is_array<T>::value, bool>::type
-compare_less_than(const T& lhs, const T& rhs, int& result)
-{
-    return compare_types_less_than(&lhs, &rhs, type::get<T>(), result);
-}
+struct compare_less_than_impl<T, cmp_less_array_tag>{
+    static bool cmp(const T& lhs, const T& rhs, int& result)
+    {
+        result = compare_array_less(lhs, rhs) ? -1 : 1;
+        return true;
+    }
+};
+
+template<typename T>
+struct compare_less_than_impl<T, cmp_less_comparable_tag>{
+    static bool cmp(const T& lhs, const T& rhs, int& result)
+    {
+        result = (lhs < rhs ? - 1 : ((rhs < lhs) ? 1 : 0));
+        return true;
+    }
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<!is_less_than_comparable<T>::value && std::is_array<T>::value, bool>::type
-compare_less_than(const T& lhs, const T& rhs, int& result)
+bool compare_less_than(const T& lhs, const T& rhs, int& result)
 {
-    result = compare_array_less(lhs, rhs) ? -1 : 1;
-    return true;
+    return compare_less_than_impl<T, compare_trait_t<T>>::cmp(lhs, rhs, result);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

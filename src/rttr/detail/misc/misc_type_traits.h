@@ -217,7 +217,7 @@ namespace detail
     };
 
     /*!
-     * If T has a member function 'type get_type() const;' then inherits from true_type, otherwise inherits from false_type.
+     * If T has a member function 'type get_ptr() const;' then inherits from true_type, otherwise inherits from false_type.
      */
     template<class T, typename Enable = void>
     struct has_get_ptr_func : std::false_type
@@ -617,14 +617,26 @@ namespace detail
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
     // checks whether the given type T has a less than operator
-    template<typename T, typename = decltype(std::declval<T>() < std::declval<T>() )>
-    std::true_type  supports_less_than_test(const T&);
+    //template<typename T, typename = decltype(std::declval<T>() < std::declval<T>() )>
+    //std::true_type  supports_less_than_test(const T&);
     std::false_type supports_less_than_test(...);
+    template<typename T, typename = typename std::enable_if<!is_function_ptr<T>::value, bool>::type>
+    auto supports_less_than_test(const T&) -> decltype(std::declval<T>() < std::declval<T>(), std::true_type{});
+
+    //template<typename T>
+    //struct has_less_than_operator : std::integral_constant<bool, 
+    //        std::is_same<std::true_type,
+    //        decltype(supports_less_than_test(std::declval<T>()))>::value> {};
+
+    template <typename T, typename = void>
+    struct has_operator_less : std::false_type {};
+
+    // 重载，如果类型T支持 `==` 操作符，则会匹配到这个版本
+    template <typename T>
+    struct has_operator_less<T, std::void_t<decltype(std::declval<T>() < std::declval<T>())>> : std::true_type {};
 
     template<typename T>
-    struct has_less_than_operator : std::integral_constant<bool, 
-            std::is_same<std::true_type,
-            decltype(supports_less_than_test(std::declval<T>()))>::value> {};
+    struct has_less_than_operator : std::bool_constant<has_operator_less<T>::value> {};
 
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
