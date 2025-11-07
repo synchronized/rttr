@@ -54,7 +54,9 @@ if (${BUILD_RTTR_DYNAMIC})
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                           CXX_STANDARD ${MAX_CXX_STANDARD}
                           CXX_VISIBILITY_PRESET hidden
-                          VISIBILITY_INLINES_HIDDEN 1)
+                          VISIBILITY_INLINES_HIDDEN 1
+                          FOLDER "Rttr/Core"
+                          )
     
     target_link_libraries(rttr_core PRIVATE ${CMAKE_DL_LIBS})
                           
@@ -93,7 +95,9 @@ if (BUILD_STATIC)
                           VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
                           EXPORT_NAME Core_Lib
                           CXX_STANDARD ${MAX_CXX_STANDARD}
-                          DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX})
+                          DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
+                          FOLDER "Rttr/Core"
+                          )
                           
     target_link_libraries(rttr_core_lib PRIVATE ${CMAKE_DL_LIBS})
     
@@ -147,7 +151,9 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                           CXX_STANDARD ${MAX_CXX_STANDARD}
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                           CXX_VISIBILITY_PRESET hidden
-                          VISIBILITY_INLINES_HIDDEN 1)
+                          VISIBILITY_INLINES_HIDDEN 1
+                          FOLDER "Rttr/Core"
+                          )
 
     if(${CMAKE_VERSION} VERSION_GREATER "3.8.0") 
         target_compile_features(rttr_core_s PUBLIC cxx_std_11) # at least c++11 is needed to compile RTTR
@@ -189,7 +195,9 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                               VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
                               EXPORT_NAME Core_Lib_STL
                               CXX_STANDARD ${MAX_CXX_STANDARD}
-                              DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX})
+                              DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
+                              FOLDER "Rttr/Core"
+                              )
                               
         target_link_libraries(rttr_core_lib_s PRIVATE ${CMAKE_DL_LIBS})
             

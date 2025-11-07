@@ -44,7 +44,7 @@ target_link_libraries(scripting_example RTTR::Core ChaiScript::ChaiScript ${CMAK
 # chaiscript minimum C++ version is 14
 set_target_properties(scripting_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Examples"
+                      FOLDER "Rttr/Examples"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )

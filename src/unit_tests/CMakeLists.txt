@@ -49,7 +49,7 @@ target_link_libraries(unit_tests RTTR::Core unit_test_base Catch2::Catch2 Catch2
 add_dependencies(unit_tests RTTR::Core)
 set_target_properties(unit_tests PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Testing"
+                      FOLDER "Rttr/Testing"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 

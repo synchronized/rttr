@@ -45,7 +45,7 @@ add_dependencies(library_loader_example plugin_example)
 
 set_target_properties(library_loader_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Examples/library_loading"
+                      FOLDER "Rttr/Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
 add_dependencies(examples library_loader_example)

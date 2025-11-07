@@ -50,7 +50,7 @@ target_compile_definitions(unit_test_base PUBLIC RTTR_DLL)
 target_link_libraries(unit_test_base RTTR::Core)
 set_target_properties(unit_test_base PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Testing"
+                      FOLDER "Rttr/Testing"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
 

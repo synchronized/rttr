@@ -43,7 +43,7 @@ add_library(plugin_example SHARED ${SRC_FILES} ${HPP_FILES})
 target_link_libraries(plugin_example RTTR::Core)
 set_target_properties(plugin_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Examples/library_loading"
+                      FOLDER "Rttr/Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
 if (CMAKE_COMPILER_IS_GNUCXX)

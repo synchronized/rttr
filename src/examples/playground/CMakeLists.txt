@@ -39,7 +39,7 @@ target_link_libraries(playground_example RTTR::Core)
 # chaiscript minimum C++ version is 14
 set_target_properties(playground_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Examples"
+                      FOLDER "Rttr/Examples"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
 if (MSVC)

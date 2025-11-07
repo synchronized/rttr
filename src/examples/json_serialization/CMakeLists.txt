@@ -44,7 +44,7 @@ target_link_libraries(json_example RTTR::Core)
 target_include_directories(json_example PUBLIC ${RAPID_JSON_DIR})
 set_target_properties(json_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Examples"
+                      FOLDER "Rttr/Examples"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 

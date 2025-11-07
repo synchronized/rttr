@@ -56,7 +56,7 @@ endif()
 
 set_target_properties(bench_variant PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Benchmarks"
+                      FOLDER "Rttr/Benchmarks"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 set_compiler_warnings(bench_variant)
@@ -85,7 +85,7 @@ if (BUILD_STATIC)
 
     set_target_properties(bench_variant_lib PROPERTIES 
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                          FOLDER "Benchmarks"
+                          FOLDER "Rttr/Benchmarks"
                           INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                           CXX_STANDARD ${MAX_CXX_STANDARD})
 
@@ -116,7 +116,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
 
     set_target_properties(bench_variant_s PROPERTIES 
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                          FOLDER "Benchmarks"
+                          FOLDER "Rttr/Benchmarks"
                           INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                           CXX_STANDARD ${MAX_CXX_STANDARD})
 
@@ -154,7 +154,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
 
         set_target_properties(bench_variant_lib_s PROPERTIES 
                               DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                              FOLDER "Benchmarks"
+                              FOLDER "Rttr/Benchmarks"
                               INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                               CXX_STANDARD ${MAX_CXX_STANDARD})
 
