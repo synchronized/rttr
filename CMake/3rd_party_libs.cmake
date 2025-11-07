@@ -54,6 +54,13 @@ if (BUILD_BENCHMARKS OR BUILD_EXAMPLES)
 endif()
 
 set(RAPID_JSON_DIR ${RTTR_3RD_PARTY_DIR}/rapidjson-1.1.0)
+set(JSON11_DIR ${RTTR_3RD_PARTY_DIR}/json11)
+add_library(json11 ${JSON11_DIR}/json11.cpp)
+target_include_directories(json11 PUBLIC ${JSON11_DIR})
+set_target_properties(json11 PROPERTIES
+    FOLDER "Rttr/3rdParty/json11"
+    )
+
 set(NONIUS_DIR ${RTTR_3RD_PARTY_DIR}/nonius-1.1.2)
 
 # Prepare "Catch" library for other executables
