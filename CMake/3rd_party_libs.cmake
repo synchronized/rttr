@@ -53,7 +53,7 @@ if (BUILD_BENCHMARKS OR BUILD_EXAMPLES)
     find_package(Threads REQUIRED)
 endif()
 
-set(RAPID_JSON_DIR ${RTTR_3RD_PARTY_DIR}/rapidjson-1.1.0)
+#set(RAPID_JSON_DIR ${RTTR_3RD_PARTY_DIR}/rapidjson-1.1.0)
 set(JSON11_DIR ${RTTR_3RD_PARTY_DIR}/json11)
 add_library(json11 ${JSON11_DIR}/json11.cpp)
 target_include_directories(json11 PUBLIC ${JSON11_DIR})
