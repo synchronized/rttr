@@ -39,17 +39,21 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_executable(scripting_example ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(scripting_example RTTR::Core ChaiScript::ChaiScript ${CMAKE_DL_LIBS} Threads::Threads)
+add_executable(rttr_scripting_example ${SRC_FILES} ${HPP_FILES})
+target_link_libraries(rttr_scripting_example PRIVATE ${CMAKE_DL_LIBS})
+target_link_libraries(rttr_scripting_example PRIVATE RTTR::Core)
+target_link_libraries(rttr_scripting_example PRIVATE Threads::Threads)
+target_link_libraries(rttr_scripting_example PRIVATE chaiscript)
+
 # chaiscript minimum C++ version is 14
-set_target_properties(scripting_example PROPERTIES 
+set_target_properties(rttr_scripting_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
 if (MSVC)
-    target_compile_options(scripting_example PRIVATE /bigobj) 
+    target_compile_options(rttr_scripting_example PRIVATE /bigobj) 
 endif()
 
 add_dependencies(rttr_examples rttr_scripting_example)
