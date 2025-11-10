@@ -39,16 +39,16 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_executable(library_loader_example ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(library_loader_example RTTR::Core)
-add_dependencies(library_loader_example plugin_example)
+add_executable(rttr_library_loader_example ${SRC_FILES} ${HPP_FILES})
+target_link_libraries(rttr_library_loader_example RTTR::Core)
+add_dependencies(rttr_library_loader_example rttr_plugin_example)
 
-set_target_properties(library_loader_example PROPERTIES 
+set_target_properties(rttr_library_loader_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
-add_dependencies(examples library_loader_example)
+add_dependencies(rttr_examples rttr_library_loader_example)
 
 message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
 message(STATUS "")

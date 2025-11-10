@@ -46,7 +46,7 @@ if (MSVC)
     target_compile_options(playground_example PRIVATE /bigobj) 
 endif()
 
-add_dependencies(examples playground_example)
+add_dependencies(rttr_examples rttr_playground_example)
 
 message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
 message(STATUS "")

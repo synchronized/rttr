@@ -39,9 +39,9 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_library(plugin_example SHARED ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(plugin_example RTTR::Core)
-set_target_properties(plugin_example PROPERTIES 
+add_library(rttr_plugin_example SHARED ${SRC_FILES} ${HPP_FILES})
+target_link_libraries(rttr_plugin_example RTTR::Core)
+set_target_properties(rttr_plugin_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
@@ -49,7 +49,7 @@ set_target_properties(plugin_example PROPERTIES
 if (CMAKE_COMPILER_IS_GNUCXX)
     # we have to use this flag, otherwise dlclose does not call the destructor function
     # of the library
-    target_compile_options(plugin_example PRIVATE "-fno-gnu-unique")
+    target_compile_options(rttr_plugin_example PRIVATE "-fno-gnu-unique")
 endif()
 
 message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")

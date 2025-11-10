@@ -26,10 +26,10 @@
 ####################################################################################
 
 # for compiling all examples with only one target
-add_custom_target(examples ALL
+add_custom_target(rttr_examples ALL
                   COMMENT "compile all examples")
                                     
-set_target_properties(examples PROPERTIES 
+set_target_properties(rttr_examples PROPERTIES 
                       FOLDER "Rttr/Examples")
                   
 add_subdirectory (json_serialization)
