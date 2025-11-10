@@ -39,16 +39,17 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_executable(json_example ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(json_example RTTR::Core)
-target_include_directories(json_example PUBLIC ${RAPID_JSON_DIR})
-set_target_properties(json_example PROPERTIES 
+add_executable(rttr_json_example ${SRC_FILES} ${HPP_FILES})
+target_link_libraries(rttr_json_example PRIVATE RTTR::Core)
+target_link_libraries(rttr_json_example PRIVATE json11)
+#target_include_directories(rttr_json_example PUBLIC ${RAPID_JSON_DIR})
+set_target_properties(rttr_json_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
-set_compiler_warnings(json_example)
+set_compiler_warnings(rttr_json_example)
 
 add_dependencies(rttr_examples rttr_json_example)
 

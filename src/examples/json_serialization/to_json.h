@@ -32,8 +32,9 @@ namespace io
 {
 
 /*!
- * Serialize the given instance to a json encoded string.
+ * Serialize the given variant to a json encoded string.
  */
+std::string to_json(rttr::variant& obj);
 std::string to_json(rttr::instance obj);
 
 }
