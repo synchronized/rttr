@@ -34,16 +34,16 @@ generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RT
                                 "RTTR Examples: scripting binding" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
 
 
-add_executable(playground_example main.cpp)
-target_link_libraries(playground_example RTTR::Core)
+add_executable(rttr_playground_example main.cpp)
+target_link_libraries(rttr_playground_example RTTR::Core)
 # chaiscript minimum C++ version is 14
-set_target_properties(playground_example PROPERTIES 
+set_target_properties(rttr_playground_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
 if (MSVC)
-    target_compile_options(playground_example PRIVATE /bigobj) 
+    target_compile_options(rttr_playground_example PRIVATE /bigobj) 
 endif()
 
 add_dependencies(rttr_examples rttr_playground_example)
