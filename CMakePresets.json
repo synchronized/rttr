@@ -20,19 +20,11 @@
     },
     {
       "name": "windows-clang-ninja-debug",
+      "inherits": "windows-clang-ninja-release",
       "displayName": "Windows Clang with Ninja (Debug)",
       "description": "使用 Clang 编译器和 Ninja 生成器进行构建 (Debug)",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_COLOR_DIAGNOSTICS": "ON"
-      },
-      "environment": {
-        "CC": "clang",
-        "CXX": "clang++"
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
@@ -44,18 +36,16 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
       "name": "windows-clang-cl-ninja-debug",
       "displayName": "Windows Clang(MSVC兼容) with Ninja (Debug)",
       "description": "使用 Clang-Cl 编译器(兼容MSVC工具链) 和 Ninja 生成器 (Debug)",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
+      "inherits": "windows-clang-cl-ninja-release",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "clang-cl",
-        "CMAKE_CXX_COMPILER": "clang-cl",
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
@@ -70,18 +60,16 @@
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl",
         "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CONFIGURATION_TYPES": "Release;Debug;MinSizeRel;RelWithDebInfo"
+        "CMAKE_CONFIGURATION_TYPES": "Release;Debug;MinSizeRel;RelWithDebInfo",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
       "name": "windows-msvc-ninja-debug",
       "displayName": "Windows MSVC Debug with Ninja (Debug)",
       "description": "使用原生 MSVC 编译器和 Ninja 生成器进行构建 (Debug)",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
+      "inherits": "windows-msvc-ninja-release",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "cl",
-        "CMAKE_CXX_COMPILER": "cl",
         "CMAKE_BUILD_TYPE": "Debug"
       }
     }
@@ -133,35 +121,46 @@
   ],
   "testPresets": [
     {
-      "name": "test-clang-debug",
-      "displayName": "运行 Clang 测试",
+      "name": "unit-test-clang-debug",
+      "displayName": "运行 Clang 测试(unit)",
       "configurePreset": "windows-clang-ninja-debug",
       "configuration": "Debug",
       "filter": {
         "include": {
-          "label": "unit"
+          "label": "rttr;unit"
         }
       }
     },
     {
-      "name": "test-clang-cl-debug",
+      "name": "bench-test-clang-debug",
+      "displayName": "运行 Clang 测试(bench)",
+      "configurePreset": "windows-clang-ninja-debug",
+      "configuration": "Debug",
+      "filter": {
+        "include": {
+          "label": "rttr;bench"
+        }
+      }
+    },
+    {
+      "name": "unit-test-clang-cl-debug",
       "displayName": "运行 Clang(MSVC兼容) 测试",
       "configurePreset": "windows-clang-cl-ninja-debug",
       "configuration": "Debug",
       "filter": {
         "include": {
-          "label": "unit"
+          "label": "rttr;unit"
         }
       }
     },
     {
-      "name": "test-msvc-debug",
+      "name": "unit-test-msvc-debug",
       "displayName": "运行 MSVC 测试",
       "configurePreset": "windows-msvc-ninja-debug",
       "configuration": "Debug",
       "filter": {
         "include": {
-          "label": "unit"
+          "label": "rttr;unit"
         }
       }
     }
