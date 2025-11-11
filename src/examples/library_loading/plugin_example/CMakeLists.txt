@@ -25,23 +25,21 @@
 #                                                                                  #
 ####################################################################################
 
-project(plugin_example LANGUAGES CXX)
+set(TARGET_NAME rttr_plugin_example)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
+message(STATUS "Scanning "  ${TARGET_NAME} " module.")
 message(STATUS "===========================")
 
-generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
-                                "RTTR Examples: library_loading" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
-
-loadFolder("files" HPP_FILES SRC_FILES)
+file(GLOB_RECURSE SRC_FILES "*.cpp")
 
 if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_library(rttr_plugin_example SHARED ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(rttr_plugin_example RTTR::Core)
-set_target_properties(rttr_plugin_example PROPERTIES 
+add_library(${TARGET_NAME} SHARED ${SRC_FILES})
+target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
+target_link_libraries(${TARGET_NAME} RTTR::Core)
+set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
@@ -49,8 +47,8 @@ set_target_properties(rttr_plugin_example PROPERTIES
 if (CMAKE_COMPILER_IS_GNUCXX)
     # we have to use this flag, otherwise dlclose does not call the destructor function
     # of the library
-    target_compile_options(rttr_plugin_example PRIVATE "-fno-gnu-unique")
+    target_compile_options(${TARGET_NAME} PRIVATE "-fno-gnu-unique")
 endif()
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
+message(STATUS "Scanning " ${TARGET_NAME} " module finished!")
 message(STATUS "")

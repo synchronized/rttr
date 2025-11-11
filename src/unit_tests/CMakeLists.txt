@@ -27,16 +27,16 @@
 
 add_subdirectory(base_library)
 
+add_subdirectory(plugin)
+
 set(HPP_FILES "")
 set(SRC_FILES "")
 
-project(unit_tests LANGUAGES CXX)
+set(TARGET_NAME_DEFAULT rttr_unit_tests)
+set(TARGET_NAME ${TARGET_NAME_DEFAULT})
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
+message(STATUS "Scanning "  ${TARGET_NAME_DEFAULT} " module.")
 message(STATUS "===========================")
-
-generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
-                                "RTTR unit_tests" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
 
 loadFolder("unit_tests" HPP_FILES SRC_FILES)
 
@@ -44,20 +44,24 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_executable(unit_tests ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(unit_tests RTTR::Core unit_test_base Catch2::Catch2 Catch2::Catch2WithMain)
-add_dependencies(unit_tests RTTR::Core)
-set_target_properties(unit_tests PROPERTIES 
+add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
+target_link_libraries(${TARGET_NAME} PRIVATE rttr_unit_test_base)
+target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
+
+set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Testing"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
-set_compiler_warnings(unit_tests)
+set_compiler_warnings(${TARGET_NAME})
 
 if (MSVC)
-    target_compile_options(unit_tests PRIVATE /bigobj)
+    target_compile_options(${TARGET_NAME} PRIVATE /bigobj)
 endif()
+
+add_dependencies(${TARGET_NAME} rttr_unit_test_plugin)
 
 # run tests
 #add_custom_target(run_tests ALL
@@ -66,19 +70,16 @@ endif()
 #                  COMMENT "Running unit_tests")
 
 add_test(NAME unit_tests_all
-         COMMAND unit_tests
+         COMMAND ${TARGET_NAME}
          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
 # 为测试添加标签
 set_tests_properties(unit_tests_all PROPERTIES 
-    LABELS "rttr;unit;catch2"
+    LABELS "rttr_unit;catch2"
     TIMEOUT 120
 )
 
-add_subdirectory(plugin)
 
-add_dependencies(unit_tests unit_test_plugin)
-
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
+message(STATUS "Scanning " ${TARGET_NAME_DEFAULT} " module finished!")
 message(STATUS "")

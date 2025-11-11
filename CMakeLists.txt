@@ -84,6 +84,9 @@ if (USE_PCH)
   endif()
 endif()
 
+set(RTTR_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(RTTR_SOURCE_DIR ${RTTR_ROOT_DIR}/src)
+
 include(config)
 include(3rd_party_libs)
 

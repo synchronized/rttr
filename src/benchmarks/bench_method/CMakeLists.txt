@@ -26,21 +26,19 @@
 ####################################################################################
 
 set(TARGET_NAME_DEFAULT rttr_bench_method)
-set(TARGET_NAME_SHARED ${TARGET_NAME_DEFAULT})
-set(TARGET_NAME ${TARGET_NAME_SHARED})
+set(TARGET_NAME ${TARGET_NAME_DEFAULT})
 
 message(STATUS "Scanning "  ${TARGET_NAME_DEFAULT} " module.")
 message(STATUS "===========================")
 
-loadFolder("bench_method" HPP_FILES SRC_FILES)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../)
+file(GLOB_RECURSE SRC_FILES "*.cpp")
 
 if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+add_executable(${TARGET_NAME} ${SRC_FILES})
+target_include_directories(${TARGET_NAME} PUBLIC ${RTTR_SOURCE_DIR})
 target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
 target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 
@@ -62,22 +60,14 @@ install(TARGETS ${TARGET_NAME}
         ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
         FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
 
-add_test(NAME "${TARGET_NAME}_test"
-         COMMAND ${TARGET_NAME}
-         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-
-# 为测试添加标签
-set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
-    LABELS "rttr;bench;catch2"
-    TIMEOUT 300
-)
-
 ###############################################################################
 
 if (BUILD_STATIC)
     set(TARGET_NAME rttr_bench_method_lib)
     add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+    target_include_directories(${TARGET_NAME} PUBLIC ${RTTR_SOURCE_DIR})
+    target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core_Lib)
+    target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 
     if(MSVC)
         target_compile_options(${TARGET_NAME} PRIVATE /Zm200 /bigobj)
@@ -97,16 +87,6 @@ if (BUILD_STATIC)
             ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
             FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
 
-    add_test(NAME "${TARGET_NAME}_test"
-            COMMAND ${TARGET_NAME}
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-
-    # 为测试添加标签
-    set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
-        LABELS "rttr;bench;catch2"
-        TIMEOUT 300
-    )
 endif()
 
 ###############################################################################
@@ -114,6 +94,7 @@ endif()
 if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     set(TARGET_NAME rttr_bench_method_s)
     add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+    target_include_directories(${TARGET_NAME} PUBLIC ${RTTR_SOURCE_DIR})
 
     target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core_STL)
     target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
@@ -133,9 +114,9 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     if (MSVC)
         target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
     elseif(CMAKE_COMPILER_IS_GNUCXX)
-        set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS})
+        target_link_options(${TARGET_NAME} PUBLIC ${GNU_STATIC_LINKER_FLAGS})
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS})
+        target_link_options(${TARGET_NAME} PUBLIC ${CLANG_STATIC_LINKER_FLAGS})
     else()
         message(SEND_ERROR "Do now know how to statically link against the standard library with this compiler.")
     endif()
@@ -146,22 +127,12 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
             ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
             FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
 
-    add_test(NAME "${TARGET_NAME}_test"
-            COMMAND ${TARGET_NAME}
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-
-    # 为测试添加标签
-    set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
-        LABELS "rttr;bench;catch2"
-        TIMEOUT 300
-    )
-
     ###############################################################################
 
     if (BUILD_STATIC)
         set(TARGET_NAME rttr_bench_method_lib_s)
         add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+        target_include_directories(${TARGET_NAME} PUBLIC ${RTTR_SOURCE_DIR})
 
         target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core_Lib_STL)
         target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
@@ -181,9 +152,9 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
         if (MSVC)
             target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
         elseif(CMAKE_COMPILER_IS_GNUCXX)
-            set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS})
+            target_link_options(${TARGET_NAME} PUBLIC ${GNU_STATIC_LINKER_FLAGS})
         elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS})
+            target_link_options(${TARGET_NAME} PUBLIC ${CLANG_STATIC_LINKER_FLAGS})
         else()
             message(SEND_ERROR "Do now know how to statically link against the standard library with this compiler.")
         endif()
@@ -194,16 +165,6 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                 ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
                 FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
 
-        add_test(NAME "${TARGET_NAME}_test"
-                COMMAND ${TARGET_NAME}
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-
-        # 为测试添加标签
-        set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
-            LABELS "rttr;bench;catch2"
-            TIMEOUT 300
-        )
     endif()
 endif()
 

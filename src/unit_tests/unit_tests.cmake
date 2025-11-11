@@ -29,7 +29,6 @@ set(HEADER_FILES test_classes.h
                  method/test_method_reflection.h
                  type/test_type.h
                  variant/test_enums.h
-                 version.rc.in
                  visitor/my_visitor.h
                  visitor/visitor_test_class.h
                  )

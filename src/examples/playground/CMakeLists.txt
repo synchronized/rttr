@@ -25,28 +25,26 @@
 #                                                                                  #
 ####################################################################################
 
-project(playground_example LANGUAGES CXX)
+set(TARGET_NAME rttr_playground_example)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
+message(STATUS "Scanning "  ${TARGET_NAME} " module.")
 message(STATUS "===========================")
 
-generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
-                                "RTTR Examples: scripting binding" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
+file(GLOB_RECURSE SRC_FILES "*.cpp")
 
-
-add_executable(rttr_playground_example main.cpp)
-target_link_libraries(rttr_playground_example RTTR::Core)
-# chaiscript minimum C++ version is 14
-set_target_properties(rttr_playground_example PROPERTIES 
+add_executable(${TARGET_NAME} ${SRC_FILES})
+target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
+target_link_libraries(${TARGET_NAME} RTTR::Core)
+set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
 if (MSVC)
-    target_compile_options(rttr_playground_example PRIVATE /bigobj) 
+    target_compile_options(${TARGET_NAME} PRIVATE /bigobj) 
 endif()
 
-add_dependencies(rttr_examples rttr_playground_example)
+add_dependencies(rttr_examples ${TARGET_NAME})
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
+message(STATUS "Scanning " ${TARGET_NAME} " module finished!")
 message(STATUS "")

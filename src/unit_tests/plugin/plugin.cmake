@@ -25,7 +25,7 @@
 #                                                                                  #
 ####################################################################################
 
-set(HEADER_FILES version.rc.in
+set(HEADER_FILES 
                  )
 
 set(SOURCE_FILES test_container_plugin.cpp

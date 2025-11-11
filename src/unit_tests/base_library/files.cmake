@@ -25,7 +25,7 @@
 #                                                                                  #
 ####################################################################################
 
-set(HEADER_FILES version.rc.in
+set(HEADER_FILES 
                  base_class.h
                  )
 

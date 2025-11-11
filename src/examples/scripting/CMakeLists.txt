@@ -25,38 +25,35 @@
 #                                                                                  #
 ####################################################################################
 
-project(scripting_example LANGUAGES CXX)
+set(TARGET_NAME rttr_scripting_example)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
+message(STATUS "Scanning "  ${TARGET_NAME} " module.")
 message(STATUS "===========================")
 
-generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
-                                "RTTR Examples: scripting binding" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
-
-loadFolder("files" HPP_FILES SRC_FILES)
+file(GLOB_RECURSE SRC_FILES "*.cpp")
 
 if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_executable(rttr_scripting_example ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(rttr_scripting_example PRIVATE ${CMAKE_DL_LIBS})
-target_link_libraries(rttr_scripting_example PRIVATE RTTR::Core)
-target_link_libraries(rttr_scripting_example PRIVATE Threads::Threads)
-target_link_libraries(rttr_scripting_example PRIVATE chaiscript)
+add_executable(${TARGET_NAME} ${SRC_FILES})
+target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
+target_link_libraries(${TARGET_NAME} PRIVATE ${CMAKE_DL_LIBS})
+target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
+target_link_libraries(${TARGET_NAME} PRIVATE Threads::Threads)
+target_link_libraries(${TARGET_NAME} PRIVATE chaiscript)
 
-# chaiscript minimum C++ version is 14
-set_target_properties(rttr_scripting_example PROPERTIES 
+set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
 if (MSVC)
-    target_compile_options(rttr_scripting_example PRIVATE /bigobj) 
+    target_compile_options(${TARGET_NAME} PRIVATE /bigobj) 
 endif()
 
-add_dependencies(rttr_examples rttr_scripting_example)
+add_dependencies(rttr_examples ${TARGET_NAME})
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
+message(STATUS "Scanning " ${TARGET_NAME} " module finished!")
 message(STATUS "")
