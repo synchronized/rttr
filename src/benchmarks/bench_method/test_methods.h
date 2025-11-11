@@ -39,7 +39,7 @@ namespace ns_foo
 {
 
 #define CLASS(CLASS_NAME, NUMBER) struct CLASS_NAME { virtual ~CLASS_NAME(){} void RTTR_CAT(method_,NUMBER)() { } virtual void method_v() { } RTTR_ENABLE() private: double dummy_double_value; std::string dummy_string_value; };
-#define CLASS_INHERIT(CLASS1, CLASS2, NUMBER) struct CLASS1 : CLASS2 { void RTTR_CAT(method_,NUMBER)() { } virtual void method_v() { } RTTR_ENABLE(CLASS2) private: double dummy_double_value; std::string dummy_string_value; };
+#define CLASS_INHERIT(CLASS1, CLASS2, NUMBER) struct CLASS1 : CLASS2 { virtual ~CLASS1() {} void RTTR_CAT(method_,NUMBER)() { } virtual void method_v() { } RTTR_ENABLE(CLASS2) private: double dummy_double_value; std::string dummy_string_value; };
 
 struct method_class
 {
@@ -87,6 +87,7 @@ struct method_class_d_1 : method_class
     void method_1()                  { }
     virtual void method_v()          { }
 
+    virtual ~method_class_d_1() {}
     RTTR_ENABLE(method_class)
 };
 
@@ -99,6 +100,7 @@ struct method_class_d_3 : method_class_d_2
     void method_3()                  { }
     virtual void method_v()          { }
 
+    virtual ~method_class_d_3() {}
     RTTR_ENABLE(method_class_d_2)
 };
 
@@ -112,6 +114,7 @@ struct method_class_d_6 : method_class_d_5
     void method_6()                  { }
     virtual void method_v()          { }
 
+    virtual ~method_class_d_6() {}
     RTTR_ENABLE(method_class_d_5)
 };
 
@@ -121,6 +124,7 @@ struct method_class_d_7 : method_class_d_6
     void method_7()                  { }
     virtual void method_v()          { }
 
+    virtual ~method_class_d_7() {}
     RTTR_ENABLE(method_class_d_6)
 };
 
@@ -154,6 +158,7 @@ struct class_multiple_final : class_multiple_5A, class_multiple_5B, class_multip
     void method_18()        { }
     virtual void method_v() { }
 
+    virtual ~class_multiple_final() {}
     RTTR_ENABLE(class_multiple_5A, class_multiple_5B, class_multiple_5C)
 };
 
@@ -162,6 +167,7 @@ struct class_multiple_final_D : class_multiple_final
     void method_19()        { }
     virtual void method_v() { }
 
+    virtual ~class_multiple_final_D() {}
     RTTR_ENABLE(class_multiple_final)
 };
 

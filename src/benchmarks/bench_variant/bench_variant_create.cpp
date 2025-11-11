@@ -29,8 +29,7 @@
 #include <rttr/registration>
 #include <rttr/variant.h>
 
-#include <nonius/nonius.h++>
-#include <nonius/html_group_reporter.h>
+#include <catch2/catch_all.hpp>
 
 struct MyCustomType
 {
@@ -41,9 +40,9 @@ struct MyCustomType
     std::size_t m_data_st;
 };
 
-
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_variant_empty_ctor()
 {
     return nonius::benchmark("empty", [](nonius::chronometer meter)
@@ -167,11 +166,87 @@ nonius::benchmark bench_variant_custom_ctor()
         });
     });
 }
+*/
+
+TEST_CASE("bench_variant_ctor") {
+
+    BENCHMARK_ADVANCED("empty")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("void")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+            vec[i].construct(rttr::detail::void_variant_type{});
+        });
+    };
+
+    BENCHMARK_ADVANCED("std::string")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct(std::string("hello"));
+        });
+    };
+
+    BENCHMARK_ADVANCED("char*")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct("hello");
+        });
+    };
+
+    BENCHMARK_ADVANCED("float")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct(42.0f);
+        });
+    };
+
+    BENCHMARK_ADVANCED("double")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct(42.0);
+        });
+    };
+
+    BENCHMARK_ADVANCED("int")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct(42);
+        });
+    };
+
+    BENCHMARK_ADVANCED("bool")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct(true);
+        });
+    };
+
+    BENCHMARK_ADVANCED("custom")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::storage_for<rttr::variant>> vec(meter.runs());
+        meter.measure([&](int i )
+        {
+           vec[i].construct(MyCustomType());
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_variant_empty_dtor()
 {
     return nonius::benchmark("empty", [](nonius::chronometer meter)
@@ -322,11 +397,135 @@ nonius::benchmark bench_variant_custom_dtor()
         });
     });
 }
+*/
+
+TEST_CASE("bench_variant_dtor") {
+
+    BENCHMARK_ADVANCED("empty")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct();
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("void")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(rttr::detail::void_variant_type{});
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("std::string")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(std::string("hello"));
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("char*")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct("hello");
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("float")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(42.0f);
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("double")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(42.0f);
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("double")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(42.0);
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("int")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(static_cast<int>(42));
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("bool")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(true);
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+
+    BENCHMARK_ADVANCED("custom")(Catch::Benchmark::Chronometer meter) {
+        std::vector<Catch::Benchmark::destructable_object<rttr::variant>> vec(meter.runs());
+        for(auto&& item : vec) {
+            item.construct(MyCustomType());
+        }
+
+        meter.measure([&](int i )
+        {
+           vec[i].destruct();
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 void bench_variant_create()
 {
     nonius::configuration cfg;
@@ -361,5 +560,6 @@ void bench_variant_create()
 
     reporter.generate_report();
 }
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////////

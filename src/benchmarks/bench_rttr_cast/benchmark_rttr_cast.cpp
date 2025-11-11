@@ -29,14 +29,14 @@
 
 #include <rttr/type>
 
-#include <nonius/nonius.h++>
-#include <nonius/html_group_reporter.h>
-
 #include <iostream>
 #include <memory>
 
 #include <string>
 #include <vector>
+
+#include <catch2/catch_all.hpp>
+
 using namespace rttr;
 
 #define ITEM_COUNT 10
@@ -214,7 +214,7 @@ bench_data<ClassMultiple6A> setup_cross_cast_class_hierachy_2()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
 nonius::benchmark bench_level_1_dynamic_cast()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -251,9 +251,11 @@ nonius::benchmark bench_level_1_dynamic_cast()
         });
     });
 }
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_level_1_rttr_cast()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -290,9 +292,79 @@ nonius::benchmark bench_level_1_rttr_cast()
         });
     });
 }
+*/
+
+TEST_CASE("bench_level_cast_1") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        const bench_data_single_base bench_data = setup_level_1();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_single_base bench_data = setup_level_1();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_level_3_dynamic_cast()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -329,9 +401,11 @@ nonius::benchmark bench_level_3_dynamic_cast()
         });
     });
 }
+*/
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_level_3_rttr_cast()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -368,9 +442,80 @@ nonius::benchmark bench_level_3_rttr_cast()
         });
     });
 }
+*/
+
+TEST_CASE("bench_level_cast_2") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_single_base bench_data = setup_level_3();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassSingle3A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle3B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle3C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle3D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle3E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_single_base bench_data = setup_level_3();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassSingle3A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle3B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle3C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle3D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle3E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_level_6_dynamic_cast()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -407,9 +552,11 @@ nonius::benchmark bench_level_6_dynamic_cast()
         });
     });
 }
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_level_6_rttr_cast()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -446,11 +593,81 @@ nonius::benchmark bench_level_6_rttr_cast()
         });
     });
 }
+*/
+
+TEST_CASE("bench_level_cast_3") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_single_base bench_data = setup_level_6();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassSingle6A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle6B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle6C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle6D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle6E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_single_base bench_data = setup_level_6();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassSingle6A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle6B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle6C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle6D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle6E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_virtual_inheritance_level_1_dynamic_cast()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -479,9 +696,11 @@ nonius::benchmark bench_virtual_inheritance_level_1_dynamic_cast()
         });
     });
 }
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_virtual_inheritance_level_1_rttr_cast()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -510,9 +729,64 @@ nonius::benchmark bench_virtual_inheritance_level_1_rttr_cast()
         });
     });
 }
+*/
+
+TEST_CASE("bench_virtual_inheritance_level_1") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_virtual bench_data = setup_virtual_inheritance_level_1();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassDiamondLeft1*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassDiamondMiddle1*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassDiamondRight1*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_virtual bench_data = setup_virtual_inheritance_level_1();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassDiamondLeft1*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassDiamondMiddle1*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassDiamondRight1*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_virtual_inheritance_level_3_dynamic_cast()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -541,9 +815,10 @@ nonius::benchmark bench_virtual_inheritance_level_3_dynamic_cast()
         });
     });
 }
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_virtual_inheritance_level_3_rttr_cast()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -572,10 +847,66 @@ nonius::benchmark bench_virtual_inheritance_level_3_rttr_cast()
         });
     });
 }
+*/
+
+TEST_CASE("bench_virtual_inheritance_level_3") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+
+        bench_data_virtual bench_data = setup_virtual_inheritance_level_3();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassDiamondLeft3*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassDiamondMiddle3*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassDiamondRight3*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_virtual bench_data = setup_virtual_inheritance_level_3();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassDiamondLeft3*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassDiamondMiddle3*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassDiamondRight3*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_virtual_inheritance_level_6_dynamic_cast()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -604,9 +935,11 @@ nonius::benchmark bench_virtual_inheritance_level_6_dynamic_cast()
         });
     });
 }
+*/
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_virtual_inheritance_level_6_rttr_cast()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -635,11 +968,66 @@ nonius::benchmark bench_virtual_inheritance_level_6_rttr_cast()
         });
     });
 }
+*/
+
+TEST_CASE("bench_virtual_inheritance_level_6_cast") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_virtual bench_data = setup_virtual_inheritance_level_6();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassDiamondLeft6*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassDiamondMiddle6*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassDiamondRight6*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        bench_data_virtual bench_data = setup_virtual_inheritance_level_6();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassDiamondLeft6*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassDiamondMiddle6*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassDiamondRight6*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_multiple_inheritance_dynamic_cast()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -660,9 +1048,12 @@ nonius::benchmark bench_multiple_inheritance_dynamic_cast()
         });
     });
 }
+*/
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_multiple_inheritance_rttr_cast()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -683,11 +1074,50 @@ nonius::benchmark bench_multiple_inheritance_rttr_cast()
         });
     });
 }
+*/
+   
+TEST_CASE("bench_multiple_inheritance_cast") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        auto bench_data = setup_multiple_class_hierachy();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<FinalClass*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        auto bench_data = setup_multiple_class_hierachy();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<FinalClass*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_cross_cast_dynamic_cast_1()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -708,9 +1138,12 @@ nonius::benchmark bench_cross_cast_dynamic_cast_1()
         });
     });
 }
+*/
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_cross_cast_rttr_cast_1()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -731,9 +1164,47 @@ nonius::benchmark bench_cross_cast_rttr_cast_1()
         });
     });
 }
+*/
+
+TEST_CASE("bench_cross_cast_1") {
+
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        auto bench_data = setup_cross_cast_class_hierachy_1();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassMultiple3C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        auto bench_data = setup_cross_cast_class_hierachy_1();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassMultiple3C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_cross_cast_dynamic_cast_2()
 {
     return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
@@ -754,9 +1225,12 @@ nonius::benchmark bench_cross_cast_dynamic_cast_2()
         });
     });
 }
+*/
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_cross_cast_rttr_cast_2()
 {
     return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
@@ -777,12 +1251,49 @@ nonius::benchmark bench_cross_cast_rttr_cast_2()
         });
     });
 }
+*/
+TEST_CASE("bench_cross_cast_2") {
 
+    BENCHMARK_ADVANCED("dynamic_cast")(Catch::Benchmark::Chronometer meter) {
+        auto bench_data = setup_cross_cast_class_hierachy_2();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (dynamic_cast<ClassMultiple6E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr_cast")(Catch::Benchmark::Chronometer meter) {
+        auto bench_data = setup_cross_cast_class_hierachy_2();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassMultiple6E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_level_6_typeid()
 {
     return nonius::benchmark("typeid", [](nonius::chronometer meter)
@@ -858,6 +1369,78 @@ nonius::benchmark bench_level_6_type()
         });
     });
 }
+*/
+
+TEST_CASE("bench_level_type_6") {
+
+    BENCHMARK_ADVANCED("typeid")(Catch::Benchmark::Chronometer meter) {
+        bench_data_single_base bench_data = setup_level_6();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if ( dynamic_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (dynamic_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("type")(Catch::Benchmark::Chronometer meter) {
+
+        bench_data_single_base bench_data = setup_level_6();
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            {
+                if (rttr_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+                else if (rttr_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+                {
+                    value += 1;
+                }
+            }
+
+            return value;
+        });
+    };
+
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -865,6 +1448,7 @@ nonius::benchmark bench_level_6_type()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 void start_rttr_cast_benchmark()
 {
     nonius::configuration cfg;
@@ -918,6 +1502,7 @@ void start_rttr_cast_benchmark()
 
     reporter.generate_report();
 }
+*/
 
 
 

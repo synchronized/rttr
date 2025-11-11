@@ -29,14 +29,15 @@
 
 #include <rttr/type>
 
-#include <nonius/nonius.h++>
-#include <nonius/html_group_reporter.h>
+//#include <nonius/nonius.h++>
+//#include <nonius/html_group_reporter.h>
+#include <catch2/catch_all.hpp>
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_native_find_method_level_1()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -75,10 +76,41 @@ nonius::benchmark bench_rttr_find_method_level_1()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_level_1") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_1 obj_1;
+        ns_foo::method_class& obj_base = obj_1;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::method_class_d_1*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_1 obj_1;
+        ns_foo::method_class& obj_base = obj_1;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_1")))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_native_find_method_level_3()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -117,10 +149,41 @@ nonius::benchmark bench_rttr_find_method_level_3()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_level_3") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_3 obj_3;
+        ns_foo::method_class& obj_base = obj_3;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::method_class_d_3*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_3 obj_3;
+        ns_foo::method_class& obj_base = obj_3;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_3")))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_native_find_method_level_6()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -159,12 +222,44 @@ nonius::benchmark bench_rttr_find_method_level_6()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_level_6") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_6 obj_6;
+        ns_foo::method_class& obj_base = obj_6;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::method_class_d_6*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_6 obj_6;
+        ns_foo::method_class& obj_base = obj_6;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_6")))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
+/*
 nonius::benchmark bench_native_find_method_neg_level_1()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -203,10 +298,41 @@ nonius::benchmark bench_rttr_find_method_neg_level_1()
         });
     });
 }
+*/
 
+TEST_CASE("bench_find_method_neg_level_1") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_1 obj_1;
+        ns_foo::method_class& obj_base = obj_1;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::method_class_d_2*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_1 obj_1;
+        ns_foo::method_class& obj_base = obj_1;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_2")))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_native_find_method_neg_level_3()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -245,11 +371,42 @@ nonius::benchmark bench_rttr_find_method_neg_level_3()
         });
     });
 }
+*/
 
+TEST_CASE("bench_find_method_neg_level_3") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_3 obj_3;
+        ns_foo::method_class& obj_base = obj_3;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::method_class_d_4*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_3 obj_3;
+        ns_foo::method_class& obj_base = obj_3;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_4")))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_native_find_method_neg_level_6()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -288,11 +445,43 @@ nonius::benchmark bench_rttr_find_method_neg_level_6()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_neg_level_6") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_6 obj_6;
+        ns_foo::method_class& obj_base = obj_6;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::method_class_d_7*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::method_class_d_6 obj_6;
+        ns_foo::method_class& obj_base = obj_6;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_7")))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 nonius::benchmark bench_native_find_method_cross_cast_level_1()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -331,10 +520,41 @@ nonius::benchmark bench_rttr_find_method_cross_cast_level_1()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_cross_cast_level_1") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::class_multiple_1C*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_13"))) //method 13 is contained in 'class_multiple_1C'
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_native_find_method_cross_cast_level_3()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -373,10 +593,41 @@ nonius::benchmark bench_rttr_find_method_cross_cast_level_3()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_cross_cast_level_3") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::class_multiple_3C*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_15"))) //method 15 is contained in 'class_multiple_3C'
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_native_find_method_cross_cast_level_6()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -415,12 +666,43 @@ nonius::benchmark bench_rttr_find_method_cross_cast_level_6()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_cross_cast_level_6") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_C& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::class_multiple_final*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_C& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_18"))) //method 18 is contained in 'class_multiple_final'
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
 nonius::benchmark bench_native_find_method_cross_cast_neg_level_1()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -459,10 +741,41 @@ nonius::benchmark bench_rttr_find_method_cross_cast_neg_level_1()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_cross_cast_neg_level_1") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_2A obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::class_multiple_1C*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_2A obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_13"))) //method 13 is contained in 'class_multiple_1C'
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_native_find_method_cross_cast_neg_level_3()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -501,10 +814,41 @@ nonius::benchmark bench_rttr_find_method_cross_cast_neg_level_3()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_cross_cast_neg_level_3") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_3A obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        meter.measure([&] { 
+            if (dynamic_cast<ns_foo::class_multiple_3C*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_3A obj_final;
+        ns_foo::class_multiple_base_A& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&] { 
+            if ((m = rttr::type::get(obj_base).get_method("method_15"))) //method 15 is contained in 'class_multiple_3C'
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 nonius::benchmark bench_native_find_method_cross_cast_neg_level_6()
 {
     return nonius::benchmark("native", [](nonius::chronometer meter)
@@ -543,11 +887,44 @@ nonius::benchmark bench_rttr_find_method_cross_cast_neg_level_6()
         });
     });
 }
+*/
+
+TEST_CASE("bench_find_method_cross_cast_neg_level_6") {
+
+    BENCHMARK_ADVANCED("native")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_C& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        meter.measure([&]()
+        {
+            if (dynamic_cast<ns_foo::class_multiple_final_D*>(&obj_base))
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+
+    BENCHMARK_ADVANCED("rttr")(Catch::Benchmark::Chronometer meter) {
+        ns_foo::class_multiple_final obj_final;
+        ns_foo::class_multiple_base_C& obj_base = obj_final;
+        volatile std::size_t value = 0;
+        rttr::method m = rttr::type::get(nullptr).get_method("");
+        meter.measure([&]()
+        {
+            if ((m = rttr::type::get(obj_base).get_method("method_19"))) //method 19 is contained in 'class_multiple_final_D'
+            {
+                value = 1;
+            }
+            return value;
+        });
+    };
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 void bench_find_method()
 {
     nonius::configuration cfg;
@@ -907,4 +1284,4 @@ void bench_find_method()
     nonius::go(cfg, std::begin(benchmarks_group_6_neg), std::end(benchmarks_group_6_neg), reporter);
 
     reporter.generate_report();
-}
+}*/

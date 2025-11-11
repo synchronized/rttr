@@ -19,13 +19,3 @@
 #include <map>
 #include <unordered_map>
 #include <chrono>
-
-// boost stuff
-#include <boost/chrono.hpp>
-#include <boost/variant.hpp>
-#include <boost/math/distributions/normal.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-
-#include <nonius/nonius.h++>
-#include <nonius/html_group_reporter.h>

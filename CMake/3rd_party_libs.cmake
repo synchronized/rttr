@@ -34,21 +34,6 @@ MESSAGE(STATUS ${LIBRARY_OUTPUT_DIRECTORY})
 MESSAGE(STATUS "Finding 3rd party libs...")
 MESSAGE(STATUS "===========================")
 
-if (BUILD_BENCHMARKS)
-    if (MSVC)
-        # there is a the moment a problem with finding multiple versions of boost,
-        # i.e. the static AND the static runtime version; that is not possible atm.
-        # Because of that, the benchmarks cannot be build with the static runtime lib option enabled
-        set(Boost_USE_STATIC_LIBS       ON)
-        set(Boost_USE_STATIC_RUNTIME    OFF)
-        set(BOOST_ALL_DYN_LINK          OFF)
-
-        find_package(Boost COMPONENTS chrono system)
-    else()
-        find_package(Boost)
-    endif()
-endif()
-
 if (BUILD_BENCHMARKS OR BUILD_EXAMPLES)
     find_package(Threads REQUIRED)
 endif()
@@ -61,13 +46,26 @@ set_target_properties(json11 PROPERTIES
     FOLDER "Rttr/3rdParty/json11"
     )
 
-set(NONIUS_DIR ${RTTR_3RD_PARTY_DIR}/nonius-1.1.2)
+# set(NONIUS_DIR ${RTTR_3RD_PARTY_DIR}/nonius-1.1.2)
 
 # Prepare "Catch" library for other executables
-set(CATCH_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/catch-1.12.0)
-add_library(Catch INTERFACE)
-add_library(Catch2::Catch ALIAS Catch)
-target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
+# set(CATCH_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/catch-1.12.0)
+# add_library(Catch INTERFACE)
+# add_library(Catch2::Catch ALIAS Catch)
+# target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
+set(CATCH_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/catch-v3.11.0)
+add_library(Catch2 INTERFACE)
+add_library(Catch2::Catch2 ALIAS Catch2)
+set_target_properties(Catch2 PROPERTIES
+    FOLDER "Rttr/3rdParty/Catch2"
+    )
+target_include_directories(Catch2 INTERFACE ${CATCH_INCLUDE_DIR})
+add_library(Catch2WithMain STATIC ${CATCH_INCLUDE_DIR}/catch2/catch_amalgamated.cpp)
+add_library(Catch2::Catch2WithMain ALIAS Catch2WithMain)
+set_target_properties(Catch2WithMain PROPERTIES
+    FOLDER "Rttr/3rdParty/Catch2"
+    )
+#add_subdirectory(${RTTR_3RD_PARTY_DIR}/catch2)
 
 # Find chai script
 set(CHAISCRIPT_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/chaiscript-6.1.0)

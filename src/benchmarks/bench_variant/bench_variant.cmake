@@ -25,8 +25,10 @@
 #                                                                                  #
 ####################################################################################
 
-set(HEADER_FILES version.rc.in)
+set(HEADER_FILES 
+                 )
 
-set(SOURCE_FILES main.cpp
+set(SOURCE_FILES 
                  bench_variant_conversion.cpp
-                 bench_variant_create.cpp)
+                 bench_variant_create.cpp
+                 )

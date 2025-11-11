@@ -25,13 +25,12 @@
 #                                                                                  #
 ####################################################################################
 
-project(bench_rttr_cast LANGUAGES CXX)
+set(TARGET_NAME_DEFAULT rttr_bench_rttr_cast)
+set(TARGET_NAME_SHARED ${TARGET_NAME_DEFAULT})
+set(TARGET_NAME ${TARGET_NAME_SHARED})
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
+message(STATUS "Scanning "  ${TARGET_NAME_DEFAULT} " module.")
 message(STATUS "===========================")
-
-generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
-                                "Benchmark rttr_cast" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
 
 loadFolder("bench_rttr_cast" HPP_FILES SRC_FILES)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../)
@@ -41,143 +40,172 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_executable(bench_rttr_cast ${SRC_FILES} ${HPP_FILES})
-if (MSVC)
-  target_link_libraries(bench_rttr_cast RTTR::Core ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-else()
-  target_link_libraries(bench_rttr_cast RTTR::Core ${CMAKE_THREAD_LIBS_INIT})
-endif()
+add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
+target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 
-target_include_directories(bench_rttr_cast PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-target_compile_definitions(bench_rttr_cast PUBLIC BOOST_ALL_NO_LIB)
 if(MSVC)
-    target_compile_options(bench_rttr_cast PRIVATE /Zm200)
+    target_compile_options(${TARGET_NAME} PRIVATE /Zm200)
 endif()
 
-set_target_properties(bench_rttr_cast PROPERTIES 
+set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Benchmarks"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
-set_compiler_warnings(bench_rttr_cast)
+set_compiler_warnings(${TARGET_NAME})
 
-install(TARGETS bench_rttr_cast
+install(TARGETS ${TARGET_NAME}
         RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
         LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
         ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
         FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
 
+add_test(NAME "${TARGET_NAME}_test"
+         COMMAND ${TARGET_NAME}
+         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+# 为测试添加标签
+set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
+    LABELS "rttr;bench;catch2"
+    TIMEOUT 300
+)
+
 ###############################################################################
 
 if (BUILD_STATIC)
-    add_executable(bench_rttr_cast_lib ${SRC_FILES} ${HPP_FILES})
-    if (MSVC)
-      target_link_libraries(bench_rttr_cast_lib rttr_core_lib ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-    else()
-      target_link_libraries(bench_rttr_cast_lib RTTR::Core_Lib ${CMAKE_THREAD_LIBS_INIT})
-    endif()
+    set(TARGET_NAME bench_rttr_cast_lib)
+    add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+    target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core_Lib)
+    target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 
-    target_include_directories(bench_rttr_cast_lib PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-    target_compile_definitions(bench_rttr_cast_lib PUBLIC BOOST_ALL_NO_LIB)
     if(MSVC)
-        target_compile_options(bench_rttr_cast_lib PRIVATE /Zm200 /bigobj)
+        target_compile_options(${TARGET_NAME} PRIVATE /Zm200 /bigobj)
     endif()
 
-    set_target_properties(bench_rttr_cast_lib PROPERTIES 
+    set_target_properties(${TARGET_NAME} PROPERTIES 
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                           FOLDER "Rttr/Benchmarks"
                           INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                           CXX_STANDARD ${MAX_CXX_STANDARD})
 
-    set_compiler_warnings(bench_rttr_cast_lib)
+    set_compiler_warnings(${TARGET_NAME})
 
-    install(TARGETS bench_rttr_cast_lib
+    install(TARGETS ${TARGET_NAME}
             RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
             LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
             ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
             FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
+
+    add_test(NAME "${TARGET_NAME}_test"
+            COMMAND ${TARGET_NAME}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+
+    # 为测试添加标签
+    set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
+        LABELS "rttr;bench;catch2"
+        TIMEOUT 300
+    )
 endif()
 
 ###############################################################################
 
 if (BUILD_WITH_STATIC_RUNTIME_LIBS)
-    add_executable(bench_rttr_cast_s ${SRC_FILES} ${HPP_FILES})
-    if (MSVC)
-      target_link_libraries(bench_rttr_cast_s RTTR::Core_STL ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-    else()
-      target_link_libraries(bench_rttr_cast_s RTTR::Core_STL ${CMAKE_THREAD_LIBS_INIT})
-    endif()
+    set(TARGET_NAME bench_rttr_cast_s)
+    add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+    target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core_STL)
+    target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 
-    target_include_directories(bench_rttr_cast_s PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-    target_compile_definitions(bench_rttr_cast_s PUBLIC BOOST_ALL_NO_LIB)
     if(MSVC)
-        target_compile_options(bench_rttr_cast_s PRIVATE /Zm200 /bigobj)
+        target_compile_options(${TARGET_NAME} PRIVATE /Zm200 /bigobj)
     endif()
 
-    set_target_properties(bench_rttr_cast_s PROPERTIES 
+    set_target_properties(${TARGET_NAME} PROPERTIES 
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                           FOLDER "Rttr/Benchmarks"
                           INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                           CXX_STANDARD ${MAX_CXX_STANDARD})
 
-    set_compiler_warnings(bench_rttr_cast_s)
+    set_compiler_warnings(${TARGET_NAME})
 
     if (MSVC)
-        target_compile_options(bench_rttr_cast_s PUBLIC "/MT$<$<CONFIG:Debug>:d>")
+        target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
     elseif(CMAKE_COMPILER_IS_GNUCXX)
-        set_target_properties(bench_rttr_cast_s PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS})
+        set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS})
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_target_properties(bench_rttr_cast_s PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS})
+        set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS})
     else()
         message(SEND_ERROR "Do now know how to statically link against the standard library with this compiler.")
     endif()
 
-    install(TARGETS bench_rttr_cast_s
+    install(TARGETS ${TARGET_NAME}
             RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
             LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
             ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
             FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
 
+    add_test(NAME "${TARGET_NAME}_test"
+            COMMAND ${TARGET_NAME}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+
+    # 为测试添加标签
+    set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
+        LABELS "rttr;bench;catch2"
+        TIMEOUT 300
+    )
+
+    ###############################################################################
+
     if (BUILD_STATIC)
-        add_executable(bench_rttr_cast_lib_s ${SRC_FILES} ${HPP_FILES})
-        if (MSVC)
-          target_link_libraries(bench_rttr_cast_lib_s RTTR::Core_Lib_STL ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-        else()
-          target_link_libraries(bench_rttr_cast_lib_s RTTR::Core_Lib_STL ${CMAKE_THREAD_LIBS_INIT})
-        endif()
+        set(TARGET_NAME bench_rttr_cast_lib_s)
+        add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
+        target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core_Lib_STL)
+        target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 
-        target_include_directories(bench_rttr_cast_lib_s PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-        target_compile_definitions(bench_rttr_cast_lib_s PUBLIC BOOST_ALL_NO_LIB)
         if(MSVC)
-            target_compile_options(bench_rttr_cast_lib_s PRIVATE /Zm200 /bigobj)
+            target_compile_options(${TARGET_NAME} PRIVATE /Zm200 /bigobj)
         endif()
 
-        set_target_properties(bench_rttr_cast_lib_s PROPERTIES 
+        set_target_properties(${TARGET_NAME} PROPERTIES 
                               DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                               FOLDER "Rttr/Benchmarks"
                               INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                               CXX_STANDARD ${MAX_CXX_STANDARD})
 
-        set_compiler_warnings(bench_rttr_cast_lib_s)
+        set_compiler_warnings(${TARGET_NAME})
 
         if (MSVC)
-            target_compile_options(bench_rttr_cast_lib_s PUBLIC "/MT$<$<CONFIG:Debug>:d>")
+            target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
         elseif(CMAKE_COMPILER_IS_GNUCXX)
-            set_target_properties(bench_rttr_cast_lib_s PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS})
+            set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS})
         elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            set_target_properties(bench_rttr_cast_lib_s PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS})
+            set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS})
         else()
             message(SEND_ERROR "Do now know how to statically link against the standard library with this compiler.")
         endif()
 
-        install(TARGETS bench_rttr_cast_lib_s
+        install(TARGETS ${TARGET_NAME}
                 RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
                 LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
                 ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
                 FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
+
+        add_test(NAME "${TARGET_NAME}_test"
+                COMMAND ${TARGET_NAME}
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+
+        # 为测试添加标签
+        set_tests_properties("${TARGET_NAME}_test" PROPERTIES 
+            LABELS "rttr;bench;catch2"
+            TIMEOUT 300
+        )
     endif()
 endif()
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
+message(STATUS "Scanning " ${TARGET_NAME_DEFAULT} " module finished!")
 message(STATUS "")
