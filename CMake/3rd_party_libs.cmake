@@ -68,9 +68,15 @@ set_target_properties(Catch2WithMain PROPERTIES
 #add_subdirectory(${RTTR_3RD_PARTY_DIR}/catch2)
 
 # Find chai script
-set(CHAISCRIPT_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/chaiscript-6.1.0)
-add_library(ChaiScript INTERFACE)
-add_library(ChaiScript::ChaiScript ALIAS ChaiScript)
-target_include_directories(ChaiScript INTERFACE ${CHAISCRIPT_INCLUDE_DIR})
+set(CHAISCRIPT_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/chaiscript-develop)
+# add_library(ChaiScript INTERFACE)
+# add_library(ChaiScript::ChaiScript ALIAS ChaiScript)
+# target_include_directories(ChaiScript INTERFACE ${CHAISCRIPT_INCLUDE_DIR})
+#add_subdirectory(${RTTR_3RD_PARTY_DIR}/chaiscript)
+add_library(chaiscript INTERFACE)
+target_include_directories(chaiscript INTERFACE ${CHAISCRIPT_INCLUDE_DIR}/include)
+set_target_properties(chaiscript PROPERTIES
+    FOLDER "Rttr/3rdParty/chaiscript"
+    )
 
 MESSAGE(STATUS "Finished finding 3rd party libs!")
