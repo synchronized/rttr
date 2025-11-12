@@ -25,18 +25,17 @@
 #                                                                                  #
 ####################################################################################
 
-project(rttr LANGUAGES CXX)
 set(TARGET_NAME_DEFAULT rttr_core)
-set(TARGET_NAME_SHARED ${TARGET_NAME_DEFAULT})
 set(TARGET_NAME ${TARGET_NAME_DEFAULT})
 
 message(STATUS "Scanning "  ${TARGET_NAME_DEFAULT} " module.")
 message(STATUS "===========================")
 
-generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
-                                "RTTR" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
+generateLibraryVersionVariables(
+    ${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
+    "RTTR" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
 
-loadFolder("rttr" HPP_FILES SRC_FILES BUILD_INSTALLER)
+loadFolder("rttr" HPP_FILES SRC_FILES)
 
 if (USE_PCH)
     activate_precompiled_headers("detail/base/pch.h" SRC_FILES)
@@ -97,16 +96,6 @@ if (BUILD_STATIC)
                           
     target_link_libraries(${TARGET_NAME} PRIVATE ${CMAKE_DL_LIBS})
     
-    if (MSVC)
-        set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "lib${TARGET_NAME_SHARED}")
-    elseif (CMAKE_COMPILER_IS_GNUCXX)
-        set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME_SHARED})
-    elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME_SHARED})
-    else()
-        message(SEND_ERROR "Do not know how to name the static library.")
-    endif()
-    
     target_include_directories(${TARGET_NAME} PUBLIC
                                 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>
                                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
@@ -124,8 +113,7 @@ if (BUILD_STATIC)
 endif()
 
 if (BUILD_WITH_STATIC_RUNTIME_LIBS)
-    set(TARGET_NAME_SHARED rttr_core_s)
-    set(TARGET_NAME ${TARGET_NAME_SHARED})
+    set(TARGET_NAME rttr_core_s)
     add_library(${TARGET_NAME} SHARED ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
     add_library(RTTR::Core_STL ALIAS ${TARGET_NAME})
     
@@ -154,9 +142,9 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     if (MSVC)
         target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
     elseif(CMAKE_COMPILER_IS_GNUCXX)
-        set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS})
+        target_link_options(${TARGET_NAME} PUBLIC ${GNU_STATIC_LINKER_FLAGS})
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS})
+        target_link_options(${TARGET_NAME} PUBLIC ${CLANG_STATIC_LINKER_FLAGS})
     else()
         message(SEND_ERROR "Do not know how to statically link against the standard library with this compiler.")
     endif()
@@ -194,11 +182,10 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
 
         if (MSVC)
             target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
-            set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "lib${TARGET_NAME_SHARED}")
         elseif(CMAKE_COMPILER_IS_GNUCXX)
-            set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${GNU_STATIC_LINKER_FLAGS} OUTPUT_NAME ${TARGET_NAME_SHARED})
+            target_link_options(${TARGET_NAME} PUBLIC ${GNU_STATIC_LINKER_FLAGS})
         elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS ${CLANG_STATIC_LINKER_FLAGS} OUTPUT_NAME ${TARGET_NAME_SHARED})
+            target_link_options(${TARGET_NAME} PUBLIC ${CLANG_STATIC_LINKER_FLAGS})
         else()
             message(SEND_ERROR "Do not know how to statically link against the standard library with this compiler.")
         endif()
