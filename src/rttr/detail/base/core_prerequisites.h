@@ -25,8 +25,8 @@
 *                                                                                   *
 *************************************************************************************/
 
-#ifndef RTTR_CORE_PREREQUISITES_H_
-#define RTTR_CORE_PREREQUISITES_H_
+#ifndef gcPREREQUISITES_H_
+#define gcPREREQUISITES_H_
 
 #include "rttr/detail/base/version.h"
 
@@ -138,7 +138,7 @@ namespace rttr
 #endif
 */
 
-#if BX_PLATFORM_WINDOWS || BX_PLATFORM_WINRT
+#if RTTR_CORE_PLATFORM_WINDOWS || RTTR_CORE_PLATFORM_WINRT
 #   define RTTR_HELPER_DLL_EXPORT __declspec(dllexport)
 #   define RTTR_HELPER_DLL_IMPORT __declspec(dllimport)
 #   define RTTR_HELPER_DLL_LOCAL
@@ -146,7 +146,7 @@ namespace rttr
 #   define RTTR_HELPER_DLL_EXPORT __attribute__((visibility("default")))
 #   define RTTR_HELPER_DLL_IMPORT
 #   define RTTR_HELPER_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
-#endif // BX_PLATFORM_WINDOWS
+#endif
 
 #ifdef RTTR_DLL // compiled as a DLL
 #   ifdef RTTR_DLL_EXPORTS // defined if we are building the DLL
@@ -368,4 +368,4 @@ namespace rttr
 
 } // end namespace rttr
 
-#endif // RTTR_CORE_PREREQUISITES_H_
+#endif // gcPREREQUISITES_H_
