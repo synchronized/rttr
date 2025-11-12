@@ -38,9 +38,9 @@ using namespace rttr;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NDEBUG
-    static string_view library_name("unit_test_plugin");
+    static string_view library_name("rttr_unit_test_plugin");
 #else
-    static string_view library_name("unit_test_plugin_d");
+    static string_view library_name("rttr_unit_test_plugin_d");
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////
