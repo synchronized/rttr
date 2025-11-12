@@ -66,7 +66,7 @@
     },
     {
       "name": "windows-msvc-ninja-debug",
-      "displayName": "Windows MSVC Debug with Ninja (Debug)",
+      "displayName": "Windows MSVC with Ninja (Debug)",
       "description": "使用原生 MSVC 编译器和 Ninja 生成器进行构建 (Debug)",
       "inherits": "windows-msvc-ninja-release",
       "cacheVariables": {
@@ -127,18 +127,7 @@
       "configuration": "Debug",
       "filter": {
         "include": {
-          "label": "rttr;unit"
-        }
-      }
-    },
-    {
-      "name": "bench-test-clang-debug",
-      "displayName": "运行 Clang 测试(bench)",
-      "configurePreset": "windows-clang-ninja-debug",
-      "configuration": "Debug",
-      "filter": {
-        "include": {
-          "label": "rttr;bench"
+          "label": "rttr_unit"
         }
       }
     },
@@ -149,7 +138,7 @@
       "configuration": "Debug",
       "filter": {
         "include": {
-          "label": "rttr;unit"
+          "label": "rttr_unit"
         }
       }
     },
@@ -160,7 +149,7 @@
       "configuration": "Debug",
       "filter": {
         "include": {
-          "label": "rttr;unit"
+          "label": "rttr_unit"
         }
       }
     }

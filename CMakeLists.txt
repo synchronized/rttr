@@ -71,6 +71,7 @@ if (PROJECT_IS_TOP_LEVEL)
     set(BUILD_DOCUMENTATION ON)
     set(BUILD_INSTALLER ON)
     set(BUILD_PACKAGE ON)
+    enable_testing()
 endif()
 
 # one precompiled headers cannot be used for multiple ninja targets
