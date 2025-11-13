@@ -49,11 +49,19 @@ target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
 target_link_libraries(${TARGET_NAME} PRIVATE rttr_unit_test_base)
 target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 
-set_target_properties(${TARGET_NAME} PROPERTIES 
+set_target_properties(${TARGET_NAME} PROPERTIES
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Testing"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
+
+set_target_properties(${TARGET_NAME} PROPERTIES
+    BUILD_RPATH "$ORIGIN/../lib"
+    INSTALL_RPATH "$ORIGIN/../lib"
+    SKIP_BUILD_RPATH FALSE
+    BUILD_WITH_INSTALL_RPATH FALSE
+    INSTALL_REMOVE_ENVIRONMENT_RPATH FALSE
+)
 
 set_compiler_warnings(${TARGET_NAME})
 
@@ -62,20 +70,20 @@ if (MSVC)
 endif()
 
 add_dependencies(${TARGET_NAME} rttr_unit_test_plugin)
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "$<TARGET_FILE:rttr_unit_test_plugin>"           # 源：DLL完整路径
+    "$<TARGET_FILE_DIR:${TARGET_NAME}>"   # 目标：exe所在目录
+    COMMENT "Copying rttr_unit_test_plugin DLL to executable directory"
+)
 
-# run tests
-#add_custom_target(run_tests ALL
-#                  COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib "$<TARGET_FILE:unit_tests>"
-#                  DEPENDS unit_tests
-#                  COMMENT "Running unit_tests")
-
-add_test(NAME unit_tests_all
+add_test(NAME ${TARGET_NAME}_test
          COMMAND ${TARGET_NAME}
-         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+         WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>"
 )
 
 # 为测试添加标签
-set_tests_properties(unit_tests_all PROPERTIES 
+set_tests_properties(${TARGET_NAME}_test PROPERTIES
     LABELS "rttr_unit;catch2"
     TIMEOUT 120
 )

@@ -40,12 +40,21 @@ add_executable(${TARGET_NAME} ${SRC_FILES})
 target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
 target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
 
-set_target_properties(${TARGET_NAME} PROPERTIES 
+set_target_properties(${TARGET_NAME} PROPERTIES
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
+set_compiler_warnings(${TARGET_NAME})
+
 add_dependencies(${TARGET_NAME} rttr_plugin_example)
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "$<TARGET_FILE:rttr_plugin_example>"           # 源：DLL完整路径
+    "$<TARGET_FILE_DIR:${TARGET_NAME}>"   # 目标：exe所在目录
+    COMMENT "Copying rttr_plugin_example DLL to executable directory"
+)
+
 add_dependencies(rttr_examples ${TARGET_NAME})
 
 message(STATUS "Scanning " ${TARGET_NAME} " module finished!")
