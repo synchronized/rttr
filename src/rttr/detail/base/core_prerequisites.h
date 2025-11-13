@@ -144,7 +144,7 @@ namespace rttr
 #   define RTTR_HELPER_DLL_LOCAL
 #else
 #   define RTTR_HELPER_DLL_EXPORT __attribute__((visibility("default")))
-#   define RTTR_HELPER_DLL_IMPORT
+#   define RTTR_HELPER_DLL_IMPORT __attribute__((visibility("default")))
 #   define RTTR_HELPER_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
 #endif
 
