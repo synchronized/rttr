@@ -28,7 +28,7 @@
 #include <rttr/registration>
 
 using namespace rttr;
-using namespace std;
+
 
 #include <iostream>
 #include <memory>

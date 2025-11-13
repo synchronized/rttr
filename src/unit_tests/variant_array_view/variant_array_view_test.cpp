@@ -34,7 +34,7 @@
 #include <string>
 
 using namespace rttr;
-using namespace std;
+
 
 RTTR_BEGIN_DISABLE_DEPRECATED_WARNING
 

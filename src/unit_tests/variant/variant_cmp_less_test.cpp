@@ -31,7 +31,7 @@
 #include <tuple>
 
 using namespace rttr;
-using namespace std;
+
 
 struct type_with_no_less_than_operator
 {

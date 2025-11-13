@@ -34,7 +34,7 @@
 #include <catch2/catch_all.hpp>
 
 using namespace rttr;
-using namespace std;
+
 
 static int g_invalid_instance = 0;
 

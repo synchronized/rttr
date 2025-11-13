@@ -31,7 +31,7 @@
 #include "rttr/argument.h"
 #include "rttr/instance.h"
 
-using namespace std;
+
 
 namespace rttr
 {

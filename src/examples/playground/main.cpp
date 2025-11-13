@@ -31,26 +31,39 @@
 #include <rttr/type>
 using namespace rttr;
 
+#define CLASS(CLASS_NAME) struct CLASS_NAME \
+{ virtual ~CLASS_NAME() {} RTTR_ENABLE() virtual int getType() { return dummyIntValue; } int dummyIntValue = 0; };
+
+#define CLASS_INHERIT(CLASS1, CLASS2) struct CLASS1 : CLASS2 \
+{ virtual int getType() { return static_cast<int>(dummyDoubleValue); } RTTR_ENABLE(CLASS2) double dummyDoubleValue = 1; };
+
+CLASS(ClassSingleBase)
+CLASS_INHERIT(ClassSingle1A, ClassSingleBase)
+
 int main(int argc, char** argv)
 {
     std::cout << "platform \n";
 
 
-    std::cout << "common_type<char, uint32_t>: " 
+    std::cout << "common_type<char, uint32_t>: "
               << typeid(std::common_type<char, uint32_t>::type).name() << std::endl;
 
-    std::cout << "common_type<float, uint32_t>: " 
+    std::cout << "common_type<float, uint32_t>: "
               << typeid(std::common_type<float, uint32_t>::type).name() << std::endl;
 
-    std::cout << "common_type<float, long long>: " 
+    std::cout << "common_type<float, long long>: "
               << typeid(std::common_type<float, long long>::type).name() << std::endl;
 
-    std::cout << "common_type<double, uint32_t>: " 
+    std::cout << "common_type<double, uint32_t>: "
               << typeid(std::common_type<double, uint32_t>::type).name() << std::endl;
 
-    std::cout << "common_type<double, long long>: " 
+    std::cout << "common_type<double, long long>: "
               << typeid(std::common_type<double, long long>::type).name() << std::endl;
 
+
+    std::cout << "has_get_type_func: " << rttr::detail::has_get_type_func<ClassSingleBase*>::value << std::endl;
+
+    std::cout << "has_get_type_func: " << typeid(rttr::detail::has_get_type_func<ClassSingleBase*>::type).name() << std::endl;
 
     return 0;
 }

@@ -743,7 +743,8 @@ TEST_CASE("variant test - convert to wrapped value", "[variant]")
         auto raw_ptr = new int(42);
         variant var = raw_ptr;
 
-        REQUIRE(var.can_convert(type::get<std::shared_ptr<int>>()) == true);
+        bool is_can_convert = var.can_convert(type::get<std::shared_ptr<int>>());
+        REQUIRE(is_can_convert == true);
 
         auto result = var.convert(type::get<std::shared_ptr<int>>());
         CHECK(result == true);

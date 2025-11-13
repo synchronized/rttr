@@ -55,7 +55,7 @@
 #include <cctype>
 #include <utility>
 
-using namespace std;
+
 
 namespace rttr
 {
@@ -192,7 +192,7 @@ variant type::get_metadata(const variant& key) const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant type::create(vector<argument> args) const
+variant type::create(std::vector<argument> args) const
 {
     auto& ctors = m_type_data->m_class_data.m_ctors;
     for (const auto& ctor : ctors)

@@ -48,7 +48,7 @@
 
 #include <set>
 
-using namespace std;
+
 
 namespace rttr
 {
@@ -523,7 +523,7 @@ void type_register_private::register_base_class_info(type_data* info)
     auto base_classes = info->get_base_types();
 
     // remove double entries; can only be happen for virtual inheritance case
-    set<type> double_entries;
+    std::set<type> double_entries;
     for (auto itr = base_classes.rbegin(); itr != base_classes.rend();)
     {
         if (double_entries.find(itr->m_base_type) == double_entries.end())
@@ -533,7 +533,7 @@ void type_register_private::register_base_class_info(type_data* info)
         }
         else
         {
-            itr = vector<base_class_info>::reverse_iterator(base_classes.erase((++itr).base()));
+            itr = std::vector<base_class_info>::reverse_iterator(base_classes.erase((++itr).base()));
         }
     }
 

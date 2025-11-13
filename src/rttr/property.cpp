@@ -33,7 +33,7 @@
 #include "rttr/instance.h"
 #include "rttr/enumeration.h"
 
-using namespace std;
+
 
 namespace rttr
 {

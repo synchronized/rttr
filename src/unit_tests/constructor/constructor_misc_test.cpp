@@ -46,7 +46,7 @@ struct not_copyable_ctor
     not_copyable_ctor(){}
 
     private:
-        not_copyable_ctor(const not_copyable_ctor&);
+        not_copyable_ctor(const not_copyable_ctor&) = delete;
 };
 
 enum class E_MetaData

@@ -27,7 +27,7 @@
 
 #include "rttr/detail/constructor/constructor_wrapper_base.h"
 
-using namespace std;
+
 
 static RTTR_CONSTEXPR const char* is_ref_list[] = {"", " &"};
 static RTTR_CONSTEXPR const char* is_const_list[] = {"", " const"};
@@ -82,7 +82,9 @@ void constructor_wrapper_base::create_signature_string() RTTR_NOEXCEPT
     auto const_list = get_is_const();
     for (const auto& param : param_info_list)
     {
-        m_signature += param.get_type().get_name() + string(is_const_list[const_list[param.get_index()]]) + string(is_ref_list[ref_list[param.get_index()]]);
+        m_signature += param.get_type().get_name() 
+                + std::string(is_const_list[const_list[param.get_index()]]) 
+                + std::string(is_ref_list[ref_list[param.get_index()]]);
         if (param.get_index() < param_info_list.size() - 1)
             m_signature += ", ";
     }

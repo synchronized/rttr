@@ -34,7 +34,7 @@
 #include <catch2/catch_all.hpp>
 
 using namespace rttr;
-using namespace std;
+
 
 static int g_invalid_instance = 0;
 
@@ -100,7 +100,7 @@ RTTR_REGISTRATION
         .property_readonly("p8", &property_member_obj_test::_p8)
         .property("p9", &property_member_obj_test::_p9)
         .property_readonly("p10", &property_member_obj_test::_p10)
-        .property("p11", &property_member_obj_test::_p11) 
+        .property("p11", &property_member_obj_test::_p11)
         ;
 }
 

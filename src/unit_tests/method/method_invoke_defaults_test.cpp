@@ -31,7 +31,7 @@
 #include <catch2/catch_all.hpp>
 
 using namespace rttr;
-using namespace std;
+
 
 
 struct method_invoke_defaults_test
