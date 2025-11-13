@@ -203,42 +203,36 @@ typename std::enable_if<!is_wrapper<T>::value, raw_addressof_return_type_t<T>>::
  * Determine if the given type \a T is a wrapper and has the member method
  * 'wrapper create(const wrapper_type&)' declared.
  */
-template <typename T, typename Tp = typename std::remove_cv<typename std::remove_reference<T>::type>::type>
+template <typename T, typename Tp = remove_cv_ref_t<T>>
 class has_ptr_create_wrapper_func_impl
 {
-    using YesType = char[1];
-    using NoType  = char[2];
+    template<typename U>
+    static auto test(int) -> decltype(
+        wrapper_mapper<U>::create(std::declval<wrapper_mapper_t<U>* const >()),
+        std::true_type{}
+    );
 
-    template <typename U, typename V, U (*)(V*const)>
-    class check { };
-
-    template <typename C>
-    static YesType& f(check<C, wrapper_mapper_t<C>, &wrapper_mapper<C>::create>*);
-
-    template <typename C>
-    static NoType& f(...);
+    template<typename U>
+    static std::false_type test(...);
 
 public:
-    static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<Tp>(0)) == sizeof(YesType));
+    static RTTR_CONSTEXPR_OR_CONST bool value = decltype(test<Tp>(0))::value;
 };
 
-template <typename T, typename Tp = typename std::remove_cv<typename std::remove_reference<T>::type>::type>
+template <typename T, typename Tp = remove_cv_ref_t<T>>
 class has_ref_create_wrapper_func_impl
 {
-    using YesType = char[1];
-    using NoType  = char[2];
+    template<typename U>
+    static auto test(int) -> decltype(
+        wrapper_mapper<U>::create(std::declval<wrapper_mapper_t<U>&>()),
+        std::true_type{}
+    );
 
-    template <typename U, typename V, U (*)(V&)>
-    class check { };
-
-    template <typename C>
-    static YesType& f(check<C, wrapper_mapper_t<C>, &wrapper_mapper<C>::create>*);
-
-    template <typename C>
-    static NoType& f(...);
+    template<typename U>
+    static std::false_type test(...);
 
 public:
-    static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<Tp>(0)) == sizeof(YesType));
+    static RTTR_CONSTEXPR_OR_CONST bool value = decltype(test<Tp>(0))::value;
 };
 
 template<typename T>

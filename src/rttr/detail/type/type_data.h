@@ -223,9 +223,9 @@ struct RTTR_LOCAL array_raw_type<T, false>
 template<typename T, bool = std::is_pointer<T>::value && !is_void_pointer<T>::value>
 struct RTTR_LOCAL remove_ptr_type_info
 {
-    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { 
+    static RTTR_INLINE type get_type() RTTR_NOEXCEPT {
         //return get_invalid_type();
-        return type::get<remove_pointer_t<T>>(); 
+        return type::get<remove_pointer_t<T>>();
     }
 };
 
@@ -280,27 +280,22 @@ RTTR_LOCAL RTTR_INLINE void create_wrapper_by_ptr(const argument& arg, variant& 
     }
 }
 
-template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
+template<typename Wrapper>
 RTTR_LOCAL RTTR_INLINE
-enable_if_t<is_wrapper<Wrapper>::value &&
-            ::rttr::detail::is_copy_constructible<Wrapper>::value &&
-            std::is_default_constructible<Wrapper>::value &&
-            has_ptr_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
-get_ptr_create_wrapper_func()
+impl::create_wrapper_func get_ptr_create_wrapper_func()
 {
-    return &create_wrapper_by_ptr<Wrapper, Tp>;
-}
-
-
-template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
-RTTR_LOCAL RTTR_INLINE
-enable_if_t<!is_wrapper<Wrapper>::value ||
-            !::rttr::detail::is_copy_constructible<Wrapper>::value ||
-            !std::is_default_constructible<Wrapper>::value ||
-            !has_ptr_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
-get_ptr_create_wrapper_func()
-{
-    return nullptr;
+    if constexpr(!is_wrapper<Wrapper>::value) {
+        return nullptr;
+    } else if constexpr(!::rttr::detail::is_copy_constructible<Wrapper>::value) {
+        return nullptr;
+    } else if constexpr(!std::is_default_constructible<Wrapper>::value) {
+        return nullptr;
+    } else if constexpr(!has_ptr_create_wrapper_func<Wrapper>::value) {
+        return nullptr;
+    } else {
+        using Tp = wrapper_mapper_t<Wrapper>;
+        return &create_wrapper_by_ptr<Wrapper, Tp>;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -314,33 +309,22 @@ RTTR_LOCAL RTTR_INLINE void create_wrapper_by_ref(const argument& arg, variant& 
     }
 }
 
-template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
+template<typename Wrapper>
 RTTR_LOCAL RTTR_INLINE
-enable_if_t<is_wrapper<Wrapper>::value &&
-            ::rttr::detail::is_copy_constructible<Wrapper>::value &&
-            (
-                std::is_copy_constructible<Tp>::value ||
-                std::is_array<Tp>::value
-            ) &&
-            has_ref_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
-get_ref_create_wrapper_func()
+impl::create_wrapper_func get_ref_create_wrapper_func()
 {
-    return &create_wrapper_by_ref<Wrapper, Tp>;
-}
-
-
-template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
-RTTR_LOCAL RTTR_INLINE
-enable_if_t<!is_wrapper<Wrapper>::value ||
-            !::rttr::detail::is_copy_constructible<Wrapper>::value ||
-            !(
-                std::is_copy_constructible<Tp>::value ||
-                std::is_array<Tp>::value
-            ) ||
-            !has_ref_create_wrapper_func<Wrapper>::value, impl::create_wrapper_func>
-get_ref_create_wrapper_func()
-{
-    return nullptr;
+    using Tp = wrapper_mapper_t<Wrapper>;
+    if constexpr(!is_wrapper<Wrapper>::value) {
+        return nullptr; //不是wrapper
+    } else if constexpr(!::rttr::detail::is_copy_constructible<Wrapper>::value) {
+        return nullptr; //wrapper没有复制构造函数
+    } else if constexpr(!std::is_copy_constructible<Tp>::value && !std::is_array<Tp>::value) {
+        return nullptr; //wrapped type不可复制,或者不是数组
+    } else if constexpr(!has_ref_create_wrapper_func<Wrapper>::value) {
+        return nullptr; //wrapper没有create by ref函数
+    } else {
+        return &create_wrapper_by_ref<Wrapper, Tp>;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

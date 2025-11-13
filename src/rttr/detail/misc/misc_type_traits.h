@@ -156,65 +156,24 @@ namespace detail
     // finish when no argument are left
     template <> struct static_any_of<> : std::false_type {};
 
-    /////////////////////////////////////////////////////////////////////////////////////////
-    /*!
-     * Determine if the given type \a T has the method
-     * 'type get_type() const' declared.
-     */
-    template <typename T>
-    class has_get_type_func_impl
-    {
-        typedef char YesType[1];
-        typedef char NoType[2];
-
-        template <typename U, rttr::type (U::*)() const>
-        class check { };
-
-        template <typename C>
-        static YesType& f(check<C, &C::get_type>*);
-
-        template <typename C>
-        static NoType& f(...);
-
-    public:
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
-    };
-
     /*!
      * If T has a member function 'type get_type() const;' then inherits from true_type, otherwise inherits from false_type.
      */
     template<class T, typename Enable = void>
     struct has_get_type_func : std::false_type
-    {};
+    {
+        using type = void;
+    };
 
     template<class T>
-    struct has_get_type_func<T, enable_if_t<has_get_type_func_impl<T>::value> > : std::true_type
-    {};
+    struct has_get_type_func<T, enable_if_t<
+            std::is_same_v<decltype(std::declval<typename raw_type<T>::type>().get_type()), rttr::type>
+            >> : std::true_type
+    {
+        using type = decltype(std::declval<typename raw_type<T>::type>().get_type());
+    };
 
     /////////////////////////////////////////////////////////////////////////////////
-
-    /*!
-     * Determine if the given type \a T has the method
-     * 'type get_type() const' declared.
-     */
-    template <typename T>
-    class has_get_ptr_func_impl
-    {
-        typedef char YesType[1];
-        typedef char NoType[2];
-
-        template <typename U, void* (U::*)()>
-        class check { };
-
-        template <typename C>
-        static YesType& f(check<C, &C::get_ptr>*);
-
-        template <typename C>
-        static NoType& f(...);
-
-    public:
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
-    };
 
     /*!
      * If T has a member function 'type get_ptr() const;' then inherits from true_type, otherwise inherits from false_type.
@@ -224,44 +183,29 @@ namespace detail
     {};
 
     template<class T>
-    struct has_get_ptr_func<T, enable_if_t<has_get_ptr_func_impl<T>::value> > : std::true_type
+    struct has_get_ptr_func<T, enable_if_t<
+            std::is_same_v<decltype(std::declval<typename raw_type<T>::type>().get_ptr()), void*>
+            >> : std::true_type
     {};
 
     /////////////////////////////////////////////////////////////////////////////////
 
     /*!
-     * Determine if the given type \a T has the method
-     * 'type get_type() const' declared.
-     */
-    template <typename T>
-    class has_get_derived_info_func_impl
-    {
-        typedef char YesType[1];
-        typedef char NoType[2];
-
-        template <typename U, derived_info (U::*)()>
-        class check { };
-
-        template <typename C>
-        static YesType& f(check<C, &C::get_derived_info>*);
-
-        template <typename C>
-        static NoType& f(...);
-
-    public:
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
-    };
-
-    /*!
-     * If T has a member function 'type get_type() const;' then inherits from true_type, otherwise inherits from false_type.
+     * If T has a member function 'type get_derived_info() const;' then inherits from true_type, otherwise inherits from false_type.
      */
     template<class T, typename Enable = void>
     struct has_get_derived_info_func : std::false_type
-    {};
+    {
+        using type = void;
+    };
 
     template<class T>
-    struct has_get_derived_info_func<T, enable_if_t<has_get_derived_info_func_impl<T>::value> > : std::true_type
-    {};
+    struct has_get_derived_info_func<T, enable_if_t<
+            std::is_same_v<decltype(std::declval<typename raw_type<T>::type>().get_derived_info()), rttr::detail::derived_info>
+            >> : std::true_type
+    {
+        using type = decltype(std::declval<typename raw_type<T>::type>().get_derived_info());
+    };
 
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
@@ -449,19 +393,14 @@ namespace detail
     };
 
     /////////////////////////////////////////////////////////////////////////////////////
+    //判断是否拥有T::is_valid类型
+    template <typename T, typename = void>
+    struct has_is_valid_alias : std::false_type
+    {};
 
     template <typename T>
-    struct has_is_valid_alias
-    {
-        typedef char YesType[1];
-        typedef char NoType[2];
-
-        template <typename U> static YesType& check(typename U::is_valid*);
-        template <typename U> static NoType& check(...);
-
-
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(check<T>(0)) == sizeof(YesType));
-    };
+    struct has_is_valid_alias<T, std::void_t<typename T::is_valid>> : std::true_type
+    {};
 
     template<typename T, typename Tp = remove_cv_t<remove_reference_t<T>>>
     using is_associative_container = std::integral_constant<bool, !has_is_valid_alias<associative_container_mapper<Tp>>::value>;
@@ -624,12 +563,15 @@ namespace detail
     auto supports_less_than_test(const T&) -> decltype(std::declval<T>() < std::declval<T>(), std::true_type{});
 
     //template<typename T>
-    //struct has_less_than_operator : std::integral_constant<bool, 
+    //struct has_less_than_operator : std::integral_constant<bool,
     //        std::is_same<std::true_type,
     //        decltype(supports_less_than_test(std::declval<T>()))>::value> {};
 
     template <typename T, typename = void>
     struct has_operator_less : std::false_type {};
+
+    template <typename T>
+    struct has_operator_less<T, enable_if_t<std::is_array<T>::value>> : std::false_type {};
 
     // 重载，如果类型T支持 `==` 操作符，则会匹配到这个版本
     template <typename T>
