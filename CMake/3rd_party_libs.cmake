@@ -34,49 +34,40 @@ MESSAGE(STATUS ${LIBRARY_OUTPUT_DIRECTORY})
 MESSAGE(STATUS "Finding 3rd party libs...")
 MESSAGE(STATUS "===========================")
 
-if (BUILD_BENCHMARKS OR BUILD_EXAMPLES)
-    find_package(Threads REQUIRED)
+# Find json11
+if(NOT TARGET json11)
+    set(JSON11_DIR ${RTTR_3RD_PARTY_DIR}/json11)
+    add_library(json11 ${JSON11_DIR}/json11.cpp)
+    target_include_directories(json11 PUBLIC ${JSON11_DIR})
+    set_target_properties(json11 PROPERTIES
+        FOLDER "Rttr/3rdParty/json11"
+        )
 endif()
 
-#set(RAPID_JSON_DIR ${RTTR_3RD_PARTY_DIR}/rapidjson-1.1.0)
-set(JSON11_DIR ${RTTR_3RD_PARTY_DIR}/json11)
-add_library(json11 ${JSON11_DIR}/json11.cpp)
-target_include_directories(json11 PUBLIC ${JSON11_DIR})
-set_target_properties(json11 PROPERTIES
-    FOLDER "Rttr/3rdParty/json11"
-    )
-
-# set(NONIUS_DIR ${RTTR_3RD_PARTY_DIR}/nonius-1.1.2)
-
-# Prepare "Catch" library for other executables
-# set(CATCH_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/catch-1.12.0)
-# add_library(Catch INTERFACE)
-# add_library(Catch2::Catch ALIAS Catch)
-# target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
-set(CATCH_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/catch-v3.11.0)
-add_library(Catch2 INTERFACE)
-add_library(Catch2::Catch2 ALIAS Catch2)
-set_target_properties(Catch2 PROPERTIES
-    FOLDER "Rttr/3rdParty/Catch2"
-    )
-target_include_directories(Catch2 INTERFACE ${CATCH_INCLUDE_DIR})
-add_library(Catch2WithMain STATIC ${CATCH_INCLUDE_DIR}/catch2/catch_amalgamated.cpp)
-add_library(Catch2::Catch2WithMain ALIAS Catch2WithMain)
-set_target_properties(Catch2WithMain PROPERTIES
-    FOLDER "Rttr/3rdParty/Catch2"
-    )
-#add_subdirectory(${RTTR_3RD_PARTY_DIR}/catch2)
+# Find Catch2
+if(NOT TARGET Catch2::Catch2)
+    set(CATCH_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/catch-v3.11.0)
+    add_library(Catch2 INTERFACE)
+    add_library(Catch2::Catch2 ALIAS Catch2)
+    set_target_properties(Catch2 PROPERTIES
+        FOLDER "Rttr/3rdParty/Catch2"
+        )
+    target_include_directories(Catch2 INTERFACE ${CATCH_INCLUDE_DIR})
+    add_library(Catch2WithMain STATIC ${CATCH_INCLUDE_DIR}/catch2/catch_amalgamated.cpp)
+    add_library(Catch2::Catch2WithMain ALIAS Catch2WithMain)
+    set_target_properties(Catch2WithMain PROPERTIES
+        FOLDER "Rttr/3rdParty/Catch2"
+        )
+endif()
 
 # Find chai script
-set(CHAISCRIPT_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/chaiscript-develop)
-# add_library(ChaiScript INTERFACE)
-# add_library(ChaiScript::ChaiScript ALIAS ChaiScript)
-# target_include_directories(ChaiScript INTERFACE ${CHAISCRIPT_INCLUDE_DIR})
-#add_subdirectory(${RTTR_3RD_PARTY_DIR}/chaiscript)
-add_library(chaiscript INTERFACE)
-target_include_directories(chaiscript INTERFACE ${CHAISCRIPT_INCLUDE_DIR}/include)
-set_target_properties(chaiscript PROPERTIES
-    FOLDER "Rttr/3rdParty/chaiscript"
-    )
+if(NOT TARGET chaiscript)
+    set(CHAISCRIPT_INCLUDE_DIR ${RTTR_3RD_PARTY_DIR}/chaiscript-develop)
+    add_library(chaiscript INTERFACE)
+    target_include_directories(chaiscript INTERFACE ${CHAISCRIPT_INCLUDE_DIR}/include)
+    set_target_properties(chaiscript PROPERTIES
+        FOLDER "Rttr/3rdParty/chaiscript"
+        )
+endif()
 
 MESSAGE(STATUS "Finished finding 3rd party libs!")

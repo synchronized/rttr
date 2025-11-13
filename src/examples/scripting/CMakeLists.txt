@@ -36,6 +36,8 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
+find_package(Threads REQUIRED)
+
 add_executable(${TARGET_NAME} ${SRC_FILES})
 target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
 target_link_libraries(${TARGET_NAME} PRIVATE ${CMAKE_DL_LIBS})
