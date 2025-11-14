@@ -52,7 +52,7 @@ if (USE_PCH)
 endif()
 
 if(MSVC)
-    target_compile_options(${TARGET_NAME} PRIVATE /Zm200)
+    target_compile_options(${TARGET_NAME} PRIVATE /Zm200 /bigobj)
 endif()
 
 install(TARGETS ${TARGET_NAME}
