@@ -286,15 +286,29 @@
       }
     },
     {
-      "name": "windows-ci",
+      "name": "windows-clang-ci",
       "configurePreset": "windows-clang-debug",
       "inherits": [
         "test-default"
       ]
     },
     {
-      "name": "linux-ci",
+      "name": "windows-msvc-ci",
+      "configurePreset": "windows-msvc-debug",
+      "inherits": [
+        "test-default"
+      ]
+    },
+    {
+      "name": "linux-clang-ci",
       "configurePreset": "linux-clang-debug",
+      "inherits": [
+        "test-default"
+      ]
+    },
+    {
+      "name": "linux-gcc-ci",
+      "configurePreset": "linux-gcc-debug",
       "inherits": [
         "test-default"
       ]
