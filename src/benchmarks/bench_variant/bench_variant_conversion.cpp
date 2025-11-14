@@ -482,8 +482,12 @@ TEST_CASE("bench_bool_to_string") {
 
 static bool string_to_bool(std::string text)
 {
-    std::transform(text.cbegin(), text.cend(), text.begin(), ::tolower);
-    text.erase( std::remove_if( text.begin(), text.end(), []( char ch ) { return std::isspace<char>( ch, std::locale::classic() ); } ), text.end() );
+    std::transform(text.cbegin(), text.cend(), text.begin(), [](char ch) -> char {
+        return static_cast<char>(::tolower(ch));
+    });
+    text.erase( std::remove_if( text.begin(), text.end(), []( char ch ) { 
+        return std::isspace<char>( ch, std::locale::classic() ); 
+    } ), text.end() );
 
     return !(text == "false" || text == "0" || text.empty());
 }
