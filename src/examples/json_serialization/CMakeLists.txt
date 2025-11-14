@@ -32,10 +32,6 @@ message(STATUS "===========================")
 
 file(GLOB_RECURSE SRC_FILES "*.cpp")
 
-if (USE_PCH)
-  activate_precompiled_headers("pch.h" SRC_FILES)
-endif()
-
 add_executable(${TARGET_NAME} ${SRC_FILES})
 target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
 target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
@@ -48,6 +44,10 @@ set_target_properties(${TARGET_NAME} PROPERTIES
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
 set_compiler_warnings(${TARGET_NAME})
+
+if (USE_PCH)
+    target_precompile_headers(${TARGET_NAME} PRIVATE "pch.h")
+endif()
 
 add_dependencies(rttr_examples ${TARGET_NAME})
 

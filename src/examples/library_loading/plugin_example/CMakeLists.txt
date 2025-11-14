@@ -32,10 +32,6 @@ message(STATUS "===========================")
 
 file(GLOB_RECURSE SRC_FILES "*.cpp")
 
-if (USE_PCH)
-  activate_precompiled_headers("pch.h" SRC_FILES)
-endif()
-
 add_library(${TARGET_NAME} SHARED ${SRC_FILES})
 target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
 target_link_libraries(${TARGET_NAME} RTTR::Core)
@@ -43,6 +39,12 @@ set_target_properties(${TARGET_NAME} PROPERTIES
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Rttr/Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
+
+set_compiler_warnings(${TARGET_NAME})
+
+if (USE_PCH)
+    target_precompile_headers(${TARGET_NAME} PRIVATE "pch.h")
+endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     # we have to use this flag, otherwise dlclose does not call the destructor function

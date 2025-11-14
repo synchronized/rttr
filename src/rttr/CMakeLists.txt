@@ -37,10 +37,6 @@ generateLibraryVersionVariables(
 
 loadFolder("rttr" HPP_FILES SRC_FILES)
 
-if (USE_PCH)
-    activate_precompiled_headers("detail/base/pch.h" SRC_FILES)
-endif()
-
 if (${BUILD_RTTR_DYNAMIC})
     add_library(${TARGET_NAME} SHARED ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
     add_library(RTTR::Core ALIAS ${TARGET_NAME})
@@ -66,6 +62,10 @@ if (${BUILD_RTTR_DYNAMIC})
                                $<INSTALL_INTERFACE:include>)
 
     set_compiler_warnings(${TARGET_NAME})
+
+    if (USE_PCH)
+        target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
+    endif()
     
     if (BUILD_INSTALLER)
         install(TARGETS ${TARGET_NAME} EXPORT rttr_targets
@@ -85,7 +85,6 @@ if (BUILD_STATIC)
     add_library(${TARGET_NAME} STATIC ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
     add_library(RTTR::Core_Lib ALIAS ${TARGET_NAME})
 
-    
     set_target_properties(${TARGET_NAME} PROPERTIES
                           VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
                           EXPORT_NAME Core_Lib
@@ -102,6 +101,10 @@ if (BUILD_STATIC)
                                 $<INSTALL_INTERFACE:include>)
     
     set_compiler_warnings(${TARGET_NAME})
+
+    if (USE_PCH)
+        target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
+    endif()
 
     if (BUILD_INSTALLER)
         install(TARGETS ${TARGET_NAME} EXPORT rttr_targets
@@ -138,6 +141,10 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                           )
 
     set_compiler_warnings(${TARGET_NAME})
+
+    if (USE_PCH)
+        target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
+    endif()
 
     if (MSVC)
         target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
@@ -179,6 +186,10 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
         target_link_libraries(${TARGET_NAME} PRIVATE ${CMAKE_DL_LIBS})
             
         set_compiler_warnings(${TARGET_NAME})
+
+        if (USE_PCH)
+            target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
+        endif()
 
         if (MSVC)
             target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")

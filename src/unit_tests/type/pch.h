@@ -46,4 +46,3 @@
 
 #include <rttr/registration>
 
-#include <chrono>

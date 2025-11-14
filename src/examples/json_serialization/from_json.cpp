@@ -32,7 +32,6 @@
 
 #include <iostream>
 
-#define RAPIDJSON_HAS_STDSTRING 1
 #include <json11.hpp>
 #include <rttr/type>
 

@@ -32,10 +32,6 @@ message(STATUS "===========================")
 
 file(GLOB_RECURSE SRC_FILES "*.cpp")
 
-if (USE_PCH)
-  activate_precompiled_headers("pch.h" SRC_FILES)
-endif()
-
 find_package(Threads REQUIRED)
 
 add_executable(${TARGET_NAME} ${SRC_FILES})
@@ -51,6 +47,13 @@ set_target_properties(${TARGET_NAME} PROPERTIES
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
+
+set_compiler_warnings(${TARGET_NAME})
+
+if (USE_PCH)
+    target_precompile_headers(${TARGET_NAME} PRIVATE "pch.h")
+endif()
+
 if (MSVC)
     target_compile_options(${TARGET_NAME} PRIVATE /bigobj) 
 endif()
