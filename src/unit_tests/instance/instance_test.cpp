@@ -32,13 +32,13 @@ using namespace rttr;
 
 struct instance_base
 {
-    virtual ~instance_base() {}
-
+    virtual ~instance_base() = default;
     RTTR_ENABLE()
 };
 
 struct instance_derived : instance_base
 {
+    virtual ~instance_derived() = default;
     RTTR_ENABLE(instance_base)
 };
 

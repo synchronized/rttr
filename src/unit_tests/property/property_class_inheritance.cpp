@@ -51,11 +51,11 @@ struct top
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-struct left : virtual top
+struct left: virtual top
 {
 
     left() : _p2(true){}
-    ~left() override = default;
+    virtual ~left() override = default;
     bool _p2;
 
     RTTR_ENABLE(top)
@@ -67,7 +67,7 @@ struct right : virtual top
 {
 
     right() : _p3(true){}
-    ~right() override = default;
+    virtual ~right() override = default;
     bool _p3;
 
     RTTR_ENABLE(top)
@@ -89,7 +89,7 @@ struct right_2
 struct bottom : left, right, right_2
 {
     bottom() : _p5(23.0){}
-     ~bottom() override = default;
+    virtual ~bottom() override = default;
 
     double _p5;
 
@@ -118,11 +118,13 @@ struct base_class_with_props
     base_class_with_props() : value(100) {}
     int value;
 
+    virtual ~base_class_with_props() = default;
     RTTR_ENABLE()
 };
 
 struct derived_class_without_registered_props : base_class_with_props
 {
+    virtual ~derived_class_without_registered_props() override = default;
     RTTR_ENABLE(base_class_with_props)
 };
 

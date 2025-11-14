@@ -84,6 +84,7 @@ struct derive_registered : base_not_registered
 
 struct derive_registered_with_base_class_list : base_not_registered
 {
+    virtual ~derive_registered_with_base_class_list() = default;
     RTTR_ENABLE() // but forgot the base class to insert in the macro
 };
 

@@ -38,13 +38,31 @@
 namespace ns_foo
 {
 
-#define CLASS(CLASS_NAME, NUMBER) struct CLASS_NAME { virtual ~CLASS_NAME(){} void RTTR_CAT(method_,NUMBER)() { } virtual void method_v() { } RTTR_ENABLE() private: double dummy_double_value; std::string dummy_string_value; };
-#define CLASS_INHERIT(CLASS1, CLASS2, NUMBER) struct CLASS1 : CLASS2 { virtual ~CLASS1() {} void RTTR_CAT(method_,NUMBER)() { } virtual void method_v() { } RTTR_ENABLE(CLASS2) private: double dummy_double_value; std::string dummy_string_value; };
+#define CLASS(CLASS_NAME, NUMBER)                           \
+struct CLASS_NAME {                                         \
+    void RTTR_CAT(method_,NUMBER)() { }                     \
+    virtual void method_v() { }                             \
+    virtual ~CLASS_NAME() = default;                        \
+    RTTR_ENABLE()                                           \
+private:                                                    \
+    double dummy_double_value;                              \
+    std::string dummy_string_value;                         \
+};
+
+#define CLASS_INHERIT(CLASS1, CLASS2, NUMBER)               \
+struct CLASS1 : CLASS2 {                                    \
+    void RTTR_CAT(method_,NUMBER)() { }                     \
+    virtual void method_v() { }                             \
+    virtual ~CLASS1() {}                                    \
+    RTTR_ENABLE(CLASS2)                                     \
+private:                                                    \
+    double dummy_double_value;                              \
+    std::string dummy_string_value;                         \
+};
 
 struct method_class
 {
     method_class();
-    virtual ~method_class();
 
     void method_0();
 
@@ -78,6 +96,7 @@ struct method_class
     int value_7 = 0;
     int value_8 = 0;
 
+    virtual ~method_class();
     RTTR_ENABLE()
 };
 

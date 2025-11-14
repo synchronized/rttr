@@ -40,6 +40,7 @@ struct method_query_test_base
     void func_1() {}
     static void func_2() {}
 
+    virtual ~method_query_test_base() = default;
     RTTR_ENABLE()
 
 };
@@ -51,6 +52,7 @@ struct method_query_test_derived : method_query_test_base
     void func_3() {}
     static void func_4() {}
 
+    virtual ~method_query_test_derived() = default;
     RTTR_ENABLE(method_query_test_base)
 };
 

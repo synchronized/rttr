@@ -104,6 +104,7 @@ struct method_test_derived : method_test
     bool method_8_derived_called    = false;
     bool method_11_derived_called   = false;
 
+    virtual ~method_test_derived() {}
     RTTR_ENABLE(method_test)
 };
 
@@ -123,6 +124,7 @@ struct method_test_final : method_test_derived, method_test_right
 
     bool method_13_final_called    = false;
 
+    virtual ~method_test_final() {}
     RTTR_ENABLE(method_test_derived, method_test_right)
 };
 

@@ -57,11 +57,13 @@ struct base_class_with_methods
     base_class_with_methods(){}
     void some_method() {}
 
+    virtual ~base_class_with_methods() = default;
     RTTR_ENABLE()
 };
 
 struct derived_class_without_registered_methods : base_class_with_methods
 {
+    virtual ~derived_class_without_registered_methods() = default;
     RTTR_ENABLE(base_class_with_methods)
 };
 

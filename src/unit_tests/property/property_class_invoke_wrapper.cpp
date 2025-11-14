@@ -48,7 +48,7 @@ struct property_wrapper_test_base
 struct property_wrapper_test : property_wrapper_test_base
 {
     bool p2;
-
+    virtual ~property_wrapper_test() override = default;
     RTTR_ENABLE(property_wrapper_test_base)
 };
 

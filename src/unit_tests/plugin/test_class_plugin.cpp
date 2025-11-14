@@ -61,6 +61,7 @@ struct derived_plugin_class : base_test_class
 
     int value;
 
+    virtual ~derived_plugin_class() = default;
     RTTR_ENABLE(base_test_class)
 };
 

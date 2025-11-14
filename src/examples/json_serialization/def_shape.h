@@ -29,9 +29,11 @@ struct shape
     point2d position;
     std::map<color, point2d> dictionary;
 
-    RTTR_ENABLE()
 private:
     bool visible = false;
+
+public:
+    RTTR_ENABLE()
 };
 
 struct circle final: public shape

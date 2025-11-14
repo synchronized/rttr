@@ -32,6 +32,7 @@ struct type_prop_invoke_test_base
 {
     int p1 = 12;
 
+    virtual ~type_prop_invoke_test_base() = default;
     RTTR_ENABLE()
 };
 
@@ -39,6 +40,7 @@ struct type_prop_invoke_test : type_prop_invoke_test_base
 {
     std::string p2 = "text";
 
+    virtual ~type_prop_invoke_test() override = default;
     RTTR_ENABLE(type_prop_invoke_test_base)
 };
 

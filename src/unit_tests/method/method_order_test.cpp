@@ -43,7 +43,7 @@ struct method_order_test_base
 
 };
 
-struct method_order_test_derived : method_order_test_base
+struct method_order_test_derived final: method_order_test_base
 {
     method_order_test_derived() = default ;
     ~method_order_test_derived() override = default ;

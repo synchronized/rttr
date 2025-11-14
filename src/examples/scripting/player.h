@@ -55,6 +55,8 @@ public:
 private:
     int hp;
 
+public:
+    virtual ~player() = default;
     RTTR_ENABLE()
 };
 

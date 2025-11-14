@@ -58,6 +58,7 @@ struct visitor_test_class : visitor_test_class_base
     void set_value(int value) { m_value = value; }
     int get_value() const { return m_value; }
 
+    virtual ~visitor_test_class() override {};
     RTTR_ENABLE(visitor_test_class_base)
 
     private:

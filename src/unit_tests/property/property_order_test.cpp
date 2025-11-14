@@ -49,7 +49,7 @@ struct property_order_test_derived : property_order_test_base
     property_order_test_derived()
         : _whoami( "I am a derived property with same name" )
     {}
-    ~property_order_test_derived() override = default ;
+    virtual ~property_order_test_derived() override = default ;
 
     // member with SAME name as base
     std::string _whoami ;
