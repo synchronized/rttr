@@ -66,7 +66,7 @@ convert_to(const F& from, T& to)
     if (from < 0)
         return false; // value too small
 
-    if (static_cast<typename std::make_unsigned<F>::type>(from) > std::numeric_limits<T>::max())
+    if (static_cast<typename std::make_unsigned<F>::type>(from) > (std::numeric_limits<T>::max)())
         return false; // value too large
 
     to = static_cast<T>(from);
@@ -82,7 +82,7 @@ typename std::enable_if<is_integer<F, T>::value &&
                         bool>::type
 convert_to(const F& from, T& to)
 {
-    if (from > static_cast<typename std::make_unsigned<T>::type>(std::numeric_limits<T>::max()))
+    if (from > static_cast<typename std::make_unsigned<T>::type>((std::numeric_limits<T>::max)()))
         return false; // value too large
 
     to = static_cast<T>(from);
@@ -98,9 +98,9 @@ typename std::enable_if<is_integer<F, T>::value &&
                         bool>::type
 convert_to(const F& from, T& to)
 {
-    if (from > std::numeric_limits<T>::max())
+    if (from > (std::numeric_limits<T>::max)())
         return false; // value too large
-    else if (from < std::numeric_limits<T>::min())
+    else if (from < (std::numeric_limits<T>::min)())
         return false; // value too small
 
     to = static_cast<T>(from);
@@ -116,7 +116,7 @@ typename std::enable_if<is_integer<F, T>::value &&
                         bool>::type
 convert_to(const F& from, T& to)
 {
-    if (from > std::numeric_limits<T>::max())
+    if (from > (std::numeric_limits<T>::max)())
         return false; // value too large
 
     to = static_cast<T>(from);
@@ -135,7 +135,7 @@ typename std::enable_if<std::is_floating_point<F>::value &&
 convert_to(const F& from, T& to)
 {
     using CommonType = std::common_type_t<F, T>;
-    if (from > static_cast<CommonType>(std::numeric_limits<T>::max()))
+    if (from > static_cast<CommonType>((std::numeric_limits<T>::max)()))
         return false; // value too large
     else if (from < static_cast<CommonType>(std::numeric_limits<T>::lowest()))
         return false; // value to small
@@ -153,7 +153,7 @@ typename std::enable_if<std::is_floating_point<F>::value &&
 convert_to(const F& from, T& to)
 {
     using CommonType = std::common_type_t<F, T>;
-    if (from < 0 || from > static_cast<CommonType>(std::numeric_limits<T>::max()))
+    if (from < 0 || from > static_cast<CommonType>((std::numeric_limits<T>::max)()))
         return false; // value too large
 
     to = static_cast<T>(from);
