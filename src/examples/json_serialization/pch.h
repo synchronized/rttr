@@ -43,7 +43,4 @@
 #include <iosfwd>
 #include <memory>
 #include <type_traits>
-
-#include <rttr/registration>
-
 #include <chrono>

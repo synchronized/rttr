@@ -43,6 +43,3 @@
 #include <iosfwd>
 #include <memory>
 #include <type_traits>
-
-#include <rttr/type>
-
