@@ -66,6 +66,11 @@ if (${BUILD_RTTR_DYNAMIC})
     if (USE_PCH)
         target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
     endif()
+
+    target_compile_options(${TARGET_NAME} PUBLIC
+            $<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>
+            $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>
+            )
     
     if (BUILD_INSTALLER)
         install(TARGETS ${TARGET_NAME} EXPORT rttr_targets
@@ -106,6 +111,11 @@ if (BUILD_STATIC)
         target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
     endif()
 
+    target_compile_options(${TARGET_NAME} PUBLIC
+            $<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>
+            $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>
+            )
+
     if (BUILD_INSTALLER)
         install(TARGETS ${TARGET_NAME} EXPORT rttr_targets
                 RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
@@ -145,6 +155,11 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     if (USE_PCH)
         target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
     endif()
+
+    target_compile_options(${TARGET_NAME} PUBLIC
+            $<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>
+            $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>
+            )
 
     if (MSVC)
         target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
@@ -190,6 +205,11 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
         if (USE_PCH)
             target_precompile_headers(${TARGET_NAME} PRIVATE "detail/base/pch.h")
         endif()
+
+        target_compile_options(${TARGET_NAME} PUBLIC
+                $<$<CXX_COMPILER_ID:MSVC>:/Zc:__cplusplus>
+                $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>
+                )
 
         if (MSVC)
             target_compile_options(${TARGET_NAME} PUBLIC "/MT$<$<CONFIG:Debug>:d>")
