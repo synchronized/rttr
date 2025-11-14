@@ -98,7 +98,7 @@ TEST_CASE("property - class - get/set - std::shared_ptr in variant", "[property]
 {
     variant var = std::make_shared<property_wrapper_test_base>();
     CHECK(var.get_type().is_wrapper() == true);
-    CHECK(var.get_type() == type::get<shared_ptr<property_wrapper_test_base>>());
+    CHECK(var.get_type() == type::get<std::shared_ptr<property_wrapper_test_base>>());
     CHECK(var.get_type().get_wrapped_type() == type::get<property_wrapper_test_base>());
 
     type wrapper_t = var.get_type().get_wrapped_type();

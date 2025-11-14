@@ -226,9 +226,9 @@ TEST_CASE("Test method", "[method]")
     REQUIRE(obj.method_3_value == 42);
 
     ////////////////////////////////////////
-    t_meth.get_method("method_4").invoke(inst, string("test"));
+    t_meth.get_method("method_4").invoke(inst, std::string("test"));
     REQUIRE(obj.method_4_called == true);
-    string ref_for_method4;
+    std::string ref_for_method4;
     t_meth.get_method("method_4").invoke(inst, ref_for_method4);
     REQUIRE(ref_for_method4 == "Text Changed");
 
@@ -266,8 +266,8 @@ TEST_CASE("Test method", "[method]")
 
     ret = m6.invoke(inst);
     REQUIRE(obj.method_6_called == true);
-    REQUIRE(ret.is_type<string>() == true);
-    REQUIRE(ret.get_value<string>() == "Hello World");
+    REQUIRE(ret.is_type<std::string>() == true);
+    REQUIRE(ret.get_value<std::string>() == "Hello World");
 
     ////////////////////////////////////////
     REQUIRE(t_meth.get_method("method_7").is_static() == true);

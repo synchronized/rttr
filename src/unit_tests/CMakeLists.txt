@@ -25,69 +25,24 @@
 #                                                                                  #
 ####################################################################################
 
+add_custom_target(rttr_unit_test ALL
+                  COMMENT "compile all unit tests")
+                                    
+set_target_properties(rttr_unit_test PROPERTIES 
+                      FOLDER "Rttr/Testing")
+
 add_subdirectory(base_library)
-
+add_subdirectory(constructor)
+add_subdirectory(destructor)
+add_subdirectory(enumeration)
+add_subdirectory(instance)
+add_subdirectory(method)
+add_subdirectory(misc)
+add_subdirectory(property)
+add_subdirectory(type)
+add_subdirectory(variant)
+add_subdirectory(variant_associative_view)
+add_subdirectory(variant_polymoph_view)
+add_subdirectory(variant_sequential_view)
+add_subdirectory(visitor)
 add_subdirectory(plugin)
-
-set(HPP_FILES "")
-set(SRC_FILES "")
-
-set(TARGET_NAME_DEFAULT rttr_unit_tests)
-set(TARGET_NAME ${TARGET_NAME_DEFAULT})
-
-message(STATUS "Scanning "  ${TARGET_NAME_DEFAULT} " module.")
-message(STATUS "===========================")
-
-loadFolder("unit_tests" HPP_FILES SRC_FILES)
-
-if (USE_PCH)
-  activate_precompiled_headers("pch.h" SRC_FILES)
-endif()
-
-add_executable(${TARGET_NAME} ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
-target_link_libraries(${TARGET_NAME} PRIVATE rttr_unit_test_base)
-target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
-
-set_target_properties(${TARGET_NAME} PROPERTIES
-                      DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Rttr/Testing"
-                      INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
-                      CXX_STANDARD ${MAX_CXX_STANDARD})
-
-set_target_properties(${TARGET_NAME} PROPERTIES
-    BUILD_RPATH "$ORIGIN/../lib"
-    INSTALL_RPATH "$ORIGIN/../lib"
-    SKIP_BUILD_RPATH FALSE
-    BUILD_WITH_INSTALL_RPATH FALSE
-    INSTALL_REMOVE_ENVIRONMENT_RPATH FALSE
-)
-
-set_compiler_warnings(${TARGET_NAME})
-
-if (MSVC)
-    target_compile_options(${TARGET_NAME} PRIVATE /bigobj)
-endif()
-
-add_dependencies(${TARGET_NAME} rttr_unit_test_plugin)
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "$<TARGET_FILE:rttr_unit_test_plugin>"           # 源：DLL完整路径
-    "$<TARGET_FILE_DIR:${TARGET_NAME}>"   # 目标：exe所在目录
-    COMMENT "Copying rttr_unit_test_plugin DLL to executable directory"
-)
-
-add_test(NAME ${TARGET_NAME}_test
-         COMMAND ${TARGET_NAME}
-         WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>"
-)
-
-# 为测试添加标签
-set_tests_properties(${TARGET_NAME}_test PROPERTIES
-    LABELS "rttr_unit;catch2"
-    TIMEOUT 120
-)
-
-
-message(STATUS "Scanning " ${TARGET_NAME_DEFAULT} " module finished!")
-message(STATUS "")

@@ -25,9 +25,40 @@
 #                                                                                  #
 ####################################################################################
 
-set(HEADER_FILES 
-                 base_class.h
-                 )
+set(TARGET_NAME rttr_unit_enumeration)
 
-set(SOURCE_FILES base_class.cpp
-                 )
+message(STATUS "Scanning "  ${TARGET_NAME} " module.")
+message(STATUS "===========================")
+
+file(GLOB_RECURSE SRC_FILES *.cpp)
+
+if (USE_PCH)
+  activate_precompiled_headers("pch.h" SRC_FILES)
+endif()
+
+add_executable(${TARGET_NAME} ${SRC_FILES})
+target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
+
+target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
+target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
+set_target_properties(${TARGET_NAME} PROPERTIES 
+                      DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
+                      FOLDER "Rttr/Testing"
+                      CXX_STANDARD ${MAX_CXX_STANDARD}
+                      )
+
+add_dependencies(rttr_unit_test ${TARGET_NAME})
+
+add_test(NAME ${TARGET_NAME}_test
+         COMMAND ${TARGET_NAME}
+         WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+)
+
+# 为测试添加标签
+set_tests_properties(${TARGET_NAME}_test PROPERTIES
+    LABELS "rttr_unit;catch2"
+    TIMEOUT 120
+)
+
+message(STATUS "Scanning " ${TARGET_NAME} " module finished!")
+message(STATUS "")

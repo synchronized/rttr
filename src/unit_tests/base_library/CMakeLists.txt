@@ -30,16 +30,14 @@ set(TARGET_NAME rttr_unit_test_base)
 message(STATUS "Scanning "  ${TARGET_NAME} " module.")
 message(STATUS "===========================")
 
-set(HPP_FILES "")
-set(SRC_FILES "")
-
-loadFolder("files" HPP_FILES SRC_FILES)
+file(GLOB_RECURSE SRC_FILES *.cpp)
 
 if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
-add_library(${TARGET_NAME} SHARED ${SRC_FILES} ${HPP_FILES})
+add_library(${TARGET_NAME} SHARED ${SRC_FILES})
+target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
 
 target_compile_definitions(${TARGET_NAME} PRIVATE RTTR_DLL_EXPORTS)
 target_compile_definitions(${TARGET_NAME} PUBLIC RTTR_DLL)
@@ -50,6 +48,8 @@ set_target_properties(${TARGET_NAME} PROPERTIES
                       FOLDER "Rttr/Testing"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
+
+add_dependencies(rttr_unit_test ${TARGET_NAME})
 
 message(STATUS "Scanning " ${TARGET_NAME} " module finished!")
 message(STATUS "")
