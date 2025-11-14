@@ -35,10 +35,15 @@ generateLibraryVersionVariables(
     ${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
     "RTTR" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
 
-loadFolder("rttr" HPP_FILES SRC_FILES)
+file(GLOB_RECURSE HPP_FILES 
+                  "*.h" "*.hpp"
+                  */version.h.in
+                  */version.rc.in
+                  )
+file(GLOB_RECURSE SRC_FILES "*.cpp" "*.c")
 
 if (${BUILD_RTTR_DYNAMIC})
-    add_library(${TARGET_NAME} SHARED ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
+    add_library(${TARGET_NAME} SHARED ${SRC_FILES} ${HPP_FILES})
     add_library(RTTR::Core ALIAS ${TARGET_NAME})
     
     target_compile_definitions(${TARGET_NAME} PRIVATE RTTR_DLL_EXPORTS)
@@ -87,7 +92,7 @@ endif()
 
 if (BUILD_STATIC)
     set(TARGET_NAME rttr_core_lib)
-    add_library(${TARGET_NAME} STATIC ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
+    add_library(${TARGET_NAME} STATIC ${SRC_FILES} ${HPP_FILES})
     add_library(RTTR::Core_Lib ALIAS ${TARGET_NAME})
 
     set_target_properties(${TARGET_NAME} PROPERTIES
@@ -127,7 +132,7 @@ endif()
 
 if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     set(TARGET_NAME rttr_core_s)
-    add_library(${TARGET_NAME} SHARED ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
+    add_library(${TARGET_NAME} SHARED ${SRC_FILES} ${HPP_FILES})
     add_library(RTTR::Core_STL ALIAS ${TARGET_NAME})
     
     target_compile_definitions(${TARGET_NAME} PRIVATE RTTR_DLL_EXPORTS)
@@ -182,7 +187,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     
     if (BUILD_STATIC)
         set(TARGET_NAME rttr_core_lib_s)
-        add_library(${TARGET_NAME} STATIC ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
+        add_library(${TARGET_NAME} STATIC ${SRC_FILES} ${HPP_FILES})
         add_library(RTTR::Core_Lib_STL ALIAS ${TARGET_NAME})
 
         target_include_directories(${TARGET_NAME} PUBLIC
