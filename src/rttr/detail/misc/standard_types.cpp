@@ -33,6 +33,7 @@
 #include <set>
 #include <string>
 #include <ratio>
+#include <chrono>
 
 // explicit instantiation of std::string needed, otherwise we get a linker error with clang on osx
 // thats a bug in libc++, because of interaction with __attribute__ ((__visibility__("hidden"), __always_inline__)) in std::string
@@ -121,4 +122,17 @@ RTTR_REGISTRATION
     registration::class_<std::peta>("std::peta");
     registration::class_<std::exa>("std::exa");
 
+    {
+        using namespace std::chrono;
+        registration::class_<system_clock::time_point>("std::chrono::system_clock::time_point");
+        registration::class_<system_clock::duration>("std::chrono::system_clock::duration");
+        registration::class_<system_clock::period>("std::chrono::system_clock::period");
+        registration::class_<steady_clock::time_point>("std::chrono::steady_clock::time_point");
+        registration::class_<steady_clock::duration>("std::chrono::steady_clock::duration");
+        registration::class_<steady_clock::period>("std::chrono::steady_clock::period");
+        registration::class_<high_resolution_clock::time_point>("std::chrono::high_resolution_clock::time_point");
+        registration::class_<high_resolution_clock::duration>("std::chrono::high_resolution_clock::duration");
+        registration::class_<high_resolution_clock::period>("std::chrono::high_resolution_clock::period");
+        registration::class_<std::chrono::nanoseconds>("std::chrono::nanoseconds");
+    }
 }
