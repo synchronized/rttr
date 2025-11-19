@@ -320,19 +320,19 @@ RTTR_INLINE bool variant::convert(T& value) const
         //source_type = type::get<wrapper<T>>()
         //target_type = type::get<T>()
         const type source_wrapped_type = source_type.get_wrapped_type();
-        if (source_wrapped_type == target_type) {
+        if (source_wrapped_type.is_pointer() == target_type.is_pointer()) {
             variant var = extract_wrapped_ref_value();
             return var.convert<T>(value);
         }
         //source_type = type::get<wrapper<T*>>(), 
         //target_type = type::get<T>()
-        if (source_wrapped_type.is_pointer() && source_wrapped_type.get_remove_ptr_type() == target_type) {
+        if (source_wrapped_type.is_pointer()) {
             variant var = extract_wrapped_ref_value();
             return var.convert<T>(value);
         }
         //source_type = type::get<wrapper<T>>(), 
         //target_type = type::get<T*>()
-        if (target_type.is_pointer() && source_wrapped_type == target_type.get_remove_ptr_type()) {
+        if (target_type.is_pointer()) {
             variant var = extract_wrapped_ptr_value();
             return var.convert<T>(value);
         }

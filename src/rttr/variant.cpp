@@ -360,19 +360,19 @@ bool variant::convert(const type& target_type, variant& target_var) const
     if (source_type.is_wrapper() && !target_type.is_wrapper())
     {
         const type source_wrapped_type = source_type.get_wrapped_type();
-        if (source_wrapped_type == target_type) {
+        if (source_wrapped_type.is_pointer() == target_type.is_pointer()) {
             variant var = extract_wrapped_ref_value();
             ok = var.convert(target_type);
             target_var = var;
             return ok;
         }
-        if (target_type.is_pointer() && source_wrapped_type == target_type.get_remove_ptr_type()) {
+        if (target_type.is_pointer()) {
             variant var = extract_wrapped_ptr_value();
             ok = var.convert(target_type);
             target_var = var;
             return ok;
         } 
-        if (source_wrapped_type.is_pointer() && source_wrapped_type.get_remove_ptr_type() == target_type) {
+        if (source_wrapped_type.is_pointer()) {
             variant var = extract_wrapped_ref_value();
             ok = var.convert(target_type);
             target_var = var;

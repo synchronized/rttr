@@ -407,3 +407,28 @@ TEST_CASE("variant::to_string() - from enum", "[variant]")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_CASE("variant::to_string() - from wrapper", "[variant]")
+{
+    SECTION("valid conversion")
+    {
+        variant var = std::make_shared<int>(10);
+        REQUIRE(var.can_convert<std::string>() == true);
+        bool ok = false;
+        CHECK(var.to_string(&ok) == "10");
+        CHECK(ok == true);
+
+        REQUIRE(var.convert(type::get<std::string>()) == true);
+        CHECK(var.get_value<std::string>() == "10");
+    }
+
+    SECTION("invalid conversion")
+    {
+        variant var = std::make_shared<int>(11);
+        bool ok = false;
+        CHECK(var.to_string(&ok) == "11");
+        CHECK(ok == true);
+        CHECK(var.convert(type::get<std::string>()) == true);
+        CHECK(var.get_value<std::string>() == "11");
+    }
+}
