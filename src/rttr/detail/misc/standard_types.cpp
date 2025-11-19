@@ -32,6 +32,7 @@
 #include <list>
 #include <set>
 #include <string>
+#include <ratio>
 
 // explicit instantiation of std::string needed, otherwise we get a linker error with clang on osx
 // thats a bug in libc++, because of interaction with __attribute__ ((__visibility__("hidden"), __always_inline__)) in std::string
@@ -77,4 +78,47 @@ RTTR_REGISTRATION
                 .constructor<const char*, unsigned int>()
                 .constructor<unsigned int, char>()
                 ;
+
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::quecto)
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::ronto)
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::yocto)
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::zepto)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::atto)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::femto)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::pico)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::nano)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::micro)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::milli)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::centi)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::deci)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::deca)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::hecto)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::kilo)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::mega)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::giga)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::tera)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::peta)
+    RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::exa)
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::zetta);
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::yotta);
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::ronna);
+    //RTTR_REGISTRATION_STANDARD_TYPE_VARIANTS(std::quetta);
+
+    registration::class_<std::atto>("std::atto");
+    registration::class_<std::femto>("std::femto");
+    registration::class_<std::pico>("std::pico");
+    registration::class_<std::nano>("std::nano");
+    registration::class_<std::micro>("std::micro");
+    registration::class_<std::milli>("std::milli");
+    registration::class_<std::centi>("std::centi");
+    registration::class_<std::deci>("std::deci");
+    registration::class_<std::deca>("std::deca");
+    registration::class_<std::hecto>("std::hecto");
+    registration::class_<std::kilo>("std::kilo");
+    registration::class_<std::mega>("std::mega");
+    registration::class_<std::giga>("std::giga");
+    registration::class_<std::tera>("std::tera");
+    registration::class_<std::peta>("std::peta");
+    registration::class_<std::exa>("std::exa");
+
 }

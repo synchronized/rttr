@@ -412,6 +412,11 @@ RTTR_INLINE type type::get() RTTR_NOEXCEPT
     using non_ref_type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
     return detail::create_or_get_type<non_ref_type>();
 }
+template<typename T, T val>
+RTTR_INLINE type type::get() RTTR_NOEXCEPT
+{
+    return get<T>();
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

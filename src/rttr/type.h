@@ -314,6 +314,8 @@ class RTTR_API type
          */
         template<typename T>
         RTTR_LOCAL static type get() RTTR_NOEXCEPT;
+        template<typename T, T val>
+        RTTR_LOCAL static type get() RTTR_NOEXCEPT;
 
         /*!
          * \brief Returns a type object for the given instance \a object.

@@ -25,6 +25,7 @@
 *                                                                                   *
 *************************************************************************************/
 
+#include <ratio>
 
 #include <catch2/catch_all.hpp>
 #include <rttr/type>
@@ -55,3 +56,7 @@ TEST_CASE("Test rttr::type - type::get_by_name", "[type]")
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+TEST_CASE("Test rttr::type - type::get_name", "[type]")
+{
+   CHECK(type::get<std::milli>().get_name() == "std::milli");
+}

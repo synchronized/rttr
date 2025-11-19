@@ -25,6 +25,8 @@
 *                                                                                   *
 *************************************************************************************/
 
+#include <chrono>
+
 #include <catch2/catch_all.hpp>
 
 #include <rttr/type>
@@ -133,3 +135,72 @@ TEST_CASE("basic operator*()", "[variant]")
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_CASE("chrono assignment", "[variant]")
+{
+    SECTION("std::ratio type")
+    {
+        std::ratio<1, 10000000> r;
+
+        variant a;
+        variant b = r;
+
+        a = b;
+
+        CHECK(a.is_valid() == true);
+        CHECK((bool)a      == true);
+        CHECK(a.get_type().is_valid() == true);
+        CHECK(a.get_type() == type::get<std::ratio<1, 10000000>>());
+
+        a = std::move(b);
+
+        CHECK(a.is_valid() == true);
+        CHECK((bool)a      == true);
+        CHECK(a.get_type().is_valid() == true);
+        CHECK(a.get_type() == type::get<std::ratio<1, 10000000>>());
+
+
+        CHECK(b.is_valid() == false);
+        CHECK((bool)b      == false);
+        CHECK(b.get_type().is_valid() == false);
+
+        a = b;
+        CHECK(a.is_valid() == false);
+        CHECK((bool)a      == false);
+        CHECK(a.get_type().is_valid() == false);
+    }
+
+    SECTION("std::chrono::time_point type")
+    {
+        using namespace std::chrono;
+        system_clock::time_point now =
+        system_clock::now();
+
+        variant a;
+        variant b = now;
+
+        a = b;
+
+        CHECK(a.is_valid() == true);
+        CHECK((bool)a      == true);
+        CHECK(a.get_type().is_valid() == true);
+        CHECK(a.get_type() == type::get<time_point<system_clock>>());
+
+        a = std::move(b);
+
+        CHECK(a.is_valid() == true);
+        CHECK((bool)a      == true);
+        CHECK(a.get_type().is_valid() == true);
+        CHECK(a.get_type() == type::get<time_point<system_clock>>());
+
+
+        CHECK(b.is_valid() == false);
+        CHECK((bool)b      == false);
+        CHECK(b.get_type().is_valid() == false);
+
+        a = b;
+        CHECK(a.is_valid() == false);
+        CHECK((bool)a      == false);
+        CHECK(a.get_type().is_valid() == false);
+    }
+}

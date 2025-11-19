@@ -643,3 +643,9 @@ TEST_CASE("Test rttr::type - get_metadata()", "[type]")
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_CASE("Test rttr::type - ratio", "[type]")
+{
+    std::milli m1;
+    CHECK(type::get<std::milli>() == type::get(m1));
+}
