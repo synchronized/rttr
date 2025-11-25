@@ -181,6 +181,11 @@ RTTR_INLINE type type::get_remove_ptr_type() const RTTR_NOEXCEPT
     return type(m_type_data->remove_ptr_type);
 }
 
+RTTR_INLINE type type::get_add_ptr_type() const RTTR_NOEXCEPT
+{
+    return type(m_type_data->ptr_type_data);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 RTTR_INLINE type type::get_raw_array_type() const RTTR_NOEXCEPT

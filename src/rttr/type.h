@@ -307,6 +307,8 @@ class RTTR_API type
 
         RTTR_INLINE type get_remove_ptr_type() const RTTR_NOEXCEPT;
 
+        RTTR_INLINE type get_add_ptr_type() const RTTR_NOEXCEPT;
+
         /*!
          * \brief Returns a type object for the given template type \a T.
          *

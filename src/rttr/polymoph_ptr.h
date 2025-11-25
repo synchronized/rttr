@@ -78,6 +78,10 @@ public:
         }
     }
 
+    polymoph_ptr(type real_type, T* value) {
+        set(real_type, value);
+    }
+
     template<typename U, 
              detail::enable_if_t<std::is_base_of<value_type, U>::value, bool> = true>
     polymoph_ptr(const U& value) {
@@ -211,6 +215,18 @@ public:
         m_real_ptr_type = type::get<U*>();
         if (m_real_type) {
             m_value = std::reinterpret_pointer_cast<value_type>(value);
+            return true;
+        }
+        return false;
+    }
+
+    bool set(type real_type, T* value) {
+        value_type* raw_value_ptr = static_cast<value_type*>(detail::raw_addressof(value));
+
+        m_real_type = real_type.get_raw_type();
+        m_real_ptr_type = m_real_type.get_add_ptr_type();
+        if (m_real_ptr_type.is_valid() && raw_value_ptr != nullptr) {
+            m_value.reset(raw_value_ptr); 
             return true;
         }
         return false;

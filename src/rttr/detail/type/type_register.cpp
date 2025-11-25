@@ -152,9 +152,9 @@ void type_register::register_class_ptr(type& t, type& ptr_t)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool type_register::unregister_class_ptr(type& t, type& ptr_t)
+bool type_register::unregister_class_ptr(type_data* info)
 {
-    t.m_type_data->ptr_type_data = nullptr;
+    info->ptr_type_data = nullptr;
     return true;
 }
 

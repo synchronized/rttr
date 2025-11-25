@@ -162,6 +162,9 @@ class RTTR_LOCAL registration_manager
                 type_register::unregister_less_than_comparator(item.get());
 
             for (auto& type : m_type_data_list)
+                type_register::unregister_class_ptr(type.get());
+
+            for (auto& type : m_type_data_list)
                 type_register::unregister_type(type.get());
 
             type_register::unregister_reg_manager(this);

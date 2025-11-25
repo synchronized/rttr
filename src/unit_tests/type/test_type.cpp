@@ -649,3 +649,11 @@ TEST_CASE("Test rttr::type - ratio", "[type]")
     std::milli m1;
     CHECK(type::get<std::milli>() == type::get(m1));
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_CASE("Test rttr::type - get_add_ptr_type()", "[type]")
+{
+    rttr::type add_ptr_type = type::get<type_metadata_test>().get_add_ptr_type();
+    CHECK(add_ptr_type.get_name() == "type_metadata_test*");
+}

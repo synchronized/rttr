@@ -366,6 +366,20 @@ TEST_CASE("basic assign", "[polymoph]")
         }
     }
 
+    SECTION("polymoph_ptr custom construct")
+    {
+        rttr::type real_type = rttr::type::get_by_name("poly_sub");
+        auto s53 = rttr::polymoph_ptr<poly_base>(real_type, new poly_sub(3101, 3102));
+        CHECK(s53.is_valid());
+        CHECK(s53.get_real_type().get_name() == "poly_sub");
+        if (s53) {
+            CHECK(s53.get()->ctor_type == 105);
+            CHECK(s53.get()->val == 3101);
+            CHECK(s53.get<poly_sub>() != nullptr);
+            CHECK(s53.get<poly_sub>()->sub_val == 3102);
+        }
+    }
+
     SECTION("variant_polymoph_view check")
     {
         variant a = rttr::polymoph_ptr<poly_base>(poly_sub{11, 12});
@@ -412,7 +426,6 @@ TEST_CASE("basic assign", "[polymoph]")
         CHECK(sub_val2->val == 11);
         CHECK(sub_val2->sub_val == 12);
     }
-
 
 }
 
