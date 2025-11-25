@@ -41,7 +41,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMa
 
 set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Rttr/Benchmarks"
+                      FOLDER "Benchmarks"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 set_compiler_warnings(${TARGET_NAME})
@@ -71,7 +71,7 @@ if (BUILD_STATIC)
 
     set_target_properties(${TARGET_NAME} PROPERTIES 
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                          FOLDER "Rttr/Benchmarks"
+                          FOLDER "Benchmarks"
                           INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                           CXX_STANDARD ${MAX_CXX_STANDARD})
 
@@ -104,7 +104,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
 
     set_target_properties(${TARGET_NAME} PROPERTIES 
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                          FOLDER "Rttr/Benchmarks"
+                          FOLDER "Benchmarks"
                           INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                           CXX_STANDARD ${MAX_CXX_STANDARD})
 
@@ -143,7 +143,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
 
         set_target_properties(${TARGET_NAME} PROPERTIES 
                               DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                              FOLDER "Rttr/Benchmarks"
+                              FOLDER "Benchmarks"
                               INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                               CXX_STANDARD ${MAX_CXX_STANDARD})
 

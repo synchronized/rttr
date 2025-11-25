@@ -29,7 +29,7 @@ add_custom_target(rttr_unit_test ALL
                   COMMENT "compile all unit tests")
                                     
 set_target_properties(rttr_unit_test PROPERTIES 
-                      FOLDER "Rttr/Testing")
+                      FOLDER "Testing")
 
 add_subdirectory(base_library)
 add_subdirectory(constructor)

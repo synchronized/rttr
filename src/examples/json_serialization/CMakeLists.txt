@@ -39,7 +39,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE json11)
 #target_include_directories(${TARGET_NAME} PUBLIC ${RAPID_JSON_DIR})
 set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Rttr/Examples"
+                      FOLDER "Examples"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 

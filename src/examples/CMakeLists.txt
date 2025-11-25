@@ -30,7 +30,7 @@ add_custom_target(rttr_examples ALL
                   COMMENT "compile all examples")
                                     
 set_target_properties(rttr_examples PROPERTIES 
-                      FOLDER "Rttr/Examples")
+                      FOLDER "Examples")
                   
 add_subdirectory (json_serialization)
 add_subdirectory (library_loading)

@@ -40,7 +40,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMa
 target_link_libraries(${TARGET_NAME} PRIVATE rttr_unit_test_base)
 set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Rttr/Testing"
+                      FOLDER "Testing"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
                       )
 

@@ -35,7 +35,7 @@ generateLibraryVersionVariables(
     ${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
     "RTTR" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
 
-loadFolder("rttr" HPP_FILES SRC_FILES)
+loadFolder("rttr" HPP_FILES SRC_FILES BUILD_INSTALLER)
 
 if (${BUILD_RTTR_DYNAMIC})
     add_library(${TARGET_NAME} SHARED ${SRC_FILES} ${HPP_FILES})
@@ -51,7 +51,7 @@ if (${BUILD_RTTR_DYNAMIC})
                           CXX_STANDARD ${MAX_CXX_STANDARD}
                           CXX_VISIBILITY_PRESET hidden
                           VISIBILITY_INLINES_HIDDEN 1
-                          FOLDER "Rttr/Core"
+                          FOLDER "Core"
                           )
     
     target_link_libraries(${TARGET_NAME} PRIVATE ${CMAKE_DL_LIBS})
@@ -95,7 +95,7 @@ if (BUILD_STATIC)
                           EXPORT_NAME Core_Lib
                           CXX_STANDARD ${MAX_CXX_STANDARD}
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                          FOLDER "Rttr/Core"
+                          FOLDER "Core"
                           )
                           
     target_link_libraries(${TARGET_NAME} PRIVATE ${CMAKE_DL_LIBS})
@@ -147,7 +147,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                           CXX_VISIBILITY_PRESET hidden
                           VISIBILITY_INLINES_HIDDEN 1
-                          FOLDER "Rttr/Core"
+                          FOLDER "Core"
                           )
 
     set_compiler_warnings(${TARGET_NAME})
@@ -195,7 +195,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                               EXPORT_NAME Core_Lib_STL
                               CXX_STANDARD ${MAX_CXX_STANDARD}
                               DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                              FOLDER "Rttr/Core"
+                              FOLDER "Core"
                               )
                               
         target_link_libraries(${TARGET_NAME} PRIVATE ${CMAKE_DL_LIBS})

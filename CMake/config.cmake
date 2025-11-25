@@ -53,12 +53,6 @@ endif()
 # in order to group in visual studio the targets into solution filters
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-#3rd part dependencies dirs
-set(RTTR_3RD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rd_party")
-
-getNameOfDir(CMAKE_LIBRARY_OUTPUT_DIRECTORY RTTR_TARGET_BIN_DIR)
-is_vs_based_build(VS_BUILD)
-
 # set all install directories for the targets
 if(UNIX)
   include(GNUInstallDirs)
@@ -118,8 +112,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_rtti(BUILD_WITH_RTTI)
 
-get_latest_supported_cxx(CXX_STANDARD)
-set(MAX_CXX_STANDARD ${CXX_STANDARD})
+set(MAX_CXX_STANDARD 17)
 
 message(STATUS "using C++: ${MAX_CXX_STANDARD}")
 

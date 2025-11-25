@@ -37,7 +37,7 @@ target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
 target_link_libraries(${TARGET_NAME} RTTR::Core)
 set_target_properties(${TARGET_NAME} PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                      FOLDER "Rttr/Examples/rttr_library_loading"
+                      FOLDER "Examples/rttr_library_loading"
                       CXX_STANDARD ${MAX_CXX_STANDARD})
 
 set_compiler_warnings(${TARGET_NAME})

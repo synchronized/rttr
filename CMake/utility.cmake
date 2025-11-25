@@ -92,21 +92,6 @@ function(getNameOfDir FILE_PATH DIR_NAME)
 endfunction()
 
 ####################################################################################
-# Returns relative path from the given file path; starting from CMAKE_CURRENT_SOURCE_DIR
-####################################################################################
-
-function(getRelativePath FILE_PATH RELATIVE_PATH)
-  string(LENGTH ${CMAKE_CURRENT_SOURCE_DIR} CUR_DIR_LEN)
-  get_filename_component(PATH_WITHOUT_FILE ${${FILE_PATH}} PATH)
-  string(LENGTH ${PATH_WITHOUT_FILE} FULL_PATH_LEN)
-  math(EXPR REL_PATH_LEN ${FULL_PATH_LEN}-${CUR_DIR_LEN})
-  math(EXPR REL_PATH_START "${CUR_DIR_LEN}")
-  string(SUBSTRING ${PATH_WITHOUT_FILE} ${REL_PATH_START} ${REL_PATH_LEN} REL_PATH)
-  string(REGEX REPLACE "^/" "" out_path "${REL_PATH}")
-  set(${RELATIVE_PATH} ${out_path} PARENT_SCOPE)
-endfunction()
-
-####################################################################################
 # Loads a FOLDER, which should contain a FOLDER.cmake.
 # In this file all source and header files should be declared.
 # In this cmake files all files have to be declared relative.
@@ -121,16 +106,13 @@ function(loadFolder FOLDER _HEADER_FILES _SOURCE_FILES)
   include(${FULL_PATH})
   get_filename_component(ABS_PATH_TO_FILES ${FULL_PATH} PATH)
   set(shouldInstall ${ARGV3})
-  set(QT_MOC_HEADERS)
-  set(QT_UI_FILES)
-  set(QT_QRC_FILES)
 
   foreach(headerFile ${HEADER_FILES} )
     if (${headerFile} MATCHES ".*.h.in$")
       string ( REGEX REPLACE ".h.in$" ".h" out_path ${headerFile} )
       configure_file(${headerFile} ${CMAKE_CURRENT_BINARY_DIR}/${out_path} @ONLY)
       set(FULL_HEADER_PATH ${ABS_PATH_TO_FILES}/${headerFile})
-      getRelativePath(FULL_HEADER_PATH REL_PATH)
+      file(RELATIVE_PATH REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${FULL_HEADER_PATH}")
       set(FULL_HEADER_PATH ${CMAKE_CURRENT_BINARY_DIR}/${out_path})
       if (REL_PATH)
         string ( REGEX REPLACE "[\\/]" "\\\\" normalized_path ${REL_PATH} )
@@ -142,23 +124,8 @@ function(loadFolder FOLDER _HEADER_FILES _SOURCE_FILES)
       configure_file(${headerFile} ${CMAKE_CURRENT_BINARY_DIR}/${out_path} @ONLY)
       source_group("Generated Files" FILES ${CMAKE_CURRENT_BINARY_DIR}/${out_path})
       list(APPEND ALL_HPP_FILES ${CMAKE_CURRENT_BINARY_DIR}/${out_path})
-    elseif (${headerFile} MATCHES ".*.ui$")
-        set(FULL_HEADER_PATH ${ABS_PATH_TO_FILES}/${headerFile})
-        list(APPEND QT_UI_FILES ${FULL_HEADER_PATH})
-        list(APPEND ALL_HPP_FILES ${FULL_HEADER_PATH})
-    elseif (${headerFile} MATCHES ".*.qrc$")
-        set(FULL_HEADER_PATH ${ABS_PATH_TO_FILES}/${headerFile})
-        list(APPEND QT_QRC_FILES ${FULL_HEADER_PATH})
-        list(APPEND ALL_HPP_FILES ${FULL_HEADER_PATH})
     else()
       set(FULL_HEADER_PATH ${ABS_PATH_TO_FILES}/${headerFile})
-      file(STRINGS ${FULL_HEADER_PATH} var REGEX "Q_OBJECT")
-      if(var)
-         list(APPEND QT_MOC_HEADERS ${FULL_HEADER_PATH})
-      endif()
-
-      # returns the relative path, from the current source dir
-      getRelativePath(FULL_HEADER_PATH REL_PATH)
       list(APPEND HEADER_LIST_OF_CUR_DIR ${FULL_HEADER_PATH})
     endif()
     # get the name of the current directory
@@ -171,54 +138,12 @@ function(loadFolder FOLDER _HEADER_FILES _SOURCE_FILES)
   endforeach()
 
   # and now the source files
-  list(APPEND QML_SOURCES)
   foreach(srcFile ${SOURCE_FILES} )
-    # the source_group placement doesn't work at the moment
-     if (${srcFile} MATCHES ".*.qml$")
-       string(REGEX REPLACE "[\\/]" "_" qrc_resource_file ${srcFile} )
-       string(REGEX REPLACE ".qml$" ".qrc" qrc_resource_file ${qrc_resource_file} )
-       set(qrc_resource_file ${CMAKE_CURRENT_BINARY_DIR}/${qrc_resource_file})
-       file(WRITE ${qrc_resource_file} "<!DOCTYPE RCC><RCC version=\"1.0\"><qresource prefix=\"/\"><file alias=\"${srcFile}\">${ABS_PATH_TO_FILES}/${srcFile}</file></qresource></RCC>")
-       qt5_add_resources(compiled_resource_file ${qrc_resource_file})
-       source_group("Generated Files" FILES ${compiled_resource_file})
-       source_group("Generated Files" FILES ${qrc_resource_file})
-       list(APPEND QML_SOURCES ${compiled_resource_file})
-     elseif (${srcFile} MATCHES ".*.ui$")
-        set(FULL_SRC_PATH ${ABS_PATH_TO_FILES}/${srcFile})
-        list(APPEND QT_UI_FILES ${FULL_SRC_PATH})
-        list(APPEND SOURCE_LIST_OF_CUR_DIR ${FULL_SRC_PATH})
-    elseif (${srcFile} MATCHES ".*.qrc$")
-        set(FULL_SRC_PATH ${ABS_PATH_TO_FILES}/${srcFile})
-        list(APPEND QT_QRC_FILES ${FULL_SRC_PATH})
-        list(APPEND SOURCE_LIST_OF_CUR_DIR ${FULL_SRC_PATH})
-     else()
-       list(APPEND SOURCE_LIST_OF_CUR_DIR ${ABS_PATH_TO_FILES}/${srcFile})
-     endif()
-
     list(APPEND SOURCE_LIST_OF_CUR_DIR ${ABS_PATH_TO_FILES}/${srcFile})
   endforeach()
 
-  list(APPEND QT_MOC_SOURCES)
-
-  if (QT_MOC_HEADERS)
-    qt5_wrap_cpp(QT_MOC_SOURCES ${QT_MOC_HEADERS})
-    source_group("Generated Files" FILES ${QT_MOC_SOURCES})
-  endif()
-
-  list(APPEND QT_UI_SOURCES)
-  if (QT_UI_FILES)
-    qt5_wrap_ui(QT_UI_SOURCES ${QT_UI_FILES})
-    source_group("Generated Files" FILES ${QT_UI_SOURCES})
-  endif()
-
-  list(APPEND QT_QRC_SOURCES)
-  if (QT_QRC_FILES)
-    qt5_add_resources(QT_QRC_SOURCES ${QT_QRC_FILES})
-    source_group("Generated Files" FILES ${QT_QRC_SOURCES})
-  endif()
-
   list(APPEND ALL_HPP_FILES ${${_HEADER_FILES}} ${HEADER_LIST_OF_CUR_DIR})
-  list(APPEND ALL_CPP_FILES ${${_SOURCE_FILES}} ${SOURCE_LIST_OF_CUR_DIR} ${QT_MOC_SOURCES} ${QT_UI_SOURCES} ${QT_QRC_SOURCES} ${QML_SOURCES})
+  list(APPEND ALL_CPP_FILES ${${_SOURCE_FILES}} ${SOURCE_LIST_OF_CUR_DIR})
   set(${_HEADER_FILES} ${ALL_HPP_FILES} PARENT_SCOPE)
   set(${_SOURCE_FILES} ${ALL_CPP_FILES} PARENT_SCOPE)
 
@@ -342,64 +267,19 @@ function(copy_dependency_debug _INPUT _OUTPUT)
 endfunction()
 
 ####################################################################################
-# Creates a PreCompiled Header
-# _PRECOMPILED_HEADER The full path of the dependency incl. FileName
-# _SRC_FILES (Only works with CPP files)
-####################################################################################
-function(activate_precompiled_headers _PRECOMPILED_HEADER _SOURCE_FILES)
-  set(SRC_FILES ${${_SOURCE_FILES}})
-  get_filename_component(pch_basename ${_PRECOMPILED_HEADER} NAME_WE)
-  set(pch_abs ${CMAKE_CURRENT_SOURCE_DIR}/${_PRECOMPILED_HEADER})
-  set(pch_unity ${CMAKE_CURRENT_BINARY_DIR}/${pch_basename}.cpp)
-
-  if(MSVC)
-    # First specify the name of the PCH file
-    # it seems to be that nmake build cant handle the $(IntDir) variable
-    if(NOT MSVC_IDE)
-      set(pch_bin ${CMAKE_CURRENT_BINARY_DIR}/${pch_basename}.pch)
-    else()
-      set(pch_bin "$(IntDir)/${pch_basename}.pch")
-    endif()
-    # Generate precompiled header translation unit
-    if (NOT EXISTS ${pch_unity})
-      file(WRITE ${pch_unity} "// Precompiled header unity generated by CMake\n")
-      file(APPEND ${pch_unity} "#include <${pch_abs}>\n")
-    endif()
-    # this creates the precompild header
-    set_source_files_properties(${pch_unity}
-                                PROPERTIES COMPILE_FLAGS "/Yc\"${pch_abs}\" /Fp\"${pch_bin}\""
-                                           OBJECT_OUTPUTS "${pch_bin}")
-    # Update properties of source files to use the precompiled header.
-    # Additionally, force the inclusion of the precompiled header at beginning of each source file.
-    set_source_files_properties(${SRC_FILES}
-                                PROPERTIES COMPILE_FLAGS "/Yu\"${pch_abs}\" /FI\"${pch_abs}\" /Fp\"${pch_bin}\""
-                                           OBJECT_DEPENDS "${pch_bin}")
-    # Finally, update the source file collection to contain the precompiled header translation unit
-    set(${_SOURCE_FILES} ${pch_unity} ${pch_abs} ${${_SOURCE_FILES}} PARENT_SCOPE)
-
-    source_group("Generated Files" FILES ${pch_unity})
-    get_filename_component(PATH_TO_PCH ${_PRECOMPILED_HEADER} DIRECTORY)
-    if (PATH_TO_PCH)
-        string ( REGEX REPLACE "[\\/]" "\\\\" normalized_path ${PATH_TO_PCH} )
-        source_group(${normalized_path} FILES ${pch_abs})
-    endif()
-  endif()
-endfunction()
-
-####################################################################################
 # Adds warnings compiler options to the target depending on the category
 # target Target name
 ####################################################################################
 function( set_compiler_warnings target)
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(MSVC)
+    set(WARNINGS "/WX"
+                 "/W4")
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(WARNINGS "-Werror"
                  "-Wall")
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(WARNINGS "-Werror"
                  "-Wall")
-  elseif(MSVC)
-    set(WARNINGS "/WX"
-                 "/W4")
   endif()
 
   target_compile_options(${target} PRIVATE ${WARNINGS}) 
@@ -453,47 +333,6 @@ macro(enable_rtti _ENABLE)
   endif()
 endmacro()
 
-
-####################################################################################
-# Returns the name of the used compiler.
-# _COMPILER_NAME
-####################################################################################
-function(getCompilerName _COMPILER_NAME)
-  if(MSVC_TOOLSET_VERSION EQUAL 80)
-    set(COMPILER_NAME "vs2005")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 90)
-    set(COMPILER_NAME "vs2008")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 100)
-    set(COMPILER_NAME "vs2010")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 110)
-    set(COMPILER_NAME "vs2012")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 120)
-    set(COMPILER_NAME "vs2013")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 140)
-    set(COMPILER_NAME "vs2015")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 141)
-    set(COMPILER_NAME "vs2017")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 142)
-    set(COMPILER_NAME "vs2019")
-  elseif(MSVC_TOOLSET_VERSION EQUAL 143)
-    set(COMPILER_NAME "vs2022")
-  elseif(CMAKE_COMPILER_IS_GNUCXX)
-    set(COMPILER_NAME "gcc")
-    if(WIN32)
-      execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "-dumpversion" OUTPUT_VARIABLE GCC_VERSION_OUTPUT)
-      string(REGEX REPLACE "([0-9]+\\.[0-9]+).*" "\\1" GCC_VERSION "${GCC_VERSION_OUTPUT}")
-      set(COMPILER_NAME ${COMPILER_NAME}${GCC_VERSION})
-    endif()
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-     set(COMPILER_NAME "clang")
-  else()
-    message(WARNING "Can not retrieve compiler name!")
-    return()
-  endif()
-
-  set(${_COMPILER_NAME} ${COMPILER_NAME} PARENT_SCOPE)
-endfunction()
-
 ####################################################################################
 # This will install the PDB files also into the "bin" folder of the installation directory
 # _TARGET_NAME The name of the target
@@ -529,79 +368,3 @@ macro(generateLibraryVersionVariables MAJOR MINOR PATCH PRODUCT_NAME PRODUCT_CPY
   set(LIBRARY_COPYRIGHT ${PRODUCT_CPY_RIGHT})
   set(LIBRARY_LICENSE ${PRODUCT_LICENSE})
 endmacro()
-
-function(get_latest_supported_cxx CXX_STANDARD)
-    if (POLICY CMP0067)
-        cmake_policy(SET CMP0067 NEW)
-    endif()
-    
-    # we need to set CMAKE_CXX_STANDARD in order to use the flags for 'check_cxx_source_compiles'
-    set(CMAKE_CXX_STANDARD 17)
-
-    include(CheckCXXSourceCompiles)
-
-    check_cxx_source_compiles("
-                              #include <type_traits>
-                              typedef void F();
-                              typedef void G() noexcept;
-                              
-                              std::enable_if<
-                                  !std::is_same<F, G>::value,
-                                  int
-                              >::type i = 42;
-                              
-                              int main() { return 0; }
-                              "
-                              HAS_NO_EXCEPT_TYPE_SIGNATURE_SUPPORT)
-
-    check_cxx_source_compiles("
-                              #include <type_traits>
-                              struct foo { void func() const noexcept {} };
-                              template<typename T>
-                              void test_func(T)
-                              {
-                                  static_assert(std::is_member_function_pointer<T>::value, \"Failed\");
-                              }
-                              int main() { test_func(&foo::func); return 0; }
-                              " 
-                              HAS_STL_NO_EXCEPT_TYPE_SIGNATURE_SUPPORT)
-                              
-    check_cxx_source_compiles("
-                              constexpr int abs(int x)
-                              {
-                                  if(x < 0) x = -x;
-                                  return x;
-                              }
-                              
-                              int main() { }
-                              "
-                              HAS_CXX_CONSTEXPR)
-                              
-    check_cxx_source_compiles( "
-                               #include <type_traits>
-                               template<typename T>
-                               struct template_type_trait : std::false_type {};
-                               
-                               template<template < bool > class T, bool N>
-                               struct template_type_trait<T<N>> : std::true_type {};
-                               
-                               template<template <std::size_t> class T, std::size_t N>
-                               struct template_type_trait<T<N>> : std::true_type {};
-                               
-                               template<std::size_t T>
-                               struct bar{};
-                               
-                               int main() { static bool foo = template_type_trait<bar<100>>::value;}
-                               "
-                               HAS_PARTIAL_SPECIALIZATION_FOR_ARRAYS)
-
-    if (HAS_NO_EXCEPT_TYPE_SIGNATURE_SUPPORT AND HAS_STL_NO_EXCEPT_TYPE_SIGNATURE_SUPPORT AND
-        HAS_PARTIAL_SPECIALIZATION_FOR_ARRAYS AND HAS_CXX_CONSTEXPR)
-        set(MAX_CXX_STD 17)
-    else()
-        message(FATAL_ERROR "最低需要c++17")
-    endif()
-    
-    set(${CXX_STANDARD} ${MAX_CXX_STD} PARENT_SCOPE)
-endfunction()
-

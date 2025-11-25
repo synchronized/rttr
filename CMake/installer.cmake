@@ -47,21 +47,10 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/RTTR")
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "RTTR is a C++ runtime reflection library")
 
-# detect system
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(RTTR_OS_NAME "linux${RTTR_NATIVE_ARCH}")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set(RTTR_OS_NAME "win${RTTR_NATIVE_ARCH}")
-else()
-    message(WARNING "This system is not supported for packing")
-    return()
-endif()
-
-getCompilerName(RTTR_COMPILER_NAME)
-
 # we use the same naming scheme like Qt
-set(CPACK_PACKAGE_FILE_NAME "rttr-${RTTR_VERSION_STR}-${RTTR_OS_NAME}-${RTTR_COMPILER_NAME}")
+set(CPACK_PACKAGE_FILE_NAME "rttr-${RTTR_VERSION_STR}-${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "rttr-${RTTR_VERSION_STR}-src")
+string(REPLACE " " "" CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
 
 # now as last step we can include CPack
 include(CPack)

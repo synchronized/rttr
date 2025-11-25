@@ -129,7 +129,7 @@ add_custom_target(doc ALL
                   COMMENT "Building documentation...")
 
 set_target_properties(doc PROPERTIES 
-                      FOLDER "Rttr/Documentation")
+                      FOLDER "Documentation")
 
 install(DIRECTORY "${DOXYGEN_OUTPUT_DIRECTORY}/${DOXYGEN_CUSTOM_HTML_DIR}"
         DESTINATION "${DOXYGEN_DOC_INSTALL_DIR}"
@@ -161,7 +161,7 @@ if (BUILD_WEBSITE_DOCU)
                       COMMENT "Building documentation...")
     
     set_target_properties(doc_website PROPERTIES 
-                          FOLDER "Rttr/Documentation")
+                          FOLDER "Documentation")
 endif()
 
 #########################################################################################

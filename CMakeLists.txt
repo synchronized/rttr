@@ -38,7 +38,7 @@ project ("rttr" LANGUAGES CXX)
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 
 if (CMAKE_BUILD_TYPE STREQUAL "")
     # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
@@ -65,6 +65,7 @@ option(CUSTOM_DOXYGEN_STYLE "Enable this option to use a custom doxygen style fo
 option(BUILD_WEBSITE_DOCU "Enable this option to create the special docu for the website" OFF)
 
 if (PROJECT_IS_TOP_LEVEL)
+    set(BUILD_STATIC ON)
     set(BUILD_UNIT_TESTS ON)
     set(BUILD_BENCHMARKS ON)
     set(BUILD_EXAMPLES ON)
@@ -91,7 +92,7 @@ set(RTTR_SOURCE_DIR ${RTTR_ROOT_DIR}/src)
 
 include(config)
 if(BUILD_UNIT_TESTS OR BUILD_BENCHMARKS OR BUILD_EXAMPLES)
-    include(3rd_party_libs)
+    add_subdirectory(3rd_party)
 endif()
 
 if (BUILD_PACKAGE)
