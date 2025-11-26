@@ -202,7 +202,7 @@ struct polymoph_container_dynamic
         return container.create(type_name, args);
     }
 
-    static bool create(const container_t& container, std::string type_name, std::vector<argument> args)
+    static bool create(const container_t& /*container*/, std::string /*type_name*/, std::vector<argument> /*args*/)
     {
         return false;
     }
@@ -212,7 +212,7 @@ struct polymoph_container_dynamic
         return container.set_variant(val);
     }
 
-    static bool set_value(const container_t& container, variant val)
+    static bool set_value(const container_t& /*container*/, variant /*val*/)
     {
         return false;
     }
@@ -274,48 +274,48 @@ namespace detail
 struct polymoph_container_empty
 {
 
-    static bool is_empty(void* container)
+    static bool is_empty(void* /*container*/)
     {
         return true;
     }
 
-    static void clear(void* container)
+    static void clear(void* /*container*/)
     {
     }
 
-    static bool create(void* container, std::string type_name, std::vector<argument> value)
+    static bool create(void* /*container*/, std::string /*type_name*/, std::vector<argument> /*value*/)
     {
         return false;
     }
 
-    static bool set_value(void* container, variant value)
+    static bool set_value(void* /*container*/, variant /*value*/)
     {
         return false;
     }
 
-    static variant get_value(void* container)
+    static variant get_value(void* /*container*/)
     {
         return variant();
     }
 
-    static variant get(void* container)
+    static variant get(void* /*container*/)
     {
         return variant();
     }
 
-    static type get_value_type(void* container)
+    static type get_value_type(void* /*container*/)
     {
         return get_invalid_type();
     }
-    static type get_value_ptr_type(void* container)
+    static type get_value_ptr_type(void* /*container*/)
     {
         return get_invalid_type();
     }
-    static type get_real_type(void* container)
+    static type get_real_type(void* /*container*/)
     {
         return get_invalid_type();
     }
-    static type get_real_ptr_type(void* container)
+    static type get_real_ptr_type(void* /*container*/)
     {
         return get_invalid_type();
     }

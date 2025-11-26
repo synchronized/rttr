@@ -40,7 +40,7 @@ using namespace rttr;
 CLASS(ClassSingleBase)
 CLASS_INHERIT(ClassSingle1A, ClassSingleBase)
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     std::cout << "platform \n";
 

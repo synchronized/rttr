@@ -99,7 +99,8 @@ public:
             bool operator==(const self_type& rhs) const;
             bool operator!=(const self_type& rhs) const;
 
-            array_iterator_base& operator=(const self_type& other);
+            array_iterator_base<DataType>& operator=(const array_iterator_base<DataType>& other);
+            array_iterator_base<DataType>& operator=(array_iterator_base<DataType>&& other);
 
         protected:
             friend class array_range<T, Predicate>;
@@ -123,7 +124,10 @@ public:
 
             array_iterator();
             array_iterator(const array_iterator<DataType>& other);
+            array_iterator(array_iterator<DataType>&& other);
 
+            self_type& operator=(const array_iterator<DataType>& other);
+            self_type& operator=(array_iterator<DataType>&& other);
 
             reference operator*() const;
             pointer operator->();
@@ -150,6 +154,10 @@ public:
 
             array_reverse_iterator();
             array_reverse_iterator(const array_reverse_iterator<DataType>& other);
+            array_reverse_iterator(array_reverse_iterator<DataType>&& other);
+
+            self_type& operator=(const array_reverse_iterator<DataType>& other);
+            self_type& operator=(array_reverse_iterator<DataType>&& other);
 
             reference operator*() const;
             pointer operator->();
@@ -323,7 +331,8 @@ private:
     void prev(array_reverse_iterator<DataType>& itr) const;
 
     bool empty_() const;
-    array_range<T, Predicate>& operator=(const array_range<T, Predicate>& other);
+    array_range<T, Predicate>& operator=(const array_range<T, Predicate>& other) = delete;
+    array_range<T, Predicate>& operator=(array_range<T, Predicate>&& other) = delete;
 
 private:
     const T* const   m_begin;

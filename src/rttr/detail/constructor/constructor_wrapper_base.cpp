@@ -147,7 +147,7 @@ array_range<parameter_info> constructor_wrapper_base::get_parameter_infos() cons
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::get_metadata(const variant& key) const
+variant constructor_wrapper_base::get_metadata(const variant& /*key*/) const
 {
     return variant();
 }
@@ -161,58 +161,58 @@ variant constructor_wrapper_base::invoke() const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::invoke(argument& arg1) const
+variant constructor_wrapper_base::invoke(argument& /*arg1*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::invoke(argument& arg1, argument& arg2) const
+variant constructor_wrapper_base::invoke(argument& /*arg1*/, argument& /*arg2*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::invoke(argument& arg1, argument& arg2, argument& arg3) const
+variant constructor_wrapper_base::invoke(argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::invoke(argument& arg1, argument& arg2, argument& arg3, argument& arg4) const
+variant constructor_wrapper_base::invoke(argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/, argument& /*arg4*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::invoke(argument& arg1, argument& arg2, argument& arg3, argument& arg4,
-                                         argument& arg5) const
+variant constructor_wrapper_base::invoke(argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/, argument& /*arg4*/,
+                                         argument& /*arg5*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::invoke(argument& arg1, argument& arg2, argument& arg3, argument& arg4,
-                                         argument& arg5, argument& arg6) const
+variant constructor_wrapper_base::invoke(argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/, argument& /*arg4*/,
+                                         argument& /*arg5*/, argument& /*arg6*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant constructor_wrapper_base::invoke_variadic(std::vector<argument>& args) const
+variant constructor_wrapper_base::invoke_variadic(std::vector<argument>& /*args*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void constructor_wrapper_base::visit(visitor& visitor, const constructor& ctor) const RTTR_NOEXCEPT
+void constructor_wrapper_base::visit(visitor& /*visitor*/, const constructor& /*ctor*/) const RTTR_NOEXCEPT
 {
 }
 

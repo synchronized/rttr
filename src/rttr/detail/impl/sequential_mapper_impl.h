@@ -452,7 +452,7 @@ struct sequential_container_base_static
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    static void clear(container_t& container)
+    static void clear(container_t& /*container*/)
     {
     }
 
@@ -466,27 +466,27 @@ struct sequential_container_base_static
         return container.size();
     }
 
-    static bool set_size(container_t& container, std::size_t size)
+    static bool set_size(container_t& /*container*/, std::size_t /*size*/)
     {
         return false;
     }
 
-    static itr_t erase(container_t& container, const itr_t& itr)
+    static itr_t erase(container_t& container, const itr_t& /*itr*/)
     {
         return end(container);
     }
 
-    static itr_t erase(container_t& container, const const_itr_t& itr)
+    static itr_t erase(container_t& container, const const_itr_t& /*itr*/)
     {
         return end(container);
     }
 
-    static itr_t insert(container_t& container, const value_t& value, const itr_t& itr_pos)
+    static itr_t insert(container_t& container, const value_t& /*value*/, const itr_t& /*itr_pos*/)
     {
         return end(container);
     }
 
-    static itr_t insert(container_t& container, const value_t& value, const const_itr_t& itr_pos)
+    static itr_t insert(container_t& container, const value_t& /*value*/, const const_itr_t& /*itr_pos*/)
     {
         return end(container);
     }
@@ -556,26 +556,26 @@ struct sequential_container_mapper<T[N]>
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    static void clear(container_t& container)
+    static void clear(container_t& /*container*/)
     {
     }
 
-    static bool is_empty(const container_t& container)
+    static bool is_empty(const container_t& /*container*/)
     {
         return false;
     }
 
-    static std::size_t get_size(const container_t& container)
+    static std::size_t get_size(const container_t& /*container*/)
     {
         return N;
     }
 
-    static bool set_size(container_t& container, std::size_t size)
+    static bool set_size(container_t& /*container*/, std::size_t /*size*/)
     {
         return false;
     }
 
-    static itr_t erase(container_t& container, const itr_t& itr)
+    static itr_t erase(container_t& container, const itr_t& /*itr*/)
     {
         return end(container);
     }
@@ -647,7 +647,7 @@ struct sequential_container_mapper<std::initializer_list<T>>
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    static void clear(container_t& container)
+    static void clear(container_t& /*container*/)
     {
     }
 
@@ -771,15 +771,7 @@ struct sequential_container_mapper<std::vector<bool>>
 
     static itr_t erase(container_t& container, const const_itr_t& itr)
     {
-// to prevent following gcc bug: 'no matching function for call to `std::vector<bool>::erase(const const_itr_t&) return container.erase(itr);`
-// vec.erase(vec.cbegin()); fails for unkown reason with this old version
-#if (RTTR_COMPILER == RTTR_COMPILER_GNUC && RTTR_COMP_VER < 490)
-        auto itr_non_const = container.begin();
-        std::advance (itr_non_const, std::distance<const_itr_t>(itr_non_const, itr));
-        return container.erase(itr_non_const);
-#else
         return container.erase(itr);
-#endif
     }
 
     static itr_t insert(container_t& container, const value_t& value, const itr_t& itr_pos)
@@ -789,15 +781,7 @@ struct sequential_container_mapper<std::vector<bool>>
 
     static itr_t insert(container_t& container, const value_t& value, const const_itr_t& itr_pos)
     {
-// to prevent following gcc bug: 'no matching function for call to `std::vector<bool>::insert(const const_itr_t&, bool) return container.insert(itr, bool);`
-// vec.erase(vec.cbegin()); fails for unkown reason with this old version
-#if (RTTR_COMPILER == RTTR_COMPILER_GNUC && RTTR_COMP_VER < 490)
-        auto itr_non_const = container.begin();
-        std::advance (itr_non_const, std::distance<const_itr_t>(itr_non_const, itr_pos));
-        return container.insert(itr_non_const, value);
-#else
         return container.insert(itr_pos, value);
-#endif
     }
 
     static std::vector<bool>::reference get_value(container_t& container, std::size_t index)
@@ -831,33 +815,33 @@ namespace detail
 
 struct sequential_container_empty
 {
-    static void create(iterator_data& itr_tgt, const iterator_data& src)
+    static void create(iterator_data& /*itr_tgt*/, const iterator_data& /*src*/)
     {
     }
 
-    static void advance(iterator_data& itr, std::ptrdiff_t idx)
+    static void advance(iterator_data& /*itr*/, std::ptrdiff_t /*idx*/)
     {
     }
 
-    static void destroy(iterator_data& itr)
+    static void destroy(iterator_data& /*itr*/)
     {
     }
 
-    static bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) RTTR_NOEXCEPT
+    static bool equal(const iterator_data& /*lhs_itr*/, const iterator_data& /*rhs_itr*/) RTTR_NOEXCEPT
     {
         return true;
     }
 
-    static variant get_data(const iterator_data& itr)
+    static variant get_data(const iterator_data& /*itr*/)
     {
         return variant();
     }
 
-    static void begin(void* container, iterator_data& itr)
+    static void begin(void* /*container*/, iterator_data& /*itr*/)
     {
     }
 
-    static bool is_empty(void* container)
+    static bool is_empty(void* /*container*/)
     {
         return true;
     }
@@ -872,39 +856,39 @@ struct sequential_container_empty
         return 0;
     }
 
-    static type get_rank_type(std::size_t index)
+    static type get_rank_type(std::size_t /*index*/)
     {
         return get_invalid_type();
     }
 
-    static std::size_t get_size(void* container)
+    static std::size_t get_size(void* /*container*/)
     {
         return 0;
     }
 
-    static bool set_size(void* container, std::size_t size)
+    static bool set_size(void* /*container*/, std::size_t /*size*/)
     {
         return false;
     }
 
-    static void erase(void* container, const iterator_data& itr_pos, iterator_data& itr)
+    static void erase(void* /*container*/, const iterator_data& /*itr_pos*/, iterator_data& /*itr*/)
     {
     }
 
-    static void clear(void* container)
+    static void clear(void* /*container*/)
     {
     }
 
-    static void insert(void* container, argument& value, const iterator_data& itr, iterator_data& pos)
+    static void insert(void* /*container*/, argument& /*value*/, const iterator_data& /*itr*/, iterator_data& /*pos*/)
     {
     }
 
-    static bool set_value(void* container, std::size_t index, argument& value)
+    static bool set_value(void* /*container*/, std::size_t /*index*/, argument& /*value*/)
     {
         return false;
     }
 
-    static variant get_value(void* container, std::size_t index)
+    static variant get_value(void* /*container*/, std::size_t /*index*/)
     {
         return variant();
     }

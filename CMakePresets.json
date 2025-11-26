@@ -320,7 +320,7 @@
     },
     {
       "name": "windows-clang-cl-debug",
-      "configurePreset": "windows-msvc-debug",
+      "configurePreset": "windows-clang-cl-debug",
       "inherits": [
         "test-default"
       ]

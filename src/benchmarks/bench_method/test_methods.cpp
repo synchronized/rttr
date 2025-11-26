@@ -180,7 +180,7 @@ void method_class::void_method_arg_8(int arg_1, int arg_2, int arg_3,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void method_class::method_ptr_arg(int* ptr)
+void method_class::method_ptr_arg(int* /*ptr*/)
 {
 }
 

@@ -42,7 +42,7 @@ using namespace rttr;
     static string_view library_name("rttr_plugin_example_d");
 #endif
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     library lib(library_name); // load the actual plugin
 

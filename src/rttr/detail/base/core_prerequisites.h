@@ -166,22 +166,12 @@ namespace rttr
 
 
 #if RTTR_COMPILER == RTTR_COMPILER_MSVC
-#   if !defined(__cpp_constexpr) || (__cpp_constexpr < 201304)
-#       define RTTR_NO_CXX11_CONSTEXPR
-#       define RTTR_NO_CXX14_CONSTEXPR
-#   endif
 #   if !defined(_MSVC_LANG) || (_MSVC_LANG < 201703L)
 #       define RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
 #   endif
 #endif
 
 #if RTTR_COMPILER == RTTR_COMPILER_GNUC ||  RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
-#   if !defined(__cpp_constexpr) || (__cpp_constexpr < 201304)
-#       define RTTR_NO_CXX14_CONSTEXPR
-#   endif
-#   if !defined(cpp_noexcept)
-#       define RTTR_NO_CXX11_NOEXCEPT
-#   endif
 #   if !defined(__cpp_noexcept_function_type) || (__cpp_noexcept_function_type < 201510)
 #       define RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
 #   endif
@@ -189,28 +179,14 @@ namespace rttr
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#if defined(RTTR_NO_CXX11_CONSTEXPR)
-#   define RTTR_CONSTEXPR
-#   define RTTR_CONSTEXPR_OR_CONST const
-#else
 #   define RTTR_CONSTEXPR constexpr
 #   define RTTR_CONSTEXPR_OR_CONST constexpr
-#endif
 
 
-#if defined(RTTR_NO_CXX14_CONSTEXPR)
-#   define RTTR_CXX14_CONSTEXPR
-#else
 #   define RTTR_CXX14_CONSTEXPR constexpr
-#endif
 
-#ifdef RTTR_NO_CXX11_NOEXCEPT
-#   define RTTR_NOEXCEPT
-#   define RTTR_NOEXCEPT_OR_NOTHROW throw()
-#else
 #   define RTTR_NOEXCEPT noexcept
 #   define RTTR_NOEXCEPT_OR_NOTHROW noexcept
-#endif
 
 
 #define RTTR_STATIC_CONSTEXPR static RTTR_CONSTEXPR_OR_CONST
@@ -365,6 +341,8 @@ namespace rttr
 #else
 #   pragma message("WARNING: unknown compiler, don't know how to disable deprecated warnings")
 #endif
+
+#define RTTR_MAYBE_UNUSED(x) (void)(x)
 
 } // end namespace rttr
 

@@ -36,6 +36,7 @@ struct default_arg_test
 {
     bool method_with_default(int val_1, const std::string& val_2 = "This is a default", const int* val_3 = nullptr)
     {
+        RTTR_MAYBE_UNUSED(val_1);
         if (val_2 == "This is a default" && val_3 == nullptr)
             return true;
         else
@@ -47,6 +48,7 @@ struct default_arg_test
 
 static bool global_meth_with_defaults(int val_1, const std::string& val_2 = "This is a default", const int* val_3 = nullptr)
 {
+    RTTR_MAYBE_UNUSED(val_1);
     if (val_2 == "This is a default" && val_3 == nullptr)
         return true;
     else

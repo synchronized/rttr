@@ -456,73 +456,73 @@ namespace detail
 
 struct associative_container_empty
 {
-    static void create(iterator_data& itr_tgt, const iterator_data& src)
+    static void create(iterator_data& /*itr_tgt*/, const iterator_data& /*src*/)
     {
     }
 
-    static void advance(iterator_data& itr, std::ptrdiff_t idx)
+    static void advance(iterator_data& /*itr*/, std::ptrdiff_t /*idx*/)
     {
     }
 
-    static void destroy(iterator_data& itr)
+    static void destroy(iterator_data& /*itr*/)
     {
     }
 
-    static bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) RTTR_NOEXCEPT
-    {
-        return true;
-    }
-
-    static variant get_key(const iterator_data& itr)
-    {
-        return variant();
-    }
-
-    static variant get_value(const iterator_data& itr)
-    {
-        return variant();
-    }
-
-    static void begin(void* container, iterator_data& itr)
-    {
-
-    }
-
-    static bool is_empty(void* container)
+    static bool equal(const iterator_data& /*lhs_itr*/, const iterator_data& /*rhs_itr*/) RTTR_NOEXCEPT
     {
         return true;
     }
 
-    static std::size_t get_size(void* container)
+    static variant get_key(const iterator_data& /*itr*/)
+    {
+        return variant();
+    }
+
+    static variant get_value(const iterator_data& /*itr*/)
+    {
+        return variant();
+    }
+
+    static void begin(void* /*container*/, iterator_data& /*itr*/)
+    {
+
+    }
+
+    static bool is_empty(void* /*container*/)
+    {
+        return true;
+    }
+
+    static std::size_t get_size(void* /*container*/)
     {
         return 0;
     }
 
-    static void find(void* container, iterator_data& itr, argument& arg)
+    static void find(void* /*container*/, iterator_data& /*itr*/, argument& /*arg*/)
     {
     }
 
-    static std::size_t erase(void* container, argument& arg)
+    static std::size_t erase(void* /*container*/, argument& /*arg*/)
     {
         return 0;
     }
 
-    static void clear(void* container)
+    static void clear(void* /*container*/)
     {
     }
 
-    static void equal_range(void* container, argument& key,
-                            iterator_data& itr_begin, iterator_data& itr_end)
+    static void equal_range(void* /*container*/, argument& /*key*/,
+                            iterator_data& /*itr_begin*/, iterator_data& /*itr_end*/)
     {
 
     }
 
-    static bool insert_key(void* container, argument& key, iterator_data& itr)
+    static bool insert_key(void* /*container*/, argument& /*key*/, iterator_data& /*itr*/)
     {
         return false;
     }
 
-    static bool insert_key_value(void* container, argument& key, argument& value, iterator_data& itr)
+    static bool insert_key_value(void* /*container*/, argument& /*key*/, argument& /*value*/, iterator_data& /*itr*/)
     {
         return false;
     }

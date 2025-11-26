@@ -165,7 +165,7 @@ array_range<parameter_info> method_wrapper_base::get_parameter_infos() const RTT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::get_metadata(const variant& key) const
+variant method_wrapper_base::get_metadata(const variant& /*key*/) const
 {
     return variant();
 }
@@ -173,66 +173,66 @@ variant method_wrapper_base::get_metadata(const variant& key) const
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
-variant method_wrapper_base::invoke(instance& object) const
+variant method_wrapper_base::invoke(instance& /*object*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::invoke(instance& object, argument& arg1) const
+variant method_wrapper_base::invoke(instance& /*object*/, argument& /*arg1*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::invoke(instance& object, argument& arg1, argument& arg2) const
+variant method_wrapper_base::invoke(instance& /*object*/, argument& /*arg1*/, argument& /*arg2*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::invoke(instance& object, argument& arg1, argument& arg2, argument& arg3) const
+variant method_wrapper_base::invoke(instance& /*object*/, argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::invoke(instance& object, argument& arg1, argument& arg2, argument& arg3,
-                                    argument& arg4) const
+variant method_wrapper_base::invoke(instance& /*object*/, argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/,
+                                    argument& /*arg4*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::invoke(instance& object, argument& arg1, argument& arg2, argument& arg3,
-                                    argument& arg4, argument& arg5) const
+variant method_wrapper_base::invoke(instance& /**/, argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/,
+                                    argument& /*arg4*/, argument& /*arg5*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::invoke(instance& object, argument& arg1, argument& arg2, argument& arg3,
-                                    argument& arg4, argument& arg5, argument& arg6) const
+variant method_wrapper_base::invoke(instance& /*object*/, argument& /*arg1*/, argument& /*arg2*/, argument& /*arg3*/,
+                                    argument& /*arg4*/, argument& /*arg5*/, argument& /*arg6*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant method_wrapper_base::invoke_variadic(const instance& object, std::vector<argument>& args) const
+variant method_wrapper_base::invoke_variadic(const instance& /*object*/, std::vector<argument>& /*args*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void method_wrapper_base::visit(visitor& visitor, method m) const RTTR_NOEXCEPT
+void method_wrapper_base::visit(visitor& /*visitor*/, method /*m*/) const RTTR_NOEXCEPT
 {
 
 }

@@ -661,7 +661,7 @@ struct variant_data_policy_arithmetic : variant_data_base_policy<T, variant_data
         return reinterpret_cast<const T&>(data);
     }
 
-    static RTTR_INLINE void destroy(T& value)
+    static RTTR_INLINE void destroy(T& /*value*/)
     {
     }
 
@@ -715,6 +715,7 @@ struct RTTR_API variant_data_policy_empty
 {
     static bool invoke(variant_policy_operation op, const variant_data& src_data, argument_wrapper arg)
     {
+        RTTR_MAYBE_UNUSED(src_data);
         switch (op)
         {
             case variant_policy_operation::DESTROY:
@@ -837,6 +838,7 @@ struct RTTR_API variant_data_policy_void
 {
     static bool invoke(variant_policy_operation op, const variant_data& src_data, argument_wrapper arg)
     {
+        RTTR_MAYBE_UNUSED(src_data);
         switch (op)
         {
             case variant_policy_operation::DESTROY:

@@ -77,7 +77,7 @@ RTTR_REGISTRATION
         );
 }
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     std::string json_string;
 

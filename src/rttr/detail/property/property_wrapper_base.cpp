@@ -109,28 +109,28 @@ type property_wrapper_base::get_policy_type() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant property_wrapper_base::get_metadata(const variant& key) const
+variant property_wrapper_base::get_metadata(const variant& /*key*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool property_wrapper_base::set_value(instance& object, argument& arg) const
+bool property_wrapper_base::set_value(instance& /*object*/, argument& /*arg*/) const
 {
     return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant property_wrapper_base::get_value(instance& object) const
+variant property_wrapper_base::get_value(instance& /*object*/) const
 {
     return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void property_wrapper_base::visit(visitor& visitor, property prop) const RTTR_NOEXCEPT
+void property_wrapper_base::visit(visitor& /*visitor*/, property /*prop*/) const RTTR_NOEXCEPT
 {
 
 }

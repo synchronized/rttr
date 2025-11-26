@@ -333,7 +333,7 @@ template<typename T, typename Predicate>
 template<typename DataType>
 RTTR_INLINE bool array_range<T, Predicate>::array_iterator_base<DataType>::operator==(const self_type& rhs) const
 {
-    return (m_ptr == rhs.m_ptr);
+    return (m_ptr == rhs.m_ptr) && (m_range == rhs.m_range);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -342,17 +342,34 @@ template<typename T, typename Predicate>
 template<typename DataType>
 RTTR_INLINE bool array_range<T, Predicate>::array_iterator_base<DataType>::operator!=(const self_type& rhs) const
 {
-    return (m_ptr != rhs.m_ptr);
+    return !(*this == rhs);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename Predicate>
 template<typename DataType>
-RTTR_INLINE typename array_range<T, Predicate>::template array_iterator_base<DataType>::self_type&
-array_range<T, Predicate>::array_iterator_base<DataType>::operator=(const self_type& other)
+RTTR_INLINE typename array_range<T, Predicate>::template array_iterator_base<DataType>&
+array_range<T, Predicate>::array_iterator_base<DataType>::operator=(const array_range<T, Predicate>::array_iterator_base<DataType>& other)
 {
+    if (this == std::addressof(other)) {
+        return *this;
+    }
     m_ptr = other.m_ptr;
+    m_range = other.m_range;
+    return *this;
+}
+
+template<typename T, typename Predicate>
+template<typename DataType>
+RTTR_INLINE typename array_range<T, Predicate>::template array_iterator_base<DataType>::self_type&
+array_range<T, Predicate>::array_iterator_base<DataType>::operator=(array_range<T, Predicate>::array_iterator_base<DataType>&& other)
+{
+    if (this == std::addressof(other)) {
+        return *this;
+    }
+    m_ptr = std::exchange(other.m_ptr, nullptr);
+    m_range = std::exchange(other.m_range, nullptr);
     return *this;
 }
 
@@ -373,6 +390,39 @@ template<typename DataType>
 RTTR_INLINE array_range<T, Predicate>::array_iterator<DataType>::array_iterator(const array_iterator<DataType>& other)
 :   array_iterator_base<DataType>(other.m_ptr, other.m_range)
 {
+}
+
+template<typename T, typename Predicate>
+template<typename DataType>
+RTTR_INLINE array_range<T, Predicate>::array_iterator<DataType>::array_iterator(array_iterator<DataType>&& other)
+:   array_iterator_base<DataType>(std::exchange(other.m_ptr, nullptr), std::exchange(other.m_range, nullptr))
+{
+}
+
+template<typename T, typename Predicate>
+template<typename DataType>
+RTTR_INLINE typename array_range<T, Predicate>::template array_iterator<DataType>::self_type& 
+array_range<T, Predicate>::array_iterator<DataType>::operator=(const array_iterator<DataType>& other)
+{
+    if (this == std::addressof(other)) {
+        return *this;
+    }
+    this->m_ptr = other.m_ptr;
+    this->m_range = other.m_range;
+    return *this;
+}
+
+template<typename T, typename Predicate>
+template<typename DataType>
+RTTR_INLINE typename array_range<T, Predicate>::template array_iterator<DataType>::self_type& 
+array_range<T, Predicate>::array_iterator<DataType>::operator=(array_iterator<DataType>&& other)
+{
+    if (this == std::addressof(other)) {
+        return *this;
+    }
+    this->m_ptr = std::exchange(other.m_ptr, nullptr);
+    this->m_range = std::exchange(other.m_range, nullptr);
+    return *this;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -445,6 +495,39 @@ template<typename DataType>
 RTTR_INLINE array_range<T, Predicate>::array_reverse_iterator<DataType>::array_reverse_iterator(const array_reverse_iterator<DataType>& other)
 :   array_iterator_base<DataType>(other.m_ptr, other.m_range)
 {
+}
+
+template<typename T, typename Predicate>
+template<typename DataType>
+RTTR_INLINE array_range<T, Predicate>::array_reverse_iterator<DataType>::array_reverse_iterator(array_reverse_iterator<DataType>&& other)
+:   array_iterator_base<DataType>(std::exchange(other.m_ptr, nullptr), std::exchange(other.m_range, nullptr))
+{
+}
+
+template<typename T, typename Predicate>
+template<typename DataType>
+RTTR_INLINE typename array_range<T, Predicate>::template array_reverse_iterator<DataType>& 
+array_range<T, Predicate>::array_reverse_iterator<DataType>::operator=(const array_reverse_iterator<DataType>& other)
+{
+    if (this == std::addressof(other)) {
+        return *this;
+    }
+    this->m_ptr = other.m_ptr;
+    this->m_range = other.m_range;
+    return *this;
+}
+
+template<typename T, typename Predicate>
+template<typename DataType>
+RTTR_INLINE typename array_range<T, Predicate>::template array_reverse_iterator<DataType>& 
+array_range<T, Predicate>::array_reverse_iterator<DataType>::operator=(array_reverse_iterator<DataType>&& other)
+{
+    if (this == std::addressof(other)) {
+        return *this;
+    }
+    this->m_ptr = std::exchange(other.m_ptr, nullptr)
+    this->m_range = std::exchange(other.m_range, nullptr)
+    return *this;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

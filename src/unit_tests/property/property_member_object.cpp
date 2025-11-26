@@ -60,6 +60,7 @@ struct property_member_obj_test
 
 
 private:
+    property_member_obj_test(const property_member_obj_test& obj) = delete;
     property_member_obj_test& operator=(const property_member_obj_test& obj);
 
     RTTR_REGISTRATION_FRIEND

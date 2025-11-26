@@ -32,7 +32,7 @@
 
 using namespace rttr;
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     chaiscript::ChaiScript chai;
     chaiscript_visitor chai_vi(chai);

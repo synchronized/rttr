@@ -45,7 +45,9 @@ struct method_misc_test
 
     int func_return(){ return 42; }
 
-    void default_func(std::string value = "text") {}
+    void default_func(std::string value = "text") {
+        RTTR_MAYBE_UNUSED(value);
+    }
 
     static void static_func() {}
 };

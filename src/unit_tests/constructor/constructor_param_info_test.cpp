@@ -37,23 +37,23 @@ struct ctor_param_info_test
 
     }
 
-    ctor_param_info_test(const std::string& val_1, int val_2)
+    ctor_param_info_test(const std::string& /*val_1*/, int /*val_2*/)
     {
 
     }
 
-    ctor_param_info_test(bool val_1, int val_2, float val_3)
+    ctor_param_info_test(bool /*val_1*/, int /*val_2*/, float /*val_3*/)
     {
 
     }
 
 
-    static ctor_param_info_test create_with_default(std::string val_1, int val_2, bool val_3)
+    static ctor_param_info_test create_with_default(std::string /*val_1*/, int /*val_2*/, bool /*val_3*/)
     {
         return ctor_param_info_test();
     }
 
-    static ctor_param_info_test create_with_default_2(double val_1, int val_2, bool val_3)
+    static ctor_param_info_test create_with_default_2(double /*val_1*/, int /*val_2*/, bool /*val_3*/)
     {
         return ctor_param_info_test();
     }
