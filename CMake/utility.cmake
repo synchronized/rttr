@@ -26,34 +26,6 @@
 ####################################################################################
 
 ####################################################################################
-# Welcome to the CMake build system for RTTR.
-# This file contains several helper function to make the life easier with cmake.
-####################################################################################
-
-####################################################################################
-# create hierarchical source groups, useful for big VS-Projects
-# FILE_LIST <= a list of files with absolute path
-####################################################################################
-function (createSrcGroups FILE_LIST )
-  # we want to get the relative path from the
-  # current source dir
-  string(LENGTH ${CMAKE_CURRENT_SOURCE_DIR} curDirLen)
-  set(TMP_FILE_LIST ${${FILE_LIST}})
-
-  foreach ( SOURCE ${TMP_FILE_LIST} )
-    string(LENGTH ${SOURCE} fullPathLen)
-    math(EXPR RelPathLen ${fullPathLen}-${curDirLen})
-    string(SUBSTRING ${SOURCE} ${curDirLen} ${RelPathLen} curStr)
-
-    string ( REGEX REPLACE "[\\/]" "\\\\" normPath ${curStr} )
-    string ( REGEX MATCH "\\\\(.*)\\\\" ouput ${normPath} )
-    if(NOT CMAKE_MATCH_1 STREQUAL "")
-      source_group ( ${CMAKE_MATCH_1} FILES ${SOURCE} )
-    endif()
-  endforeach()
-endfunction()
-
-####################################################################################
 # Create a UnityFile. This is a file which inlcudes all other source files.
 # This is usefull, when you want a fast rebuild.
 # _UNITY_FILE <= The name of the UnityFile
@@ -77,21 +49,6 @@ function(generateUnityFile _UNITY_FILE _SRC_FILES)
 endfunction()
 
 ####################################################################################
-# Returns the name of the Directory, where the file in the FILE_PATH is located.
-####################################################################################
-function(getNameOfDir FILE_PATH DIR_NAME)
-  get_filename_component(HAS_FILE_IN_PATH ${${FILE_PATH}} EXT)
-  if (HAS_FILE_IN_PATH)
-    get_filename_component(PATH_WITHOUT_FILENAME ${${FILE_PATH}} PATH)
-    get_filename_component(NAME_OF_DIR  ${PATH_WITHOUT_FILENAME} NAME)
-    set(${DIR_NAME} ${NAME_OF_DIR} PARENT_SCOPE)
-  else()
-    get_filename_component(NAME_OF_DIR ${${FILE_PATH}} NAME)
-    set(${DIR_NAME} ${NAME_OF_DIR} PARENT_SCOPE)
-  endif()
-endfunction()
-
-####################################################################################
 # Loads a FOLDER, which should contain a FOLDER.cmake.
 # In this file all source and header files should be declared.
 # In this cmake files all files have to be declared relative.
@@ -104,35 +61,38 @@ endfunction()
 function(loadFolder FOLDER _HEADER_FILES _SOURCE_FILES)
   set(FULL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${FOLDER}.cmake)
   include(${FULL_PATH})
-  get_filename_component(ABS_PATH_TO_FILES ${FULL_PATH} PATH)
+  cmake_path(GET FULL_PATH PARENT_PATH ABS_PATH_TO_FILES)
   set(shouldInstall ${ARGV3})
 
+  cmake_path(GET CMAKE_CURRENT_SOURCE_DIR FILENAME DIRNAME)
   foreach(headerFile ${HEADER_FILES} )
-    if (${headerFile} MATCHES ".*.h.in$")
-      string ( REGEX REPLACE ".h.in$" ".h" out_path ${headerFile} )
-      configure_file(${headerFile} ${CMAKE_CURRENT_BINARY_DIR}/${out_path} @ONLY)
-      set(FULL_HEADER_PATH ${ABS_PATH_TO_FILES}/${headerFile})
-      file(RELATIVE_PATH REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${FULL_HEADER_PATH}")
-      set(FULL_HEADER_PATH ${CMAKE_CURRENT_BINARY_DIR}/${out_path})
-      if (REL_PATH)
-        string ( REGEX REPLACE "[\\/]" "\\\\" normalized_path ${REL_PATH} )
-        source_group ( ${normalized_path} FILES ${FULL_HEADER_PATH} )
-      endif()
+    cmake_path(APPEND ABS_PATH_TO_FILES ${headerFile} OUTPUT_VARIABLE FULL_HEADER_PATH)
+    cmake_path(GET headerFile FILENAME single_file)
+    cmake_path(RELATIVE_PATH FULL_HEADER_PATH
+        BASE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE REL_PATH)
+    cmake_path(GET REL_PATH PARENT_PATH REL_PATH_BASE)
+
+    if (${REL_PATH} MATCHES ".*.h.in$")
+      string( REGEX REPLACE ".h.in$" ".h" out_path ${REL_PATH} )
+      configure_file(${REL_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${out_path} @ONLY)
+      set(FULL_HEADER_PATH "${CMAKE_CURRENT_BINARY_DIR}/${out_path}")
       list(APPEND ALL_HPP_FILES ${FULL_HEADER_PATH})
-    elseif (${headerFile} MATCHES ".*.rc.in$")
-      string ( REGEX REPLACE ".rc.in$" ".rc" out_path ${headerFile} )
+    elseif (${REL_PATH} MATCHES ".*.rc.in$")
+      string( REGEX REPLACE ".rc.in$" ".rc" out_path ${REL_PATH} )
       configure_file(${headerFile} ${CMAKE_CURRENT_BINARY_DIR}/${out_path} @ONLY)
-      source_group("Generated Files" FILES ${CMAKE_CURRENT_BINARY_DIR}/${out_path})
-      list(APPEND ALL_HPP_FILES ${CMAKE_CURRENT_BINARY_DIR}/${out_path})
+      set(FULL_HEADER_PATH "${CMAKE_CURRENT_BINARY_DIR}/${out_path}")
+      list(APPEND ALL_HPP_FILES ${FULL_HEADER_PATH})
     else()
-      set(FULL_HEADER_PATH ${ABS_PATH_TO_FILES}/${headerFile})
       list(APPEND HEADER_LIST_OF_CUR_DIR ${FULL_HEADER_PATH})
     endif()
     # get the name of the current directory
-    getNameOfDir(CMAKE_CURRENT_SOURCE_DIR DIRNAME)
     if (${shouldInstall})
-      if (NOT ${FULL_HEADER_PATH} MATCHES ".*_p.h$") # we don't want to install header files which are marked as private
-        install(FILES ${FULL_HEADER_PATH} DESTINATION "include/${DIRNAME}/${REL_PATH}" PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+      if (NOT ${FULL_HEADER_PATH} MATCHES ".*_p.h$")
+      # we don't want to install header files which are marked as private
+        install(FILES ${FULL_HEADER_PATH}
+          DESTINATION "include/${DIRNAME}/${REL_PATH_BASE}"
+          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
       endif()
     endif()
   endforeach()
@@ -147,8 +107,6 @@ function(loadFolder FOLDER _HEADER_FILES _SOURCE_FILES)
   set(${_HEADER_FILES} ${ALL_HPP_FILES} PARENT_SCOPE)
   set(${_SOURCE_FILES} ${ALL_CPP_FILES} PARENT_SCOPE)
 
-  createSrcGroups(HEADER_LIST_OF_CUR_DIR)
-  createSrcGroups(SOURCE_LIST_OF_CUR_DIR)
   message( STATUS "${FOLDER} directory included" )
 endfunction()
 
@@ -282,7 +240,7 @@ function( set_compiler_warnings target)
                  "-Wall")
   endif()
 
-  target_compile_options(${target} PRIVATE ${WARNINGS}) 
+  target_compile_options(${target} PRIVATE ${WARNINGS})
 endfunction()
 
 ####################################################################################

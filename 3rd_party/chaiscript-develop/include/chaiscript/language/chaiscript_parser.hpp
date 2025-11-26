@@ -60,7 +60,7 @@ namespace chaiscript {
         max_alphabet,
         lengthof_alphabet = 256
       };
-
+      /*
       // Generic for u16, u32 and wchar
       template<typename string_type>
       struct Char_Parser_Helper {
@@ -101,6 +101,7 @@ namespace chaiscript {
           return Char_Parser_Helper<std::true_type>::u8str_from_ll(val);
         }
       };
+    */
     } // namespace detail
 
     template<typename Tracer, typename Optimizer, std::size_t Parse_Depth = 512>

@@ -40,9 +40,10 @@ set(THIRD_PARTY_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 # Find json11
 if(NOT TARGET json11)
     set(JSON11_DIR ${THIRD_PARTY_ROOT}/json11)
-    add_library(json11 ${JSON11_DIR}/json11.cpp)
+    add_library(json11 STATIC ${JSON11_DIR}/json11.cpp)
     target_include_directories(json11 PUBLIC ${JSON11_DIR})
     set_target_properties(json11 PROPERTIES FOLDER "${third_party_folder}/json11")
+    set_compiler_warnings(json11)
 endif()
 
 # Find Catch2
@@ -50,11 +51,13 @@ if(NOT TARGET Catch2::Catch2)
     set(CATCH_INCLUDE_DIR ${THIRD_PARTY_ROOT}/catch-v3.11.0)
     add_library(Catch2 INTERFACE)
     add_library(Catch2::Catch2 ALIAS Catch2)
-    set_target_properties(Catch2 PROPERTIES FOLDER "${third_party_folder}/Catch2")
     target_include_directories(Catch2 INTERFACE ${CATCH_INCLUDE_DIR})
+    set_target_properties(Catch2 PROPERTIES FOLDER "${third_party_folder}/Catch2")
+
     add_library(Catch2WithMain STATIC ${CATCH_INCLUDE_DIR}/catch2/catch_amalgamated.cpp)
     add_library(Catch2::Catch2WithMain ALIAS Catch2WithMain)
     set_target_properties(Catch2WithMain PROPERTIES FOLDER "${third_party_folder}/Catch2")
+    set_compiler_warnings(Catch2WithMain)
 endif()
 
 # Find chai script
@@ -62,6 +65,7 @@ if(NOT TARGET chaiscript)
     set(CHAISCRIPT_INCLUDE_DIR ${THIRD_PARTY_ROOT}/chaiscript-develop)
     add_library(chaiscript INTERFACE)
     target_include_directories(chaiscript INTERFACE ${CHAISCRIPT_INCLUDE_DIR}/include)
+    set_target_properties(chaiscript PROPERTIES CXX_STANDARD 17)
     set_target_properties(chaiscript PROPERTIES FOLDER "${third_party_folder}/chaiscript")
 endif()
 
