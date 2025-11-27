@@ -32,6 +32,7 @@
 #include "rttr/detail/base/core_prerequisites.h"
 #include <vector>
 #include <cstddef>
+#include <memory>
 
 namespace rttr
 {
@@ -70,7 +71,12 @@ public:
     /*!
      * \brief Default constructor. Constructs an empty array_range.
      */
-    array_range();
+    array_range() : m_range(std::make_shared<array_range_private>()) {}
+    array_range(const array_range<T, Predicate>& other) = default;
+    array_range(array_range<T, Predicate>&& other) = default;
+    array_range<T, Predicate>& operator=(const array_range<T, Predicate>& other) = default;
+    array_range<T, Predicate>& operator=(array_range<T, Predicate>&& other) = default;
+
 
     /*!
      * \brief Constructs an array range starting from \p begin to \p end [begin, end).
@@ -82,6 +88,39 @@ public:
     array_range(const T* begin, size_type size, const Predicate& pred = Predicate());
 
 #ifndef DOXYGEN
+
+    template<typename DataType>
+    class array_iterator;
+    template<typename DataType>
+    class array_reverse_iterator;
+
+    class array_range_private {
+    public:
+        array_range_private(const array_range_private& other) = default;
+        array_range_private(array_range_private&& other) = default;
+        array_range_private& operator=(const array_range_private& other) = default;
+        array_range_private& operator=(array_range_private&& other) = default;
+
+        array_range_private();
+        array_range_private(const T* begin, size_type size, const Predicate& pred = Predicate());
+
+        bool empty() const;
+
+    private:
+        template<typename DataType>
+        void next(array_iterator<DataType>& itr) const;
+
+        template<typename DataType>
+        void prev(array_reverse_iterator<DataType>& itr) const;
+
+        friend class array_range<T, Predicate>;
+
+    private:
+        const T* const   m_begin;
+        const T* const   m_end;
+        const Predicate  m_pred;
+    };
+
     /*!
      * The base class for all item forward iterators.
      */
@@ -99,16 +138,20 @@ public:
             bool operator==(const self_type& rhs) const;
             bool operator!=(const self_type& rhs) const;
 
-            array_iterator_base<DataType>& operator=(const array_iterator_base<DataType>& other);
-            array_iterator_base<DataType>& operator=(array_iterator_base<DataType>&& other);
 
         protected:
+            array_iterator_base() = default;
+            array_iterator_base(const array_iterator_base& other) = default;
+            array_iterator_base(array_iterator_base&& other) = default;
+            array_iterator_base& operator=(const array_iterator_base& other) = default;
+            array_iterator_base& operator=(array_iterator_base&& other) = default;
+
+            array_iterator_base(pointer ptr, const std::shared_ptr<array_range_private>& range);
+
             friend class array_range<T, Predicate>;
-            array_iterator_base();
-            array_iterator_base(pointer ptr, const array_range<T, Predicate>* const range);
 
             pointer m_ptr;
-            const array_range<T, Predicate>* m_range;
+            std::shared_ptr<array_range_private> m_range;
     };
 
     /*!
@@ -118,16 +161,10 @@ public:
     class array_iterator : public array_iterator_base<DataType>
     {
         public:
+            using base_type = array_iterator_base<DataType>;
             using self_type = array_iterator<DataType>;
             using reference = typename array_iterator_base<DataType>::reference;
             using pointer   = typename array_iterator_base<DataType>::pointer;
-
-            array_iterator();
-            array_iterator(const array_iterator<DataType>& other);
-            array_iterator(array_iterator<DataType>&& other);
-
-            self_type& operator=(const array_iterator<DataType>& other);
-            self_type& operator=(array_iterator<DataType>&& other);
 
             reference operator*() const;
             pointer operator->();
@@ -135,9 +172,15 @@ public:
             self_type& operator++();
             self_type operator++(int index);
 
+            array_iterator(const array_iterator<DataType>& other) = default;
+            array_iterator(array_iterator<DataType>&& other) = default;
+            self_type& operator=(const array_iterator<DataType>& other) = default;
+            self_type& operator=(array_iterator<DataType>&& other) = default;
         private:
+            array_iterator() = default;
+
             array_iterator(typename array_iterator_base<DataType>::pointer ptr,
-                           const array_range<T, Predicate>* const range);
+                           const std::shared_ptr<array_range_private>& range);
             friend class array_range<T, Predicate>;
     };
 
@@ -148,16 +191,10 @@ public:
     class array_reverse_iterator : public array_iterator_base<DataType>
     {
         public:
+            using base_type = array_iterator_base<DataType>;
             using self_type = array_reverse_iterator<DataType>;
             using reference = typename array_iterator_base<DataType>::reference;
             using pointer   = typename array_iterator_base<DataType>::pointer;
-
-            array_reverse_iterator();
-            array_reverse_iterator(const array_reverse_iterator<DataType>& other);
-            array_reverse_iterator(array_reverse_iterator<DataType>&& other);
-
-            self_type& operator=(const array_reverse_iterator<DataType>& other);
-            self_type& operator=(array_reverse_iterator<DataType>&& other);
 
             reference operator*() const;
             pointer operator->();
@@ -165,9 +202,15 @@ public:
             self_type& operator++();
             self_type operator++(int index);
 
+            array_reverse_iterator(const array_reverse_iterator<DataType>& other) = default;
+            array_reverse_iterator(array_reverse_iterator<DataType>&& other) = default;
+            self_type& operator=(const array_reverse_iterator<DataType>& other) = default;
+            self_type& operator=(array_reverse_iterator<DataType>&& other) = default;
         private:
+            array_reverse_iterator() = default;
+
             array_reverse_iterator(typename array_iterator_base<DataType>::pointer ptr,
-                                   const array_range<T, Predicate>* const range);
+                                   const std::shared_ptr<array_range_private>& range);
             friend class array_range<T, Predicate>;
     };
 #endif
@@ -324,20 +367,11 @@ public:
     bool empty() const;
 
 private:
-    template<typename DataType>
-    void next(array_iterator<DataType>& itr) const;
-
-    template<typename DataType>
-    void prev(array_reverse_iterator<DataType>& itr) const;
 
     bool empty_() const;
-    array_range<T, Predicate>& operator=(const array_range<T, Predicate>& other) = delete;
-    array_range<T, Predicate>& operator=(array_range<T, Predicate>&& other) = delete;
 
 private:
-    const T* const   m_begin;
-    const T* const   m_end;
-    const Predicate  m_pred;
+    std::shared_ptr<array_range_private> m_range;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
