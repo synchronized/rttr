@@ -233,7 +233,7 @@ TEST_CASE("variant::is_sequential_container", "[variant_sequential_view]")
 
     SECTION("valid - std::initializer_list")
     {
-        auto init_list = {1, 2, 3};
+        auto init_list = std::vector{1, 2, 3};
 
         variant var = init_list;
         CHECK(var.is_sequential_container() == true);
@@ -884,7 +884,7 @@ TEST_CASE("variant_sequential_view::begin/end", "[variant_sequential_view]")
 
     SECTION("initializer_list")
     {
-        auto array = { 1, 2, 3, 4, 5 };
+        auto array = std::array{ 1, 2, 3, 4, 5 };
         variant var = array;
         auto view = var.create_sequential_view();
 

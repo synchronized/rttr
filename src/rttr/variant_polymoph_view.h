@@ -60,7 +60,7 @@ namespace rttr
  * RTTR recognize whether a type is an polymoph container or not with the help of the \ref polymoph_container_mapper class template.
  * This call can access different container types via one common interface.
  * At the moment there exist specializations for following types:
- * `std::vector<T>`, `std::array<T, std::size_t>`, `std::list<T>`, `std::deque<T>`, `std::initializer_list<T>` and raw arrays
+ * `rttr::polymoph_ptr<T>` and raw arrays
  *
  * Copying and Assignment
  * ----------------------

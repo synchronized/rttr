@@ -37,6 +37,7 @@
 
 #include <type_traits>
 #include <memory>
+#include <initializer_list>
 
 namespace rttr
 {
@@ -844,15 +845,27 @@ namespace detail
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-     template <typename... T>
-     struct count_types : std::integral_constant<std::size_t, 0>::type
-     {
-     };
+    template <typename... T>
+    struct count_types : std::integral_constant<std::size_t, 0>::type
+    {
+    };
 
-     template <template <typename... > class List, typename... Types>
-     struct count_types<List<Types...>> : std::integral_constant<std::size_t, sizeof...(Types) - 1>::type
-     {
-     };
+    template <template <typename... > class List, typename... Types>
+    struct count_types<List<Types...>> : std::integral_constant<std::size_t, sizeof...(Types) - 1>::type
+    {
+    };
+
+    // 基础版本
+    template<typename T>
+    struct is_initializer_list : std::false_type {};
+
+    // 特化版本
+    template<typename T>
+    struct is_initializer_list<std::initializer_list<T>> : std::true_type {};
+
+    // 变量模板版本 (C++17)
+    template<typename T>
+    inline constexpr bool is_initializer_list_v = is_initializer_list<T>::value;
 
 } // end namespace detail
 } // end namespace rttr

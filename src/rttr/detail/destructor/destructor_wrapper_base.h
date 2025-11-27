@@ -33,7 +33,6 @@
 #include "rttr/variant.h"
 
 #include <string>
-#include <initializer_list>
 
 namespace rttr
 {

@@ -38,6 +38,8 @@
 #include "rttr/variant_sequential_view.h"
 #include "rttr/variant_polymoph_view.h"
 
+#include <initializer_list>
+
 namespace rttr
 {
 namespace detail
@@ -61,6 +63,9 @@ RTTR_INLINE variant::variant(T&& val)
 {
     static_assert(std::is_copy_constructible<Tp>::value || std::is_array<Tp>::value,
                   "The given value is not copy constructible, try to add a copy constructor to the class.");
+
+    static_assert(!detail::is_initializer_list_v<Tp>,
+                  "The given value can not be std::initializer_list.");
 
     detail::variant_policy<Tp>::create(std::forward<T>(val), m_data);
 }
@@ -324,13 +329,13 @@ RTTR_INLINE bool variant::convert(T& value) const
             variant var = extract_wrapped_ref_value();
             return var.convert<T>(value);
         }
-        //source_type = type::get<wrapper<T*>>(), 
+        //source_type = type::get<wrapper<T*>>(),
         //target_type = type::get<T>()
         if (source_wrapped_type.is_pointer()) {
             variant var = extract_wrapped_ref_value();
             return var.convert<T>(value);
         }
-        //source_type = type::get<wrapper<T>>(), 
+        //source_type = type::get<wrapper<T>>(),
         //target_type = type::get<T*>()
         if (target_type.is_pointer()) {
             variant var = extract_wrapped_ptr_value();
@@ -344,7 +349,7 @@ RTTR_INLINE bool variant::convert(T& value) const
             if ((ok = var.is_valid()) == true)
                 value = var.get_value<T>();
             return ok;
-        } 
+        }
         if (source_type.is_pointer() && target_type.get_wrapped_type() == source_type.get_remove_ptr_type()) {
             variant var = create_wrapped_value(target_type);
             if ((ok = var.is_valid()) == true)
@@ -371,9 +376,9 @@ RTTR_INLINE bool variant::convert(T& value) const
         if (is_nullptr())
             ok = ptr_to_nullptr(value);
     }
-    else if (source_type.is_pointer() && !target_type.is_pointer() && 
+    else if (source_type.is_pointer() && !target_type.is_pointer() &&
              source_type.get_pointer_dimension() == 1 &&
-             source_type.get_remove_ptr_type() == target_type) 
+             source_type.get_remove_ptr_type() == target_type)
     {
         variant var = extract_pointer_value();
         return var.convert<T>(value);

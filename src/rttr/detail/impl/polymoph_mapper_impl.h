@@ -39,7 +39,6 @@
 #include <list>
 #include <deque>
 #include <array>
-#include <initializer_list>
 
 namespace rttr
 {
@@ -52,7 +51,7 @@ namespace detail
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename ConstType>
-struct polymoph_container_mapper_wrapper 
+struct polymoph_container_mapper_wrapper
 {
     using base_class    = polymoph_container_mapper<T>;
     using value_type    = typename base_class::value_type;
@@ -87,16 +86,16 @@ struct polymoph_container_mapper_wrapper
     }
 
     /////////////////////////////////////////////////////////////////////////
-    template<typename..., 
-             typename C = ConstType, 
+    template<typename...,
+             typename C = ConstType,
              enable_if_t<!std::is_const<C>::value, int> = 0>
     static bool set_value(void* container, variant value)
     {
         return base_class::set_value(get_container(container), value);
     }
 
-    template<typename..., 
-             typename C = ConstType, 
+    template<typename...,
+             typename C = ConstType,
              enable_if_t<std::is_const<C>::value, int> = 0>
     static bool set_value(void* /*container*/, variant /*value*/)
     {
@@ -110,8 +109,8 @@ struct polymoph_container_mapper_wrapper
         return base_class::get_value(get_container(container));
     }
 
-    template<typename..., 
-             typename C = ConstType, 
+    template<typename...,
+             typename C = ConstType,
              typename ReturnType = decltype(base_class::get(std::declval<C&>())),
              enable_if_t<!std::is_const<C>::value, int> = 0,
              enable_if_t<std::is_reference<ReturnType>::value, int> = 0,
@@ -121,8 +120,8 @@ struct polymoph_container_mapper_wrapper
         return variant(std::ref(base_class::get(get_container(container))));
     }
 
-    template<typename..., 
-             typename C = ConstType, 
+    template<typename...,
+             typename C = ConstType,
              typename ReturnType = decltype(base_class::get(std::declval<C&>())),
              enable_if_t<!std::is_const<C>::value, int> = 0,
              enable_if_t<!std::is_reference<ReturnType>::value, int> = 0,
@@ -132,8 +131,8 @@ struct polymoph_container_mapper_wrapper
         return variant(base_class::get(get_container(container)));
     }
 
-    template<typename..., 
-             typename C = ConstType, 
+    template<typename...,
+             typename C = ConstType,
              typename ReturnType = decltype(base_class::get(std::declval<C&>())),
              enable_if_t<std::is_const<C>::value, int> = 0,
              enable_if_t<std::is_reference<ReturnType>::value, int> = 0,
@@ -143,8 +142,8 @@ struct polymoph_container_mapper_wrapper
         return variant(std::cref(base_class::get(get_container(container))));
     }
 
-    template<typename..., 
-             typename C = ConstType, 
+    template<typename...,
+             typename C = ConstType,
              typename ReturnType = decltype(base_class::get(std::declval<C&>())),
              enable_if_t<std::is_const<C>::value, int> = 0,
              enable_if_t<!std::is_reference<ReturnType>::value, int> = 0,
