@@ -169,7 +169,10 @@ TEST_CASE("enumeration - get_declaring_type()", "[enumeration]")
 TEST_CASE("enumeration - get_names()", "[enumeration]")
 {
     enumeration e = type::get_by_name("weekday").get_enumeration();
-    std::vector<std::string> name_list(e.get_names().begin(), e.get_names().end());
+    //std::vector<std::string> name_list(e.get_names().begin(), e.get_names().end());
+    //NOTE 这里的begin(), end() 行为是未定义的
+    auto enum_names = e.get_names();
+    std::vector<std::string> name_list(enum_names.begin(), enum_names.end());
     REQUIRE(name_list.size() == 7);
     CHECK(name_list[0] == "Monday");
     CHECK(name_list[1] == "Tuesday");
@@ -189,7 +192,10 @@ TEST_CASE("enumeration - get_names()", "[enumeration]")
 TEST_CASE("enumeration - get_values()", "[enumeration]")
 {
     enumeration e = type::get_by_name("weekday").get_enumeration();
-    std::vector<variant> value_list(e.get_values().begin(), e.get_values().end());
+    //std::vector<variant> value_list(e.get_values().begin(), e.get_values().end());
+    //NOTE 这里begin(), end() 行为是未定义的
+    auto enum_values = e.get_values();
+    std::vector<variant> value_list(enum_values.begin(), enum_values.end());
     REQUIRE(value_list.size() == 7);
 
     for (auto& var : value_list)

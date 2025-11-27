@@ -288,7 +288,11 @@ TEST_CASE("Test method", "[method]")
 
     ////////////////////////////////////////
     method m9 = t_meth.get_method("method_9");
-    std::vector<parameter_info> infos(m9.get_parameter_infos().begin(), m9.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(m9.get_parameter_infos(). begin(), m9.get_parameter_infos(). end());
+    //NOTE begin(), end() 是未定义行为
+
+    auto params = m9.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 10);
     REQUIRE(infos[4].get_type() == type::get<bool>());
 

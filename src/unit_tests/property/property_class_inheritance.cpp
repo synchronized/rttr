@@ -237,7 +237,9 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | public_access")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::public_access);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::public_access);
         REQUIRE(range.size() == 5);
 
         std::vector<property> props(range.begin(), range.end());
@@ -252,7 +254,9 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | non_public_access")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::non_public_access);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::non_public_access);
         REQUIRE(range.size() == 10);
 
         std::vector<property> props(range.begin(), range.end());
@@ -276,7 +280,9 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("static_item | public_access")
     {
-        auto range = t.get_properties(filter_item::static_item | filter_item::public_access);
+        auto range = t.get_properties(
+            filter_item::static_item | 
+            filter_item::public_access);
         REQUIRE(range.size() == 5);
 
         std::vector<property> props(range.begin(), range.end());
@@ -291,7 +297,9 @@ TEST_CASE("property - class - query", "[property]")
 
      SECTION("static_item | non_public_access")
     {
-        auto range = t.get_properties(filter_item::static_item | filter_item::non_public_access);
+        auto range = t.get_properties(
+            filter_item::static_item | 
+            filter_item::non_public_access);
         REQUIRE(range.size() == 5);
 
         std::vector<property> props(range.begin(), range.end());
@@ -306,8 +314,10 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | static_item | public_access")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::static_item |
-                                      filter_item::public_access);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::static_item |
+            filter_item::public_access);
         REQUIRE(range.size() == 10);
 
         std::vector<property> props(range.begin(), range.end());
@@ -331,8 +341,10 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | static_item | non_public_access")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::static_item |
-                                      filter_item::non_public_access);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::static_item |
+            filter_item::non_public_access);
         REQUIRE(range.size() == 15);
 
         std::vector<property> props(range.begin(), range.end());
@@ -361,8 +373,11 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | static_item | public_access | non_public_access")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::static_item |
-                                      filter_item::public_access | filter_item::non_public_access);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::static_item |
+            filter_item::public_access | 
+            filter_item::non_public_access);
         REQUIRE(range.size() == 25);
 
         std::vector<property> props(range.begin(), range.end());
@@ -401,7 +416,10 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | public_access | filter_item::declared_only")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::public_access | filter_item::declared_only);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::public_access | 
+            filter_item::declared_only);
         REQUIRE(range.size() == 1);
 
         std::vector<property> props(range.begin(), range.end());
@@ -412,7 +430,10 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("static_item | public_access | filter_item::declared_only")
     {
-        auto range = t.get_properties(filter_item::static_item | filter_item::public_access | filter_item::declared_only);
+        auto range = t.get_properties(
+            filter_item::static_item | 
+            filter_item::public_access | 
+            filter_item::declared_only);
         REQUIRE(range.size() == 1);
 
         std::vector<property> props(range.begin(), range.end());
@@ -423,7 +444,10 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | non_public_access | filter_item::declared_only")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::non_public_access | filter_item::declared_only);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::non_public_access | 
+            filter_item::declared_only);
         REQUIRE(range.size() == 2);
 
         std::vector<property> props(range.begin(), range.end());
@@ -435,7 +459,10 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("static_item | non_public_access | filter_item::declared_only")
     {
-        auto range = t.get_properties(filter_item::static_item | filter_item::non_public_access | filter_item::declared_only);
+        auto range = t.get_properties(
+            filter_item::static_item | 
+            filter_item::non_public_access | 
+            filter_item::declared_only);
         REQUIRE(range.size() == 1);
 
         std::vector<property> props(range.begin(), range.end());
@@ -446,8 +473,11 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | static_item | public_access | declared_only")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::static_item |
-                                      filter_item::public_access | filter_item::declared_only);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::static_item |
+            filter_item::public_access | 
+            filter_item::declared_only);
         REQUIRE(range.size() == 2);
 
         std::vector<property> props(range.begin(), range.end());
@@ -459,8 +489,11 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | static_item | non_public_access | declared_only")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::static_item |
-                                      filter_item::non_public_access | filter_item::declared_only);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::static_item |
+            filter_item::non_public_access | 
+            filter_item::declared_only);
         REQUIRE(range.size() == 3);
 
         std::vector<property> props(range.begin(), range.end());
@@ -473,9 +506,12 @@ TEST_CASE("property - class - query", "[property]")
 
     SECTION("instance_item | static_item | public_access | non_public_access | declared_only")
     {
-        auto range = t.get_properties(filter_item::instance_item | filter_item::static_item |
-                                      filter_item::public_access | filter_item::non_public_access |
-                                      filter_item::declared_only);
+        auto range = t.get_properties(
+            filter_item::instance_item | 
+            filter_item::static_item |
+            filter_item::public_access | 
+            filter_item::non_public_access |
+            filter_item::declared_only);
         REQUIRE(range.size() == 5);
 
         std::vector<property> props(range.begin(), range.end());

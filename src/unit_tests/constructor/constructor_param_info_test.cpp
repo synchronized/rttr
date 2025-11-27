@@ -102,7 +102,10 @@ TEST_CASE("constructor - parameter info - no names provided", "[constructor]")
     constructor ctor = type::get<ctor_param_info_test>().get_constructor({type::get<std::string>(), type::get<int>()});
     REQUIRE(ctor.is_valid() == true);
 
-    std::vector<parameter_info> infos(ctor.get_parameter_infos().begin(), ctor.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(ctor.get_parameter_infos(). begin(), ctor.get_parameter_infos(). end());
+    //NOTE 这里begin(), end() 行为是未定义的
+    auto params = ctor.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 2);
 
     CHECK(infos[0].get_name()           == std::string());
@@ -125,7 +128,14 @@ TEST_CASE("constructor - parameter info - names provided", "[constructor]")
     constructor ctor = type::get<ctor_param_info_test>().get_constructor({type::get<bool>(), type::get<int>(), type::get<float>()});
     REQUIRE(ctor.is_valid() == true);
 
-    std::vector<parameter_info> infos(ctor.get_parameter_infos().begin(), ctor.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(ctor.get_parameter_infos(). begin(), ctor.get_parameter_infos(). end());
+    //NOTE 
+    //  这里ctor.get_parameter_infos()返回的array_range 已经被销毁,
+    //  所以begin(), end() 返回的迭代器其实也是失效的
+
+    auto params = ctor.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
+
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0].get_name()           == std::string("val_1"));
@@ -154,7 +164,10 @@ TEST_CASE("constructor - parameter info - no names provided & default values", "
     constructor ctor = type::get<ctor_param_info_test>().get_constructor({type::get<std::string>(), type::get<int>(), type::get<bool>()});
     REQUIRE(ctor.is_valid() == true);
 
-    std::vector<parameter_info> infos(ctor.get_parameter_infos().begin(), ctor.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(ctor.get_parameter_infos(). begin(), ctor.get_parameter_infos(). end());
+    //NOTE 这里的begin(), end()行为是未定义的
+    auto params = ctor.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0].get_name()           == std::string());
@@ -183,7 +196,10 @@ TEST_CASE("constructor - parameter info - names provided & default values", "[co
      constructor ctor = type::get<ctor_param_info_test>().get_constructor({type::get<double>(), type::get<int>(), type::get<bool>()});
     REQUIRE(ctor.is_valid() == true);
 
-    std::vector<parameter_info> infos(ctor.get_parameter_infos().begin(), ctor.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(ctor.get_parameter_infos(). begin(), ctor.get_parameter_infos(). end());
+    //NOTE 这里的begin(), end()行为是未定义的
+    auto params = ctor.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0].get_name()           == std::string("val_1"));

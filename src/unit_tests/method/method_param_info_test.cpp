@@ -98,7 +98,11 @@ TEST_CASE("method - parameter info - no names provided", "[method]")
     method meth = type::get<method_param_info_test>().get_method("method_2");
     REQUIRE(meth.is_valid() == true);
 
-    std::vector<parameter_info> infos(meth.get_parameter_infos().begin(), meth.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(meth.get_parameter_infos(). begin(), meth.get_parameter_infos(). end());
+    //NOTE 这里的begin(), end()行为是未定义的
+    
+    auto params = meth.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0].get_name()           == std::string());
@@ -127,7 +131,11 @@ TEST_CASE("method - parameter info - names provided", "[method]")
     method meth = type::get<method_param_info_test>().get_method("method_3");
     REQUIRE(meth.is_valid() == true);
 
-    std::vector<parameter_info> infos(meth.get_parameter_infos().begin(), meth.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(meth.get_parameter_infos(). begin(), meth.get_parameter_infos(). end());
+    //NOTE begin(), end()是未定义的
+
+    auto params = meth.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0].get_name()           == std::string("val_1"));
@@ -156,7 +164,11 @@ TEST_CASE("method - parameter info - no names provided & default values", "[meth
     method meth = type::get<method_param_info_test>().get_method("method_4");
     REQUIRE(meth.is_valid() == true);
 
-    std::vector<parameter_info> infos(meth.get_parameter_infos().begin(), meth.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(meth.get_parameter_infos(). begin(), meth.get_parameter_infos(). end());
+    //NOTE begin(),end()是未定义行为
+
+    auto params = meth.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0].get_name()           == std::string());
@@ -185,7 +197,11 @@ TEST_CASE("method - parameter info - names provided & default values", "[method]
     method meth = type::get<method_param_info_test>().get_method("method_5");
     REQUIRE(meth.is_valid() == true);
 
-    std::vector<parameter_info> infos(meth.get_parameter_infos().begin(), meth.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(meth.get_parameter_infos(). begin(), meth.get_parameter_infos(). end());
+    //NOTE begin(), end() 是未定义行为
+
+    auto params = meth.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0].get_name()           == std::string("val_1"));
@@ -214,7 +230,11 @@ TEST_CASE("method - parameter info - compare", "[method]")
     method meth = type::get<method_param_info_test>().get_method("method_3");
     REQUIRE(meth.is_valid() == true);
 
-    std::vector<parameter_info> infos(meth.get_parameter_infos().begin(), meth.get_parameter_infos().end());
+    //std::vector<parameter_info> infos(meth.get_parameter_infos(). begin(), meth.get_parameter_infos(). end());
+    //NOTE begin(), end() 是未定义行为
+
+    auto params = meth.get_parameter_infos();
+    std::vector<parameter_info> infos(params.begin(), params.end());
     REQUIRE(infos.size() == 3);
 
     CHECK(infos[0] == infos[0]);
