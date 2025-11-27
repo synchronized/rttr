@@ -569,7 +569,6 @@ auto select_const(ReturnType (ClassType::*func)(Args...) const) -> decltype(func
     return func;
 }
 
-#ifndef RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
 /*!
  * \brief Overload with `noexcept` function type.
  *
@@ -580,7 +579,6 @@ auto select_const(ReturnType (ClassType::*func)(Args...) const noexcept) -> decl
 {
     return func;
 }
-#endif
 
 /*!
  * \brief This is a helper function to register overloaded const member functions.
@@ -624,8 +622,6 @@ auto select_non_const(ReturnType(ClassType::*func)(Args...)) -> decltype(func)
     return func;
 }
 
-#ifndef RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
-
 /*!
  * \brief Overload with `noexcept` function type.
  *
@@ -636,7 +632,6 @@ auto select_non_const(ReturnType(ClassType::*func)(Args...) noexcept) -> decltyp
 {
     return func;
 }
-#endif
 
 /*!
  * The \ref metadata function can be used to add additional meta data information during the

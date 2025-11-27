@@ -102,7 +102,7 @@ struct default_type_converter
 template<typename T>
 struct empty_type_converter
 {
-    static RTTR_INLINE bool convert_to(const T& value, argument& arg)
+    static RTTR_INLINE bool convert_to(const T& /*value*/, argument& /*arg*/)
     {
         return false;
     }
@@ -121,72 +121,72 @@ struct empty_type_converter
 template<typename T>
 struct convert_from
 {
-    static RTTR_INLINE bool to(const T& from, bool& to)
+    static RTTR_INLINE bool to(const T& /*from*/, bool& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, char& to)
+    static RTTR_INLINE bool to(const T& /*from*/, char& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int8_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, int8_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int16_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, int16_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int32_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, int32_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int64_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, int64_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint8_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, uint8_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint16_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, uint16_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint32_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, uint32_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint64_t& to)
+    static RTTR_INLINE bool to(const T& /*from*/, uint64_t& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, float& to)
+    static RTTR_INLINE bool to(const T& /*from*/, float& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, double& to)
+    static RTTR_INLINE bool to(const T& /*from*/, double& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, std::string& to)
+    static RTTR_INLINE bool to(const T& /*from*/, std::string& /*to*/)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to_enum(const T& from, argument& to)
+    static RTTR_INLINE bool to_enum(const T& /*from*/, argument& /*to*/)
     {
         return false;
     }
@@ -1324,12 +1324,6 @@ struct RTTR_API convert_from<std::string>
 // For unknown reason the MSVC compiler is too dump to recognize that I can safely convert an enumeration
 // with underlying type bool, to type bool (thats no int to bool conversion!)
 // so we disable the warning for enum conversions:
-#if  RTTR_COMPILER == RTTR_COMPILER_MSVC
-
-#pragma warning(push)
-#pragma warning(disable:4800)
-
-#endif
 
 template<typename T>
 struct convert_from_enum
@@ -1435,19 +1429,11 @@ struct convert_from_enum
         return (to.empty() == false);
     }
 
-    static RTTR_INLINE bool to_enum(const T& from, argument& to)
+    static RTTR_INLINE bool to_enum(const T& /*from*/, argument& /*to*/)
     {
         return false;
     }
 };
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-#if  RTTR_COMPILER == RTTR_COMPILER_MSVC
-// restore warning level
-#pragma warning(pop)
-
-#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

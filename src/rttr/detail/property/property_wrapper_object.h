@@ -58,7 +58,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, return_as
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& arg) const
         {
             if (arg.is_type<C>())
                 return property_accessor<C>::set_value(*m_accessor, arg.get_value<C>());
@@ -66,7 +66,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, return_as
                 return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(*m_accessor));
         }
@@ -110,12 +110,12 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, return_as
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(*m_accessor));
         }
@@ -162,7 +162,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, return_as
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& arg) const
         {
             if (arg.is_type<C*>())
             {
@@ -175,7 +175,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, return_as
             }
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(m_accessor));
         }
@@ -219,12 +219,12 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, return_as
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(m_accessor));
         }
@@ -270,7 +270,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, get_as_re
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& arg) const
         {
             if (arg.is_type<std::reference_wrapper<C>>())
                 return property_accessor<C>::set_value(*m_accessor, arg.get_value<std::reference_wrapper<C>>().get());
@@ -278,7 +278,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, get_as_re
                 return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(std::ref(*m_accessor)));
         }
@@ -322,12 +322,12 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, get_as_re
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(std::cref(*m_accessor)));
         }
@@ -377,7 +377,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, most_get_
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& arg) const
         {
             //pointer
             if (arg.is_type<C*>()) {
@@ -397,7 +397,7 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, most_get_
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(m_accessor));
         }
@@ -444,12 +444,12 @@ class property_wrapper<object_ptr, Declaring_Typ, C*, void, Acc_Level, most_get_
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(m_accessor));
         }

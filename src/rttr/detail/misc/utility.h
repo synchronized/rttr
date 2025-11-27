@@ -40,10 +40,6 @@
 #include <algorithm>
 #include <string>
 
-#ifdef RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
-RTTR_BEGIN_DISABLE_EXCEPT_TYPE_WARNING
-#endif
-
 namespace rttr
 {
 namespace detail
@@ -529,9 +525,5 @@ static RTTR_INLINE T& identity_func(T& func) { return func; }
 
 } // end namespace detail
 } // end namespace rttr
-
-#ifdef RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
-RTTR_END_DISABLE_EXCEPT_TYPE_WARNING
-#endif
 
 #endif //RTTR_UTILITY_H_

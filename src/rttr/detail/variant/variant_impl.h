@@ -275,7 +275,7 @@ RTTR_INLINE variant::try_pointer_conversion(T& to, const type& source_type, cons
 
 template<typename T>
 typename std::enable_if<detail::pointer_count<T>::value != 1, bool>::type
-RTTR_INLINE variant::try_pointer_conversion(T& to, const type& source_type, const type& target_type) const
+RTTR_INLINE variant::try_pointer_conversion(T& /*to*/, const type& /*source_type*/, const type& /*target_type*/) const
 {
     return false;
 }
@@ -301,7 +301,7 @@ static RTTR_INLINE ptr_to_nullptr(T& to)
 
 template<typename T>
 typename std::enable_if<!detail::is_nullptr_t<T>::value, bool>::type
-static RTTR_INLINE ptr_to_nullptr(T& to)
+static RTTR_INLINE ptr_to_nullptr(T& /*to*/)
 {
     return false;
 }

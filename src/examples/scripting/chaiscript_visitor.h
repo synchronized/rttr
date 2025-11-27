@@ -61,7 +61,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////
 
     template<typename T, typename...Base_Classes>
-    void visit_type_begin(const type_info<T>& info)
+    void visit_type_begin(const type_info<T>& /*info*/)
     {
         using declaring_type_t = typename type_info<T>::declaring_type;
         iterate_base_classes<declaring_type_t, Base_Classes...>();
@@ -70,7 +70,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////
 
     template<typename T, typename...Ctor_Args>
-    void visit_constructor(const constructor_info<T>& info)
+    void visit_constructor(const constructor_info<T>& /*info*/)
     {
         using declaring_type_t = typename constructor_info<T>::declaring_type;
         m_chai.add(chaiscript::constructor<declaring_type_t(Ctor_Args...)>(), get_type_name<declaring_type_t>());

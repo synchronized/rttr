@@ -35,7 +35,7 @@ namespace rttr
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename...Base_Classes>
-void visitor::visit_type_begin(const type_info<T>& info)
+void visitor::visit_type_begin(const type_info<T>& /*info*/)
 {
 
 }
@@ -43,7 +43,7 @@ void visitor::visit_type_begin(const type_info<T>& info)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename...Base_Classes>
-void visitor::visit_type_end(const type_info<T>& info)
+void visitor::visit_type_end(const type_info<T>& /*info*/)
 {
 
 }
@@ -51,43 +51,35 @@ void visitor::visit_type_end(const type_info<T>& info)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename...Ctor_Args>
-void visitor::visit_constructor(const constructor_info<T>& info)
+void visitor::visit_constructor(const constructor_info<T>& /*info*/)
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_constructor_function(const constructor_function_info<T>& info)
+void visitor::visit_constructor_function(const constructor_function_info<T>& /*info*/)
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_method(const method_info<T>& info)
+void visitor::visit_method(const method_info<T>& /*info*/)
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_global_method(const method_info<T>& info)
+void visitor::visit_global_method(const method_info<T>& /*info*/)
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_property(const property_info<T>& info)
-{
-
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-template<typename T>
-void visitor::visit_getter_setter_property(const property_getter_setter_info<T>& info)
+void visitor::visit_property(const property_info<T>& /*info*/)
 {
 
 }
@@ -95,7 +87,7 @@ void visitor::visit_getter_setter_property(const property_getter_setter_info<T>&
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_global_property(const property_info<T>& info)
+void visitor::visit_getter_setter_property(const property_getter_setter_info<T>& /*info*/)
 {
 
 }
@@ -103,7 +95,7 @@ void visitor::visit_global_property(const property_info<T>& info)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_global_getter_setter_property(const property_getter_setter_info<T>& info)
+void visitor::visit_global_property(const property_info<T>& /*info*/)
 {
 
 }
@@ -111,7 +103,7 @@ void visitor::visit_global_getter_setter_property(const property_getter_setter_i
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_readonly_property(const property_info<T>& info)
+void visitor::visit_global_getter_setter_property(const property_getter_setter_info<T>& /*info*/)
 {
 
 }
@@ -119,7 +111,15 @@ void visitor::visit_readonly_property(const property_info<T>& info)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-void visitor::visit_global_readonly_property(const property_info<T>& info)
+void visitor::visit_readonly_property(const property_info<T>& /*info*/)
+{
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+void visitor::visit_global_readonly_property(const property_info<T>& /*info*/)
 {
 
 }

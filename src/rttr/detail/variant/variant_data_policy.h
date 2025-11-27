@@ -170,7 +170,7 @@ static RTTR_INLINE is_nullptr(T& val)
 
 template<typename T>
 enable_if_t<!std::is_pointer<T>::value, bool>
-static RTTR_INLINE is_nullptr(T& to)
+static RTTR_INLINE is_nullptr(T& /*to*/)
 {
     return false;
 }
@@ -190,7 +190,7 @@ enable_if_t<is_wrapper<T>::value, variant> get_wrapped_ptr_value(T& value)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename Tp = decay_except_array_t<wrapper_mapper_t<T>>>
-enable_if_t<!is_wrapper<T>::value, variant> get_wrapped_ptr_value(T& value)
+enable_if_t<!is_wrapper<T>::value, variant> get_wrapped_ptr_value(T& /*value*/)
 {
     return variant();
 }
@@ -212,7 +212,7 @@ enable_if_t<is_copyable<Tp>::value &&
 
 template<typename T, typename Tp = decay_except_array_t<wrapper_mapper_t<T>>>
 enable_if_t<!is_copyable<Tp>::value ||
-            !is_wrapper<T>::value, variant> get_wrapped_ref_value(T& value)
+            !is_wrapper<T>::value, variant> get_wrapped_ref_value(T& /*value*/)
 {
     return variant();
 }
@@ -242,7 +242,7 @@ using is_array_ptr = std::bool_constant<
 template<typename T>
 enable_if_t<
         ( !std::is_pointer<T>::value || is_void_ptr<T>::value)
-    , variant> remove_point_value(const T& value)
+    , variant> remove_point_value(const T& /*value*/)
 {
     return variant();
 }
@@ -251,7 +251,7 @@ template<typename T>
 enable_if_t<
         ( std::is_pointer<T>::value && !is_void_ptr<T>::value) && 
         ( !is_copyable_ptr<T>::value && !is_array_ptr<T>::value)
-    , variant> remove_point_value(const T& value)
+    , variant> remove_point_value(const T& /*value*/)
 {
     [[maybe_unused]] bool v1 = is_copyable_ptr<T>::value;
     [[maybe_unused]] bool v2 = is_array_ptr<T>::value;
@@ -544,7 +544,6 @@ struct variant_data_policy_big : variant_data_base_policy<T, variant_data_policy
     {
         delete &value;
     }
-RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
     static RTTR_INLINE void clone(const T& value, variant_data& dest)
     {
         reinterpret_cast<T*&>(dest) = new T(value);
@@ -560,7 +559,6 @@ RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
     {
         reinterpret_cast<T*&>(dest) = new T(std::forward<U>(value));
     }
-RTTR_END_DISABLE_INIT_LIST_WARNING
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -581,7 +579,7 @@ struct variant_data_policy_array_small : variant_data_base_policy<T, variant_dat
         return reinterpret_cast<const T&>(data);
     }
 
-    static RTTR_INLINE void destroy(T& value)
+    static RTTR_INLINE void destroy(T& /*value*/)
     {
     }
 

@@ -130,7 +130,7 @@ class property_wrapper<member_func_ptr, Declaring_Typ, Getter, void, Acc_Level, 
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
@@ -391,7 +391,7 @@ class property_wrapper<member_func_ptr, Declaring_Typ, Getter, void, Acc_Level, 
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
@@ -529,7 +529,7 @@ class property_wrapper<member_func_ptr, Declaring_Typ, Getter, void, Acc_Level, 
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
@@ -797,7 +797,7 @@ class property_wrapper<member_func_ptr, Declaring_Typ, Getter, void, Acc_Level, 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
     public:
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }

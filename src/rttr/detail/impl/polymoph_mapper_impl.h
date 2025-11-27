@@ -76,7 +76,7 @@ struct polymoph_container_mapper_wrapper
     }
 
     template<typename..., typename C = ConstType, enable_if_t<std::is_const<C>::value, int> = 0>
-    static void clear(void* container)
+    static void clear(void* /*container*/)
     {
         // cannot clear a const container...
     }
@@ -98,7 +98,7 @@ struct polymoph_container_mapper_wrapper
     template<typename..., 
              typename C = ConstType, 
              enable_if_t<std::is_const<C>::value, int> = 0>
-    static bool set_value(void* container, std::string type_name, argument& value)
+    static bool set_value(void* /*container*/, variant /*value*/)
     {
         return false;
     }

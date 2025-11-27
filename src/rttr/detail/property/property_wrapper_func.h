@@ -65,7 +65,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& arg) const
         {
             if (arg.is_type<arg_type>())
             {
@@ -75,7 +75,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return variant(m_getter());
         }
@@ -124,12 +124,12 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, ret
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return (variant(m_accessor()));
         }
@@ -224,7 +224,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
                             std::is_pointer<ArgType>::value && 
                             std::is_same<remove_pointer_t<remove_cv_ref_t<ArgType>>, return_raw_type>::value
                         ), int> = 0>
-        bool set_value_impl(instance& object, argument& arg) const
+        bool set_value_impl(instance& /*object*/, argument& arg) const
         {
             //pointer
             if (arg.is_type<arg_raw_type*>()) {
@@ -246,7 +246,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
                             std::is_pointer<ArgType>::value && 
                             std::is_same<remove_pointer_t<remove_cv_ref_t<ArgType>>, return_raw_type>::value
                         ), int> = 0>
-        bool set_value_impl(instance& object, argument& arg) const
+        bool set_value_impl(instance& /*object*/, argument& arg) const
         {
             //pointer
             if (arg.is_type<arg_raw_type*>()) {
@@ -268,7 +268,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
                             std::is_pointer<ArgType>::value && 
                             std::is_same<remove_pointer_t<remove_cv_ref_t<ArgType>>, return_raw_type>::value
                         ), int> = 0>
-        bool set_value_impl(instance& object, argument& arg) const
+        bool set_value_impl(instance& /*object*/, argument& arg) const
         {
             //pointer
             if (arg.is_type<arg_raw_type*>()) {
@@ -292,7 +292,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
         template<typename ReturnType,
             enable_if_t<std::is_reference<ReturnType>::value && 
                         !std::is_const<remove_reference_t<ReturnType>>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             using ReturnRawType = remove_reference_t<ReturnType>;
             ReturnRawType& ret = static_cast<ReturnRawType&>(m_getter());
@@ -303,7 +303,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
         template<typename ReturnType,
             enable_if_t<std::is_reference<ReturnType>::value && 
                         std::is_const<remove_reference_t<ReturnType>>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             using ReturnRawType = remove_reference_t<ReturnType>;
             const ReturnRawType& ret = static_cast<const ReturnRawType&>(m_getter());
@@ -313,7 +313,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, r
         //返回值是值
         template<typename ReturnType,
             enable_if_t<!std::is_reference<ReturnType>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             return variant(m_getter());
         }
@@ -362,7 +362,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, ret
 
     public:
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
@@ -382,7 +382,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, ret
         //返回值是引用
         template<typename ReturnType,
             enable_if_t<std::is_reference<ReturnType>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             using ReturnRawType = remove_cv_ref_t<ReturnType>;
             const ReturnRawType& ret = static_cast<const ReturnRawType&>(m_accessor());
@@ -392,7 +392,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, ret
         //返回值不是引用
         template<typename ReturnType,
             enable_if_t<!std::is_reference<ReturnType>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             return (variant(m_accessor()));
         }
@@ -443,7 +443,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, g
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& arg) const
         {
             using arg_type_t = remove_reference_t<arg_type>;
             if (arg.is_type<std::reference_wrapper<arg_type_t>>())
@@ -454,7 +454,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, g
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return variant(std::ref(m_getter()));
         }
@@ -504,12 +504,12 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, get
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
 
-        variant get_value(instance& object) const
+        variant get_value(instance& /*object*/) const
         {
             return variant(std::cref(m_accessor()));
         }
@@ -603,7 +603,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, m
                             std::is_pointer<ArgType>::value && 
                             std::is_same<remove_pointer_t<remove_cv_ref_t<ArgType>>, return_raw_type>::value
                         ), int> = 0>
-        bool set_value_impl(instance& object, argument& arg) const
+        bool set_value_impl(instance& /*object*/, argument& arg) const
         {
             //pointer
             if (arg.is_type<arg_raw_type*>()) {
@@ -631,7 +631,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, m
                             std::is_pointer<ArgType>::value && 
                             std::is_same<remove_pointer_t<remove_cv_ref_t<ArgType>>, return_raw_type>::value
                         ), int> = 0>
-        bool set_value_impl(instance& object, argument& arg) const
+        bool set_value_impl(instance& /*object*/, argument& arg) const
         {
             //pointer
             if (arg.is_type<arg_raw_type*>()) {
@@ -653,7 +653,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, m
                             std::is_pointer<ArgType>::value && 
                             std::is_same<remove_pointer_t<remove_cv_ref_t<ArgType>>, return_raw_type>::value
                         ), int> = 0>
-        bool set_value_impl(instance& object, argument& arg) const
+        bool set_value_impl(instance& /*object*/, argument& arg) const
         {
             //pointer
             if (arg.is_type<arg_raw_type*>()) {
@@ -688,7 +688,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, m
         template<typename ReturnType,
             enable_if_t<std::is_reference<ReturnType>::value && 
                         std::is_const<remove_reference_t<ReturnType>>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             using ReturnRawType = remove_reference_t<ReturnType>;
             const ReturnRawType& ret = static_cast<const ReturnRawType&>(m_getter());
@@ -698,7 +698,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, Setter, Acc_Level, m
         //返回值是值
         template<typename ReturnType,
             enable_if_t<!std::is_reference<ReturnType>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             return variant(m_getter());
         }
@@ -748,7 +748,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, mos
 
         variant get_metadata(const variant& key) const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
-        bool set_value(instance& object, argument& arg) const
+        bool set_value(instance& /*object*/, argument& /*arg*/) const
         {
             return false;
         }
@@ -769,7 +769,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, mos
         //返回值是引用
         template<typename ReturnType,
             enable_if_t<std::is_reference<ReturnType>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             using ReturnRawType = remove_cv_ref_t<ReturnType>;
             const ReturnRawType& ret = static_cast<const ReturnRawType&>(m_accessor());
@@ -779,7 +779,7 @@ class property_wrapper<function_ptr, Declaring_Typ, Getter, void, Acc_Level, mos
         //返回值不是引用
         template<typename ReturnType,
             enable_if_t<!std::is_reference<ReturnType>::value, int> = 0>
-        variant get_value_impl(instance& object) const
+        variant get_value_impl(instance& /*object*/) const
         {
             return (variant(m_accessor()));
         }

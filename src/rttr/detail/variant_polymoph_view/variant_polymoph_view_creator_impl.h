@@ -48,7 +48,7 @@ create_variant_polymoph_view(T&& value)
 
 template<typename T>
 enable_if_t<!can_create_polymoph_view<T>::value, variant_polymoph_view_private>
-create_variant_polymoph_view(T&& value)
+create_variant_polymoph_view(T&& /*value*/)
 {
     return variant_polymoph_view_private();
 }
