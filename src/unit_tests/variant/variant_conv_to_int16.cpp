@@ -87,8 +87,6 @@ TEST_CASE("variant::to_int16() - from char", "[variant]")
         CHECK(var.get_value<int16_t>() == 65);
     }
 
-RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING
-
     if (std::numeric_limits<char>::is_signed)
     {
         SECTION("valid conversion negative")
@@ -100,8 +98,6 @@ RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING
             CHECK(var.convert(type::get<int16_t>()) == true);
         }
     }
-
-RTTR_END_DISABLE_CONDITIONAL_EXPR_WARNING
 
 }
 
