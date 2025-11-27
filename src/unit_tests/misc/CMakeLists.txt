@@ -38,7 +38,7 @@ target_include_directories(${TARGET_NAME} PRIVATE ${RTTR_SOURCE_DIR})
 target_link_libraries(${TARGET_NAME} PRIVATE RTTR::Core)
 target_link_libraries(${TARGET_NAME} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
 target_link_libraries(${TARGET_NAME} PRIVATE rttr_unit_test_base)
-set_target_properties(${TARGET_NAME} PROPERTIES 
+set_target_properties(${TARGET_NAME} PROPERTIES
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Testing"
                       CXX_STANDARD ${MAX_CXX_STANDARD}
@@ -51,6 +51,18 @@ if (USE_PCH)
 endif()
 
 add_dependencies(${TARGET_NAME} rttr_unit_test_plugin)
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "$<TARGET_FILE:rttr_unit_test_plugin>"           # 源：DLL完整路径
+    "$<TARGET_FILE_DIR:${TARGET_NAME}>"   # 目标：exe所在目录
+    COMMENT "Copying rttr_unit_test_plugin DLL to executable directory"
+)
+
+# 为可执行文件设置 RPATH
+set_target_properties(${TARGET_NAME} PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../lib"
+    BUILD_WITH_INSTALL_RPATH TRUE  # 构建时也使用安装 RPATH，便于测试
+)
 
 add_dependencies(rttr_unit_test ${TARGET_NAME})
 
