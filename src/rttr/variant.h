@@ -45,7 +45,6 @@ namespace rttr
 
 class variant_associative_view;
 class variant_sequential_view;
-class variant_polymoph_view;
 class type;
 class variant;
 class argument;
@@ -415,8 +414,6 @@ class RTTR_API variant
          */
         bool is_sequential_container() const;
 
-        bool is_polymoph_container() const;
-
         /*!
          * \brief Returns a reference to the containing value as type \p T.
          *
@@ -726,8 +723,6 @@ class RTTR_API variant
          * \see can_convert(), convert()
          */
         variant_sequential_view create_sequential_view() const;
-
-        variant_polymoph_view create_polymoph_view() const;
 
         /*!
          * \brief Returns the variant as a `bool` if this variant is of \ref is_type() "type" `bool`.

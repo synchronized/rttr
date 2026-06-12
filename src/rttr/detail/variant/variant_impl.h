@@ -36,7 +36,6 @@
 #include "rttr/detail/variant/variant_data_policy.h"
 #include "rttr/variant_associative_view.h"
 #include "rttr/variant_sequential_view.h"
-#include "rttr/variant_polymoph_view.h"
 
 #include <initializer_list>
 

@@ -30,7 +30,6 @@
 #include "rttr/detail/variant/variant_data_policy.h"
 #include "rttr/variant_associative_view.h"
 #include "rttr/variant_sequential_view.h"
-#include "rttr/variant_polymoph_view.h"
 #include "rttr/argument.h"
 
 #include <algorithm>
@@ -187,13 +186,6 @@ bool variant::is_sequential_container() const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant::is_polymoph_container() const
-{
-    return m_policy(detail::variant_policy_operation::IS_POLYMOPH_MAPPER, m_data, detail::argument_wrapper());
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
 type variant::get_type() const
 {
     type src_type = detail::get_invalid_type();
@@ -258,15 +250,6 @@ variant_sequential_view variant::create_sequential_view() const
 {
     variant_sequential_view result;
     m_policy(detail::variant_policy_operation::CREATE_SEQUENTIAL_VIEW, m_data, result.m_view);
-    return result;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-variant_polymoph_view variant::create_polymoph_view() const
-{
-    variant_polymoph_view result;
-    m_policy(detail::variant_policy_operation::CREATE_POLYMOPH_VIEW, m_data, result.m_view);
     return result;
 }
 

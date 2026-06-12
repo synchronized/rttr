@@ -33,7 +33,6 @@
 #include "rttr/detail/misc/argument_wrapper.h"
 #include "rttr/detail/variant_associative_view/variant_associative_view_creator.h"
 #include "rttr/detail/variant_sequential_view/variant_sequential_view_creator.h"
-#include "rttr/detail/variant_polymoph_view/variant_polymoph_view_creator.h"
 #include "rttr/detail/variant/variant_data_converter.h"
 #include "rttr/detail/comparison/compare_equal.h"
 #include "rttr/detail/comparison/compare_less.h"
@@ -135,10 +134,8 @@ enum class variant_policy_operation : uint8_t
     GET_ADDRESS_CONTAINER,
     IS_ASSOCIATIVE_CONTAINER,
     IS_SEQUENTIAL_CONTAINER,
-    IS_POLYMOPH_MAPPER,
     CREATE_ASSOCIATIV_VIEW,
     CREATE_SEQUENTIAL_VIEW,
-    CREATE_POLYMOPH_VIEW,
     IS_VALID,
     IS_NULLPTR,
     CONVERT,
@@ -380,10 +377,6 @@ struct variant_data_base_policy
             {
                 return can_create_sequential_view<T>::value;
             }
-            case variant_policy_operation::IS_POLYMOPH_MAPPER:
-            {
-                return can_create_polymoph_view<T>::value;
-            }
             case variant_policy_operation::CREATE_ASSOCIATIV_VIEW:
             {
                 arg.get_value<variant_associative_view_private&>() = create_variant_associative_view(const_cast<T&>(Tp::get_value(src_data)));
@@ -392,11 +385,6 @@ struct variant_data_base_policy
             case variant_policy_operation::CREATE_SEQUENTIAL_VIEW:
             {
                 arg.get_value<variant_sequential_view_private&>() = create_variant_sequential_view(const_cast<T&>(Tp::get_value(src_data)));
-                break;
-            }
-            case variant_policy_operation::CREATE_POLYMOPH_VIEW:
-            {
-                arg.get_value<variant_polymoph_view_private&>() = create_variant_polymoph_view(const_cast<T&>(Tp::get_value(src_data)));
                 break;
             }
             case variant_policy_operation::CONVERT:
@@ -773,19 +761,11 @@ struct RTTR_API variant_data_policy_empty
             {
                 return false;
             }
-            case variant_policy_operation::IS_POLYMOPH_MAPPER:
-            {
-                return false;
-            }
             case variant_policy_operation::CREATE_ASSOCIATIV_VIEW:
             {
                 break;
             }
             case variant_policy_operation::CREATE_SEQUENTIAL_VIEW:
-            {
-                break;
-            }
-            case variant_policy_operation::CREATE_POLYMOPH_VIEW:
             {
                 break;
             }
@@ -893,19 +873,11 @@ struct RTTR_API variant_data_policy_void
             {
                 return false;
             }
-            case variant_policy_operation::IS_POLYMOPH_MAPPER:
-            {
-                return false;
-            }
             case variant_policy_operation::CREATE_ASSOCIATIV_VIEW:
             {
                 break;
             }
             case variant_policy_operation::CREATE_SEQUENTIAL_VIEW:
-            {
-                break;
-            }
-            case variant_policy_operation::CREATE_POLYMOPH_VIEW:
             {
                 break;
             }
@@ -1058,19 +1030,11 @@ struct RTTR_API variant_data_policy_nullptr_t
             {
                 return false;
             }
-            case variant_policy_operation::IS_POLYMOPH_MAPPER:
-            {
-                return false;
-            }
             case variant_policy_operation::CREATE_ASSOCIATIV_VIEW:
             {
                 break;
             }
             case variant_policy_operation::CREATE_SEQUENTIAL_VIEW:
-            {
-                break;
-            }
-            case variant_policy_operation::CREATE_POLYMOPH_VIEW:
             {
                 break;
             }
