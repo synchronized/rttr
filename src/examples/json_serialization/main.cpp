@@ -106,13 +106,12 @@ int main(int /*argc*/, char** /*argv*/)
 
     std::cout << "Circle: c_1:\n" << json_string << std::endl;
 
-    circle c_2("Circle #2"); // create a new empty circle
+    variant c_2; // 从 JSON 的 typeName 创建实际类型
 
-    io::from_json(json_string, c_2); // deserialize it with the content of 'c_1'
+    io::from_json(json_string, c_2); // 反序列化为 typeName 指定的实例
     std::cout << "\n############################################\n" << std::endl;
 
     std::cout << "Circle c_2:\n" << io::to_json(c_2) << std::endl;
 
     return 0;
 }
-

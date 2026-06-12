@@ -1,5 +1,11 @@
 #pragma once
 
+#include <vector>
+#include <string>
+#include <map>
+
+#include <rttr/type>
+
 enum class color
 {
     red,

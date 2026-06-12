@@ -47,11 +47,20 @@ namespace io
 namespace detail
 {
 
+static const std::string type_name("typeName");
+
 static bool to_json(const variant& var, json11::Json& jvalue);
 static bool to_json_basic(const variant& var, json11::Json& jvalue);
 static bool to_json_array(const variant_sequential_view& var, json11::Json& jvalue);
 static bool to_json_map(const variant_associative_view& var, json11::Json& jvalue);
 static bool to_json_class(const instance var, json11::Json& jvalue);
+
+/////////////////////////////////////////////////////////////////////////////////////////
+static bool has_inheritance(type value_type)
+{
+    return (value_type.get_base_classes().size() > 0 ||
+            value_type.get_derived_classes().size() > 0);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 bool to_json(const variant& orig_var, json11::Json& jvalue)
@@ -216,6 +225,11 @@ bool to_json_class(const instance orig_var, json11::Json& jvalue_)
     instance obj = data;
 
     type derived_type = obj.get_derived_type();
+    if (has_inheritance(derived_type))
+    {
+        jvalue[type_name] = derived_type.get_name().to_string();
+    }
+
     auto prop_list = derived_type.get_properties();
     for (auto prop : prop_list)
     {

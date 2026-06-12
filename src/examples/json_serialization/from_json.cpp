@@ -51,6 +51,8 @@ namespace io
 namespace detail
 {
 
+static const std::string type_name("typeName");
+
 static bool from_json(variant& data, const json11::Json& jvalue);
 static bool from_json_basic(variant& data, const json11::Json& jvalue);
 static bool from_json_array(variant_sequential_view& view, const json11::Json& jvalue);
@@ -63,15 +65,73 @@ static bool is_basic_type(type raw_type) {
     return (raw_type.is_arithmetic() || raw_type.is_enumeration() || raw_type == type::get<std::string>());
 }
 
+static type make_invalid_type()
+{
+    return variant().get_type();
+}
+
+static bool get_type_from_json(const json11::Json& jobject, type& json_type)
+{
+    json_type = make_invalid_type();
+    if (!jobject.is_object()) { return false; }
+
+    const auto json_object = jobject.object_items();
+    auto ret = json_object.find(type_name);
+    if (ret == json_object.end()) { return false; }
+    if (!ret->second.is_string()) { return true; }
+
+    json_type = type::get_by_name(ret->second.string_value());
+    return true;
+}
+
+static bool can_create_as(type json_type, type target_type)
+{
+    json_type = json_type.get_raw_type();
+    target_type = target_type.get_raw_type();
+    return (json_type == target_type || json_type.is_derived_from(target_type));
+}
+
+static bool can_fill_instance(type json_type, type instance_type)
+{
+    json_type = json_type.get_raw_type();
+    instance_type = instance_type.get_raw_type();
+    return (json_type == instance_type || instance_type.is_derived_from(json_type));
+}
+
 bool from_json(variant& orig_data, const json11::Json& jvalue)
 {
     type data_type = orig_data.get_type();
-    variant data = data_type.is_wrapper()
+    bool is_wrapper = data_type.is_wrapper();
+    variant data = is_wrapper
             ? orig_data.extract_wrapped_ptr_value() : orig_data;
-    variant& data_ref = data_type.is_wrapper()
+    variant& data_ref = is_wrapper
             ? data : orig_data;
     data_type = data.get_type();
     type raw_type = data_type.get_raw_type();
+
+    type json_type = make_invalid_type();
+    if (get_type_from_json(jvalue, json_type)) {
+        if (!json_type) { return false; }
+
+        if (orig_data) {
+            if (!raw_type.is_class()) { return false; }
+
+            if (is_wrapper) {
+                instance obj = data_ref;
+                if (!obj.is_valid() || !can_fill_instance(json_type, obj.get_derived_type())) { return false; }
+                return from_json_class(data_ref, jvalue);
+            }
+
+            if (!can_create_as(json_type, raw_type)) { return false; }
+        }
+
+        variant new_data = json_type.create();
+        if (!new_data) { return false; }
+        if (!from_json_class(new_data, jvalue)) { return false; }
+
+        orig_data = new_data;
+        return true;
+    }
 
     if (!orig_data || is_basic_type(raw_type)) {
         return from_json_basic(orig_data, jvalue);
@@ -225,7 +285,7 @@ bool from_json_map(variant_associative_view& view, const json11::Json& json_arra
 
             if (!key.convert(orig_key_type)) { continue; }
 
-            auto& jitem_value = jitem["key"];
+            auto& jitem_value = jitem["value"];
             variant value = orig_value_type.create();
             if (!is_basic_type(orig_value_type.get_raw_type())) {
                 if (!value) { continue; }
@@ -246,17 +306,26 @@ bool from_json_map(variant_associative_view& view, const json11::Json& json_arra
 
 bool from_json_class(instance orig_data, const json11::Json& jobject)
 {
+    if (!jobject.is_object()) { return false; }
+
     type data_type = orig_data.get_type();
     instance obj = data_type.get_raw_type().is_wrapper() 
             ? orig_data.get_wrapped_instance() : orig_data;
 
     type derived_type = obj.get_derived_type();
+    type json_type = make_invalid_type();
+    if (get_type_from_json(jobject, json_type)) {
+        if (!json_type || !can_fill_instance(json_type, derived_type)) { return false; }
+    }
 
     const auto prop_list = derived_type.get_properties();
     const json11::Json::object json_object = jobject.object_items();
     for (auto prop : prop_list)
     {
         auto prop_name = prop.get_name().to_string();
+        if (prop_name == type_name)
+            continue;
+
         auto ret = json_object.find(prop_name);
         if (ret == json_object.end())
             continue;
