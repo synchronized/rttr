@@ -263,7 +263,9 @@ enable_if_t<
 {
     using raw_type = detail::remove_pointer_t<T>;
     T v = const_cast<T&>(value);
-    return variant(static_cast<raw_type&>(*reinterpret_cast<raw_type*>(v)));
+    raw_type* ptr = reinterpret_cast<raw_type*>(v);
+    if (ptr == nullptr) return variant();
+    return variant(static_cast<raw_type&>(*ptr));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
