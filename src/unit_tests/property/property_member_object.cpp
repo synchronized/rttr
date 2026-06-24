@@ -120,15 +120,15 @@ TEST_CASE("property - class object", "[property]")
     CHECK(prop.is_readonly() == false);
     CHECK(prop.is_static() == false);
     CHECK(prop.get_type() == type::get<int>());
-    CHECK(prop.get_policy_type() == type::get<int*>());
+    CHECK(prop.get_policy_type() == type::get<int>());
     CHECK(prop.get_declaring_type() == type::get<property_member_obj_test>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // invoke
     CHECK(prop.set_value(obj, 42) == true);
-    CHECK(prop.get_value(obj).is_type<int*>() == true);
-    CHECK(*prop.get_value(obj).get_value<int*>() == 42);
+    CHECK(prop.get_value(obj).is_type<int>() == true);
+    CHECK(prop.get_value(obj).get_value<int>() == 42);
 
     // invalid invoke
     CHECK(prop.set_value(obj, "test") == false);
@@ -149,7 +149,7 @@ TEST_CASE("property - class object - read only", "[property]")
     CHECK(prop.is_readonly() == true);
     CHECK(prop.is_static() == false);
     CHECK(prop.get_type() == type::get<int>());
-    CHECK(prop.get_policy_type() == type::get<const int*>());
+    CHECK(prop.get_policy_type() == type::get<const int>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
@@ -157,9 +157,9 @@ TEST_CASE("property - class object - read only", "[property]")
     variant val = prop.get_value(obj);
     type val_type = val.get_type();
     std::string val_type_name = val_type.get_name().to_string();
-    CHECK(val_type_name == "const int*");
-    CHECK(prop.get_value(obj).is_type<const int*>() == true);
-    CHECK(*prop.get_value(obj).get_value<const int*>() == 12);
+    CHECK(val_type_name == "int");
+    CHECK(prop.get_value(obj).is_type<const int>() == true);
+    CHECK(prop.get_value(obj).get_value<const int>() == 12);
 
     // invalid invoke
     CHECK(prop.set_value(obj, 23) == false);
@@ -390,8 +390,8 @@ TEST_CASE("property - raw pointer as property", "[property]")
         variant var = prop.get_value(obj);
         CHECK(obj._p10 == &obj._p1);
 
-        CHECK(var.get_type() == type::get<int*const*>());
-        CHECK(obj._p10 == *var.get_value<int*const*>());
+        CHECK(var.get_type() == type::get<int*const>());
+        CHECK(obj._p10 == var.get_value<int*const>());
     }
 }
 
@@ -406,8 +406,8 @@ TEST_CASE("property - array property", "[property]")
 
     auto var = prop.get_value(obj);
     CHECK(prop.get_type() == type::get<int[4][4]>());
-    CHECK(prop.get_policy_type() == type::get<int(*)[4][4]>());
-    CHECK(var.get_type().is_pointer() == true);
+    CHECK(prop.get_policy_type() == type::get<int[4][4]>());
+    CHECK(var.get_type().is_pointer() == false);
     CHECK(var.get_type().get_raw_type().is_array() == true);
     CHECK(var.get_type().get_raw_type().is_sequential_container() == true);
     auto view = var.create_sequential_view();
@@ -418,7 +418,7 @@ TEST_CASE("property - array property", "[property]")
     CHECK(view.set_value(2, line) == true);
 
     CHECK(prop.set_value(obj, var) == true);
-    variant var1 = var.extract_pointer_value();
+    variant var1 = var;
     CHECK(var1 == obj._p11);
 
 }

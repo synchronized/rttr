@@ -209,8 +209,8 @@ TEST_CASE("library - using types", "[library]")
             point_x.set_value(point, 23);
             point_y.set_value(point, 42);
 
-            variant var_x = point_x.get_value(point).extract_pointer_value();
-            variant var_y = point_y.get_value(point).extract_pointer_value();
+            variant var_x = point_x.get_value(point);
+            variant var_y = point_y.get_value(point);
             CHECK(var_x.get_type().get_name() == "int");
             CHECK(var_y.get_type().get_name() == "int");
             CHECK(var_x.to_int() == 23);

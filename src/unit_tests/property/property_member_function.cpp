@@ -121,19 +121,19 @@ TEST_CASE("property - class function", "[property]")
     CHECK(prop.is_static() == false);
     CHECK(prop_type_name2 == "std::string");
     CHECK(prop.get_type() == type::get<std::string>());
-    CHECK(prop.get_policy_type() == type::get<const std::string*>());
+    CHECK(prop.get_policy_type() == type::get<const std::string>());
     CHECK(prop.get_declaring_type() == type::get<property_member_func_test>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
     // valid invoke
-    CHECK(prop.get_value(obj).is_type<const std::string*>() == true);
+    CHECK(prop.get_value(obj).is_type<const std::string>() == true);
 
     std::string strval = std::string("New Text");
-    CHECK(prop.set_value(obj, &strval) == true);
-    CHECK(*prop.get_value(obj).get_value<const std::string*>() == "New Text");
+    CHECK(prop.set_value(obj, strval) == true);
+    CHECK(prop.get_value(obj).get_value<const std::string>() == "New Text");
     CHECK(prop.set_value(obj, std::string("New Text1")) == true);
-    CHECK(*prop.get_value(obj).get_value<const std::string*>() == "New Text1");
+    CHECK(prop.get_value(obj).get_value<const std::string>() == "New Text1");
 
     // invalid invoke
     CHECK(prop.set_value(obj, 42) == false);

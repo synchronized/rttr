@@ -103,19 +103,19 @@ TEST_CASE("property - global function", "[property]")
     CHECK(prop.is_static() == true);
     CHECK(prop.get_declaring_type().is_valid() == false);
     CHECK(prop.get_type() == type::get<std::string>());
-    CHECK(prop.get_policy_type() == type::get<const std::string*>());
+    CHECK(prop.get_policy_type() == type::get<const std::string>());
     CHECK(prop.get_access_level() == rttr::access_levels::public_access);
     CHECK(prop.get_metadata("Description") == "Some Text");
 
-    CHECK(prop.get_value(instance()).is_type<const std::string*>() == true);
+    CHECK(prop.get_value(instance()).is_type<const std::string>() == true);
     // valid invoke
     std::string str_val = std::string("New Text");
-    CHECK(prop.set_value(instance(), &str_val) == true);
-    CHECK(*prop.get_value(instance()).get_value<const std::string*>() == "New Text");
+    CHECK(prop.set_value(instance(), str_val) == true);
+    CHECK(prop.get_value(instance()).get_value<const std::string>() == "New Text");
 
     // valid invoke
     CHECK(prop.set_value(instance(), std::string("New Text1")) == true);
-    CHECK(*prop.get_value(instance()).get_value<const std::string*>() == "New Text1");
+    CHECK(prop.get_value(instance()).get_value<const std::string>() == "New Text1");
 
     // invalid invoke
     CHECK(prop.set_value(instance(), 42) == false);
